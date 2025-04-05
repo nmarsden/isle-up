@@ -6,6 +6,7 @@ import Performance from "./performance.tsx";
 import Lights from "./lights.tsx";
 import Camera from "./camera.tsx";
 import Island from "./island.tsx";
+import Water from "./water.tsx";
 
 export default function App() {
     return (
@@ -20,6 +21,7 @@ export default function App() {
             <Lights />
             <Camera />
             <Island />
+            <Water />
           </Suspense>
         </Canvas>
         <Loader containerStyles={{ background: '#ffffff' }}/>
