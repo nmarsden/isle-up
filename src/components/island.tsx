@@ -52,7 +52,7 @@ export default function Island() {
           planeSize: { value: 5, label: 'size', min: 1, max: 100, step: 1 },
           planeSegments: { value: 100, label: 'segments', min: 10, max: 1000, step: 1 },
           planeWireframe: { value: false, label: 'wireframe' },
-          planeFlatShading: { value: true, label: 'flatShading' },
+          planeFlatShading: { value: false, label: 'flatShading' },
           planeShadows: { value: true, label: 'shadows' },
           planeMoundOffRatio: { value: 0.75, label: 'moundOffRatio', min: 0.01, max: 4.0, step: 0.01 },
           planeMoundOffAlpha: { value: 0.5, label: 'moundOffAlpha', min: 0, max: 1, step: 0.001 },
