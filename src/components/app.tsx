@@ -1,10 +1,11 @@
 import {Suspense} from 'react';
 import {Canvas} from "@react-three/fiber";
-import {Box, Loader, OrbitControls} from "@react-three/drei";
+import {Loader, OrbitControls} from "@react-three/drei";
 import Debug from "./debug.tsx";
 import Performance from "./performance.tsx";
 import Lights from "./lights.tsx";
 import Camera from "./camera.tsx";
+import Island from "./island.tsx";
 
 export default function App() {
     return (
@@ -18,7 +19,7 @@ export default function App() {
             <OrbitControls />
             <Lights />
             <Camera />
-            <Box />
+            <Island />
           </Suspense>
         </Canvas>
         <Loader containerStyles={{ background: '#ffffff' }}/>
