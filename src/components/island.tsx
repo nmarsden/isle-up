@@ -29,18 +29,17 @@ displacementMoundImage.src = './textures/Circular.png'
 // Texture
 const displacementTexture = new CanvasTexture(displacementCanvas);
 
-// Mound positions
-const moundPositions: { x: number; y: number; }[] = [];
+// Mounds
+const mounds: { x: number; y: number; off: boolean }[] = [];
 for (let x=0; x<5; x++) {
   for (let y=0; y<5; y++) {
-    if (x === 2 && y === 2) continue;
-    moundPositions.push({ x, y });
+    mounds.push({ x, y, off: (x === 2 && y === 2) });
   }
 }
 
 export default function Island() {
   const {
-    planeColor, planeMetalness, planeRoughness, planeDisplacementScale, planeSize, planeSegments, planeWireframe, planeFlatShading, planeShadows, planeMoundRatio
+    planeColor, planeMetalness, planeRoughness, planeDisplacementScale, planeSize, planeSegments, planeWireframe, planeFlatShading, planeShadows, planeMoundOffRatio, planeMoundOffAlpha, planeMoundClearAlpha
   } = useControls(
     'Island',
     {
@@ -55,7 +54,9 @@ export default function Island() {
           planeWireframe: { value: false, label: 'wireframe' },
           planeFlatShading: { value: true, label: 'flatShading' },
           planeShadows: { value: true, label: 'shadows' },
-          planeMoundRatio: { value: 1.0, label: 'moundRatio', min: 0.01, max: 2.0, step: 0.01 }
+          planeMoundOffRatio: { value: 0.75, label: 'moundOffRatio', min: 0.01, max: 4.0, step: 0.01 },
+          planeMoundOffAlpha: { value: 0.5, label: 'moundOffAlpha', min: 0, max: 1, step: 0.001 },
+          planeMoundClearAlpha: { value: 1.00, label: 'moundClearAlpha', min: 0, max: 1, step: 0.001 }
         }
       )
     },
@@ -96,26 +97,31 @@ export default function Island() {
     /**
      * Displacement
      */
-    displacementContext.globalCompositeOperation = 'source-over'
-    displacementContext.globalAlpha = 0.02
+    displacementContext.globalCompositeOperation = 'source-over';
+    displacementContext.globalAlpha = planeMoundClearAlpha;
     displacementContext.fillRect(0, 0, displacementCanvas.width, displacementCanvas.height)
 
     // Draw mounds
     const numCells = 5;
     const cellSize = displacementCanvas.width / numCells;
-    const moundSize = cellSize * planeMoundRatio;
-    const moundOffset = (cellSize - moundSize) * 0.5;
-    displacementContext.globalCompositeOperation = 'lighten'
-    displacementContext.globalAlpha = 1;
-    moundPositions.forEach(pos => {
-      const x = ((pos.x) * cellSize) + moundOffset;
-      const y = ((pos.y) * cellSize) + moundOffset;
+    const moundOnSize = cellSize;
+    const moundOnOffset = (cellSize - moundOnSize) * 0.5;
+
+    const moundOffSize = cellSize * planeMoundOffRatio;
+    const moundOffOffset = (cellSize - moundOffSize) * 0.5;
+    displacementContext.globalCompositeOperation = 'lighten';
+    mounds.forEach(mound => {
+      const offset = mound.off ? moundOffOffset : moundOnOffset;
+      const x = ((mound.x) * cellSize) + offset;
+      const y = ((mound.y) * cellSize) + offset;
+      const size = mound.off ? moundOffSize : moundOnSize
+      displacementContext.globalAlpha = mound.off ? planeMoundOffAlpha : 1;
       displacementContext.drawImage(
         displacementMoundImage,
         x,
         y,
-        moundSize,
-        moundSize
+        size,
+        size
       )
     });
 
