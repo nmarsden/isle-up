@@ -17,7 +17,7 @@ export default function Lights() {
         {
           directionalColor: {value: 'white', label: 'color'},
           directionalIntensity: {value: 2, min: 0, max: 10, step: 0.1, label: 'intensity'},
-          directionalPosition: {value: [0, -2, 5], label: 'position'}
+          directionalPosition: {value: [5, 5, -5], label: 'position'}
         }
       )
     },
