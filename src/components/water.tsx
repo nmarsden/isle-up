@@ -1,16 +1,18 @@
 import {useMemo} from "react";
-import {Mesh, MeshStandardMaterial, PlaneGeometry} from "three";
+import {MeshStandardMaterial, PlaneGeometry} from "three";
 import {folder, useControls} from "leva";
+import {useGlobalStore, GlobalState} from "../stores/useGlobalStore.ts";
 
 export default function Water() {
+  const waterLevel = useGlobalStore((state: GlobalState) => state.waterLevel);
+
   const {
-    planePositionY, planeColor, planeAlpha, planeMetalness, planeRoughness, planeSize, planeSegments, planeWireframe, planeFlatShading, planeShadows
+    planeColor, planeAlpha, planeMetalness, planeRoughness, planeSize, planeSegments, planeWireframe, planeFlatShading
   } = useControls(
     'Water',
     {
       'Plane': folder(
         {
-          planePositionY: { value: 0.33, label: 'positionY', min: 0, max: 1, step: 0.01 },
           planeColor: {value: '#3bf8dc', label: 'color'},
           planeAlpha: { value: 0.5, label: 'alpha', min: 0, max: 1, step: 0.01 },
           planeMetalness: { value: 0.0, label: 'metalness', min: 0, max: 1, step: 0.01 },
@@ -20,7 +22,6 @@ export default function Water() {
           planeSegments: { value: 1, label: 'segments', min: 1, max: 1000, step: 1 },
           planeWireframe: { value: false, label: 'wireframe' },
           planeFlatShading: { value: true, label: 'flatShading' },
-          planeShadows: { value: true, label: 'shadows' }
         }
       )
     },
@@ -29,7 +30,7 @@ export default function Water() {
     }
   );
 
-  const { plane } = useMemo(() => {
+  const { planeGeometry, planeMaterial } = useMemo(() => {
 
     // Plane Geometry
     const planeGeometry = new PlaneGeometry(1, 1, planeSegments, planeSegments);
@@ -45,19 +46,16 @@ export default function Water() {
       opacity: planeAlpha
     });
 
-    // Plane Mesh
-    const plane = new Mesh(
-      planeGeometry,
-      planeMaterial
-    );
-    plane.scale.setScalar(planeSize);
-    plane.rotation.x = Math.PI * -0.5;
-    plane.position.y = planePositionY;
-    // plane.castShadow = planeShadows;
-    plane.receiveShadow = planeShadows;
+    return { planeGeometry, planeMaterial };
 
-    return { plane };
-  }, [planePositionY, planeColor, planeAlpha, planeMetalness, planeRoughness, planeSize, planeSegments, planeWireframe, planeFlatShading, planeShadows]);
+  }, [planeColor, planeAlpha, planeMetalness, planeRoughness, planeSegments, planeWireframe, planeFlatShading]);
 
-  return <primitive object={plane} />
+  return <mesh
+    position-y={waterLevel}
+    scale={planeSize}
+    rotation-x = {Math.PI * -0.5}
+    receiveShadow={true}
+    geometry={planeGeometry}
+    material={planeMaterial}
+  />
 }
