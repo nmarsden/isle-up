@@ -1,5 +1,5 @@
 import {useMemo} from "react";
-import {CanvasTexture, Mesh, MeshStandardMaterial, PlaneGeometry} from "three";
+import {CanvasTexture, MeshStandardMaterial, PlaneGeometry} from "three";
 import {useFrame} from "@react-three/fiber";
 import {folder, useControls} from "leva";
 
@@ -65,7 +65,7 @@ export default function Island() {
     }
   );
 
-  const { plane } = useMemo(() => {
+  const { planeGeometry, planeMaterial } = useMemo(() => {
 
     // Plane Geometry
     const planeGeometry = new PlaneGeometry(planeSize, planeSize, planeSegments, planeSegments);
@@ -81,17 +81,9 @@ export default function Island() {
       flatShading: planeFlatShading
     });
 
-    // Plane Mesh
-    const plane = new Mesh(
-      planeGeometry,
-      planeMaterial
-    );
-    plane.rotation.x = Math.PI * -0.5;
-    plane.castShadow = planeShadows;
-    plane.receiveShadow = planeShadows;
+    return { planeGeometry, planeMaterial };
 
-    return { plane };
-  }, [planeColor, planeMetalness, planeRoughness, planeDisplacementScale, planeSize, planeSegments, planeWireframe, planeFlatShading, planeShadows]);
+  }, [planeColor, planeMetalness, planeRoughness, planeDisplacementScale, planeSize, planeSegments, planeWireframe, planeFlatShading]);
 
   useFrame(() => {
     /**
@@ -129,5 +121,21 @@ export default function Island() {
     displacementTexture.needsUpdate = true
   });
 
-  return <primitive object={plane} />
+  return <group dispose={null}>
+    <mesh
+      rotation-x = {Math.PI * -0.5}
+      castShadow={planeShadows}
+      receiveShadow={planeShadows}
+      geometry={planeGeometry}
+      material={planeMaterial}
+    />
+    <mesh
+      rotation-x={-Math.PI / 2}
+      position={[0, -0.01, 0]} // Moved it down to prevent the visual glitch from plane collision
+      material={planeMaterial}
+      receiveShadow={true}
+    >
+      <planeGeometry args={[256, 256]} />
+    </mesh>
+  </group>
 }
