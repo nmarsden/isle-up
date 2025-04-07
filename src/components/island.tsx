@@ -40,7 +40,9 @@ const displacementTexture = new CanvasTexture(displacementCanvas);
 
 export default function Island() {
   const waterLevel = useGlobalStore((state: GlobalState) => state.waterLevel);
-  const setWaterLevel = useGlobalStore((state: GlobalState) => state.setWaterLevel);
+  const waveSpeed = useGlobalStore((state: GlobalState) => state.waveSpeed);
+  const waveAmplitude = useGlobalStore((state: GlobalState) => state.waveAmplitude);
+
   const planeMesh = useRef<Mesh>(null!);
 
   const {
@@ -54,7 +56,6 @@ export default function Island() {
           SAND_BASE_COLOR: { value: "#ff9900", label: "Sand" },
           GRASS_BASE_COLOR: { value: "#85a02b", label: "Grass" },
           UNDERWATER_BASE_COLOR: { value: "#118a4f", label: "Underwater" },
-          waterLevel: { value: 0.41, label: 'waterLevel', min: 0.41, max: 10, step: 0.01, onChange: (value) => setWaterLevel(value) },
           positionY: { value: 0, label: 'positionY', min: -10, max: 10, step: 0.05 },
           planeColor: {value: '#f8ed3b', label: 'color'},
           planeMetalness: { value: 0.0, label: 'metalness', min: 0, max: 1, step: 0.01 },
@@ -76,7 +77,6 @@ export default function Island() {
     }
   );
 
-
   // Convert color hex values to Three.js Color objects
   const SAND_COLOR = useMemo(() => new Color(SAND_BASE_COLOR), [SAND_BASE_COLOR]);
   const GRASS_COLOR = useMemo(() => new Color(GRASS_BASE_COLOR), [GRASS_BASE_COLOR]);
@@ -88,8 +88,10 @@ export default function Island() {
       uGrassColor: GRASS_COLOR,
       uUnderwaterColor: UNDERWATER_COLOR,
       uWaterLevel: waterLevel,
+      uWaveSpeed: waveSpeed,
+      uWaveAmplitude: waveAmplitude
     };
-  }, [ SAND_COLOR, GRASS_COLOR, UNDERWATER_COLOR, waterLevel ]);
+  }, [ SAND_COLOR, GRASS_COLOR, UNDERWATER_COLOR, waterLevel, waveSpeed, waveAmplitude ]);
 
   const { planeGeometry, planeMaterial } = useMemo(() => {
 
@@ -111,6 +113,8 @@ export default function Island() {
       shader.uniforms.uGrassColor = { value: uniforms.uGrassColor };
       shader.uniforms.uUnderwaterColor = { value: uniforms.uUnderwaterColor };
       shader.uniforms.uWaterLevel = { value: uniforms.uWaterLevel };
+      shader.uniforms.uWaveSpeed = { value: uniforms.uWaveSpeed };
+      shader.uniforms.uWaveAmplitude = { value: uniforms.uWaveAmplitude }
 
       shader.vertexShader = `
           uniform float uWaterLevel;
@@ -161,7 +165,11 @@ export default function Island() {
 
     return { planeGeometry, planeMaterial };
 
-  }, [uniforms.uBaseColor, uniforms.uUnderwaterColor, uniforms.uWaterLevel, uniforms.uGrassColor, planeColor, planeMetalness, planeRoughness, planeDisplacementScale, planeSize, planeSegments, planeWireframe, planeFlatShading]);
+  },
+  [
+    uniforms.uBaseColor, uniforms.uUnderwaterColor, uniforms.uWaterLevel, uniforms.uWaveAmplitude, uniforms.uWaveSpeed, uniforms.uGrassColor,
+    planeColor, planeMetalness, planeRoughness, planeDisplacementScale, planeSize, planeSegments, planeWireframe, planeFlatShading
+  ]);
 
   useFrame(() => {
     /**
