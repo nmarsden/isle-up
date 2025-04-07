@@ -8,3 +8,7 @@ Built with React, TypeScript, & Vite.
 - ThreeJS water shader with foam - https://github.com/romulolink/threejs-water-shader-with-foam
 - Creating Stylized Water Effects with React Three Fiber - https://tympanus.net/codrops/2025/03/04/creating-stylized-water-effects-with-react-three-fiber/
 - WAWA Sensei - Water Shader - https://wawasensei.dev/courses/react-three-fiber/lessons/water-shader#starter-pack
+- ThreeJS Journey - Modified Material - https://threejs-journey.com/lessons/modified-materials#
+- Extending three.js materials with GLSL - https://medium.com/@pailhead011/extending-three-js-materials-with-glsl-78ea7bbb9270
+- Modifying MeshBasicMaterial - https://jsfiddle.net/prisoner849/k542eo19/
+- React Three Fiber - How do I create a helper for a shadow camera - https://stackoverflow.com/questions/69096623/react-three-fiber-how-do-i-create-a-helper-for-a-shadow-camera
