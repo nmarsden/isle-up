@@ -1,6 +1,6 @@
 import {folder, useControls} from "leva";
 import {useEffect, useRef} from "react";
-import {DirectionalLight, PCFShadowMap} from "three";
+import {DirectionalLight, PCFSoftShadowMap} from "three";
 import useShadowHelper from "../hooks/useShadowHelper.tsx";
 import {useThree} from "@react-three/fiber";
 
@@ -25,12 +25,12 @@ export default function Lights() {
         {
           directionalColor: {value: 'white', label: 'color'},
           directionalIntensity: {value: 2, min: 0, max: 10, step: 0.1, label: 'intensity'},
-          directionalPosition: {value: [5, 5, -5], label: 'position'},
-          directionalShadowNormalBias: {value: 0.1, min: 0, max: 1, step: 0.01, label: 'shadowNormalBias'},
-          directionalShadowBias: {value: 0.01, min: 0, max: 1, step: 0.01, label: 'shadowBias'},
+          directionalPosition: {value: [1, 0.5, -1], label: 'position'},
+          directionalShadowNormalBias: {value: 0.05, min: 0, max: 1, step: 0.01, label: 'shadowNormalBias'},
+          directionalShadowBias: {value: 0.0, min: 0, max: 1, step: 0.01, label: 'shadowBias'},
           directionalShadowCamNear: {value: 0.1, min: 0, max: 50, step: 0.01, label: 'shadowCamNear'},
-          directionalShadowCamFar: {value: 13.8, min: 0, max: 50, step: 0.01, label: 'shadowCamFar'},
-          directionalShadowCamFrustum: {value: 4.5, min: 0, max: 50, step: 0.01, label: 'shadowCamFrustum'},
+          directionalShadowCamFar: {value: 3.0, min: 0, max: 50, step: 0.01, label: 'shadowCamFar'},
+          directionalShadowCamFrustum: {value: 0.5, min: 0, max: 50, step: 0.01, label: 'shadowCamFrustum'},
           directionalShadowMapPOT: {value: 9, min: 0, max: 12, step: 1, label: 'shadowMapPOT'},
           directionalShadowHelperEnabled: {value: false, label: 'showHelper'}
         }
@@ -44,7 +44,9 @@ export default function Lights() {
   useShadowHelper(directionalLight, directionalShadowHelperEnabled);
 
   useEffect(() => {
-    gl.shadowMap.type = PCFShadowMap;
+    gl.shadowMap.type = PCFSoftShadowMap;
+    // gl.shadowMap.type = BasicShadowMap;
+    // gl.shadowMap.type = PCFShadowMap;
   }, [ gl ]);
 
   useEffect(() => {

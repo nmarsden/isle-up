@@ -17,7 +17,10 @@ export default function App() {
         shadows={true}
       >
         <Fog />
-        <Sky sunPosition={[5, 5, -5]}/>
+        <Sky
+          sunPosition={[1, 0.5, -1]}
+          turbidity={0.25}
+        />
         <Performance />
         <Suspense>
           <OrbitControls />

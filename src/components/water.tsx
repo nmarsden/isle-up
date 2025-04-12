@@ -31,8 +31,8 @@ export default function Water() {
       'Settings': folder(
         {
           waterLevel: { value: waterLevel, label: 'waterLevel', min: 0.01, max: 0.11, step: 0.01, onChange: (value) => setWaterLevel(value) },
-          waveSpeed: { value: waveSpeed, min: 0.5, max: 2.0, step: 0.01, label: "Wave Speed", onChange: (value) => setWaveSpeed(value) },
-          waveAmplitude: { value: waveAmplitude, min: 0.05, max: 0.5, step: 0.01, label: "Wave Amplitude", onChange: (value) => setWaveAmplitude(value) },
+          waveSpeed: { value: waveSpeed, min: 0, max: 2.0, step: 0.01, label: "Wave Speed", onChange: (value) => setWaveSpeed(value) },
+          waveAmplitude: { value: waveAmplitude, min: 0, max: 0.5, step: 0.01, label: "Wave Amplitude", onChange: (value) => setWaveAmplitude(value) },
           foamDepth: { value: foamDepth, min: 0, max: 1, step: 0.001, label: "Foam Depth", onChange: (value) => setFoamDepth(value) },
           colorNear: { value: '#00fccd', label: 'colorNear', onChange: (value) => { uniforms.uColorNear.value = new Color(value); } },
           colorFar: { value: '#1ceeff', label: 'colorFar', onChange: (value) => { uniforms.uColorFar.value = new Color(value); } },
@@ -176,7 +176,7 @@ export default function Water() {
           float textureSize = 100.0 - uTextureSize;
 
           // Generate noise for the base texture
-          float noiseBase = snoise(vUv * (textureSize * 2.8) + sin(uTime * 0.3));
+          float noiseBase = snoise(vUv * (textureSize * 2.8) + sin(uTime * 0.01));
           noiseBase = noiseBase * 0.5 + 0.5;
           vec3 colorBase = vec3(noiseBase);
 
@@ -185,7 +185,7 @@ export default function Water() {
           foam = step(0.5, foam);  // binary step to create foam effect
 
           // Generate additional noise for waves
-          float noiseWaves = snoise(vUv * textureSize + sin(uTime * -0.1));
+          float noiseWaves = snoise(vUv * textureSize + sin(uTime * -0.01));
           noiseWaves = noiseWaves * 0.5 + 0.5;
           vec3 colorWaves = vec3(noiseWaves);
 
