@@ -17,9 +17,11 @@ export default function Water() {
   const waterLevel = useGlobalStore((state: GlobalState) => state.waterLevel);
   const waveSpeed = useGlobalStore((state: GlobalState) => state.waveSpeed);
   const waveAmplitude = useGlobalStore((state: GlobalState) => state.waveAmplitude);
+  const foamDepth = useGlobalStore((state: GlobalState) => state.foamDepth);
   const setWaterLevel = useGlobalStore((state: GlobalState) => state.setWaterLevel);
   const setWaveSpeed = useGlobalStore((state: GlobalState) => state.setWaveSpeed);
   const setWaveAmplitude = useGlobalStore((state: GlobalState) => state.setWaveAmplitude);
+  const setFoamDepth = useGlobalStore((state: GlobalState) => state.setFoamDepth);
 
   const {
     planeColor, planeAlpha, planeMetalness, planeRoughness, planeSegments, planeWireframe, planeFlatShading
@@ -28,9 +30,10 @@ export default function Water() {
     {
       'Settings': folder(
         {
-          waterLevel: { value: waterLevel, label: 'waterLevel', min: 0.41, max: 10, step: 0.01, onChange: (value) => setWaterLevel(value) },
-          waveSpeed: { value: waveSpeed, min: 0.5, max: 2.0, step: 0.1, label: "Wave Speed", onChange: (value) => setWaveSpeed(value) },
-          waveAmplitude: { value: waveAmplitude, min: 0.05, max: 0.5, step: 0.05, label: "Wave Amplitude", onChange: (value) => setWaveAmplitude(value) },
+          waterLevel: { value: waterLevel, label: 'waterLevel', min: 0.01, max: 0.11, step: 0.01, onChange: (value) => setWaterLevel(value) },
+          waveSpeed: { value: waveSpeed, min: 0.5, max: 2.0, step: 0.01, label: "Wave Speed", onChange: (value) => setWaveSpeed(value) },
+          waveAmplitude: { value: waveAmplitude, min: 0.05, max: 0.5, step: 0.01, label: "Wave Amplitude", onChange: (value) => setWaveAmplitude(value) },
+          foamDepth: { value: foamDepth, min: 0, max: 1, step: 0.001, label: "Foam Depth", onChange: (value) => setFoamDepth(value) },
           colorNear: { value: '#00fccd', label: 'colorNear', onChange: (value) => { uniforms.uColorNear.value = new Color(value); } },
           colorFar: { value: '#1ceeff', label: 'colorFar', onChange: (value) => { uniforms.uColorFar.value = new Color(value); } },
           textureSize: { value: 45, label: 'textureSize', min: 0, max: 100, step: 1 , onChange: (value) => { uniforms.uTextureSize.value = value; } }
