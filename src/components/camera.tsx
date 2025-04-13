@@ -9,8 +9,8 @@ export default function Camera({ children } : { children?: ReactNode }) {
   } = useControls(
     'Camera',
     {
-      positionY: { value: 2, label: 'positionY', min: 0, max: 100, step: 0.1 },
-      positionZ: { value: 2, label: 'positionZ', min: 0, max: 100, step: 0.1 }
+      positionY: { value: 12, label: 'positionY', min: 0, max: 100, step: 0.1 },
+      positionZ: { value: 24, label: 'positionZ', min: 0, max: 100, step: 0.1 }
     },
     {
       collapsed: true

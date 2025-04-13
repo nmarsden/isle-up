@@ -11,7 +11,9 @@ export default function Lights() {
   const {
     ambientColor, ambientIntensity,
     directionalColor, directionalIntensity, directionalPosition,
-    directionalShadowNormalBias, directionalShadowBias, directionalShadowCamNear, directionalShadowCamFar, directionalShadowCamFrustum, directionalShadowMapPOT, directionalShadowHelperEnabled
+    directionalShadowNormalBias, directionalShadowBias, directionalShadowCamNear, directionalShadowCamFar, directionalShadowMapPOT,
+    directionalShadowCamFrustumTop, directionalShadowCamFrustumBottom, directionalShadowCamFrustumLeft, directionalShadowCamFrustumRight,
+    directionalShadowHelperEnabled
   } = useControls(
     'Lights',
     {
@@ -25,13 +27,16 @@ export default function Lights() {
         {
           directionalColor: {value: 'white', label: 'color'},
           directionalIntensity: {value: 2, min: 0, max: 10, step: 0.1, label: 'intensity'},
-          directionalPosition: {value: [1, 0.5, -1], label: 'position'},
+          directionalPosition: {value: [5, 2.5, -5], label: 'position'},
           directionalShadowNormalBias: {value: 0.05, min: 0, max: 1, step: 0.01, label: 'shadowNormalBias'},
           directionalShadowBias: {value: 0.0, min: 0, max: 1, step: 0.01, label: 'shadowBias'},
           directionalShadowCamNear: {value: 0.1, min: 0, max: 50, step: 0.01, label: 'shadowCamNear'},
-          directionalShadowCamFar: {value: 3.0, min: 0, max: 50, step: 0.01, label: 'shadowCamFar'},
-          directionalShadowCamFrustum: {value: 0.5, min: 0, max: 50, step: 0.01, label: 'shadowCamFrustum'},
+          directionalShadowCamFar: {value: 22.0, min: 0, max: 50, step: 0.01, label: 'shadowCamFar'},
           directionalShadowMapPOT: {value: 9, min: 0, max: 12, step: 1, label: 'shadowMapPOT'},
+          directionalShadowCamFrustumTop: {value: 5.25, min: -20, max: 20, step: 0.01, label: 'shadowCamFrustumTop'},
+          directionalShadowCamFrustumBottom: {value: -0.5, min: -20, max: 20, step: 0.01, label: 'shadowCamFrustumBottom'},
+          directionalShadowCamFrustumLeft: {value: -13.0, min: -20, max: 20, step: 0.01, label: 'shadowCamFrustumLeft'},
+          directionalShadowCamFrustumRight: {value: 9.0, min: -20, max: 20, step: 0.01, label: 'shadowCamFrustumRight'},
           directionalShadowHelperEnabled: {value: false, label: 'showHelper'}
         }
       )
@@ -56,12 +61,16 @@ export default function Lights() {
     directionalLight.current.shadow.mapSize.height = Math.pow(2, directionalShadowMapPOT);
     directionalLight.current.shadow.normalBias = directionalShadowNormalBias;
     directionalLight.current.shadow.bias = directionalShadowBias * 0.1;
-    directionalLight.current.shadow.camera.top = directionalShadowCamFrustum;
-    directionalLight.current.shadow.camera.right = directionalShadowCamFrustum;
-    directionalLight.current.shadow.camera.bottom = -directionalShadowCamFrustum;
-    directionalLight.current.shadow.camera.left = -directionalShadowCamFrustum;
+    directionalLight.current.shadow.camera.top = directionalShadowCamFrustumTop;
+    directionalLight.current.shadow.camera.bottom = directionalShadowCamFrustumBottom;
+    directionalLight.current.shadow.camera.left = directionalShadowCamFrustumRight;
+    directionalLight.current.shadow.camera.right = directionalShadowCamFrustumLeft;
 
-  }, [directionalLight, directionalShadowNormalBias, directionalShadowBias, directionalShadowCamNear, directionalShadowCamFar, directionalShadowCamFrustum, directionalShadowMapPOT]);
+  }, [
+    directionalLight, directionalShadowNormalBias, directionalShadowBias, directionalShadowCamNear, directionalShadowCamFar,
+    directionalShadowCamFrustumTop, directionalShadowCamFrustumBottom, directionalShadowCamFrustumLeft, directionalShadowCamFrustumRight,
+    directionalShadowMapPOT
+  ]);
 
   return <>
     <ambientLight

@@ -71,6 +71,6 @@ a:hover {
 
 /* Leva */
 :root {
-	--leva-sizes-rootWidth: 400px !important;
+	--leva-sizes-rootWidth: 500px !important;
 	--leva-sizes-controlWidth: 240px !important;
 }

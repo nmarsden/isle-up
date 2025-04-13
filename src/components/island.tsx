@@ -1,8 +1,9 @@
 import {useEffect, useMemo, useRef} from "react";
-import {CanvasTexture, Color, Mesh, MeshStandardMaterial, PlaneGeometry} from "three";
+import {Color, Mesh, MeshStandardMaterial} from "three";
 import {useFrame} from "@react-three/fiber";
 import {folder, useControls} from "leva";
 import {GlobalState, useGlobalStore} from "../stores/useGlobalStore.ts";
+import {useGLTF} from "@react-three/drei";
 
 /**
  * Displacement
@@ -28,7 +29,7 @@ const displacementMoundImage = new Image()
 displacementMoundImage.src = './textures/Circular.png'
 
 // Texture
-const displacementTexture = new CanvasTexture(displacementCanvas);
+// const displacementTexture = new CanvasTexture(displacementCanvas);
 
 // Mounds
 // const mounds: { x: number; y: number; off: boolean }[] = [];
@@ -50,6 +51,10 @@ const uniforms = {
 }
 
 export default function Island() {
+  const { nodes } = useGLTF('models/terrain.glb', false);
+
+  const planeGeometry = (nodes.Plane as Mesh).geometry;
+
   const waterLevel = useGlobalStore((state: GlobalState) => state.waterLevel);
   const waveSpeed = useGlobalStore((state: GlobalState) => state.waveSpeed);
   const waveAmplitude = useGlobalStore((state: GlobalState) => state.waveAmplitude);
@@ -58,7 +63,7 @@ export default function Island() {
   const planeMesh = useRef<Mesh>(null!);
 
   const {
-    underwaterColor, planeColor, planeMetalness, planeRoughness, positionY, planeDisplacementScale, planeSize, planeSegments, planeWireframe, planeFlatShading, planeShadows, planeMoundClearAlpha
+    underwaterColor, planeColor, planeMetalness, planeRoughness, positionY, planeDisplacementScale, planeSize, planeSegments, planeWireframe, planeFlatShading, planeShadows
   } = useControls(
     'Island',
     {
@@ -93,18 +98,18 @@ export default function Island() {
   useEffect(() => { uniforms.uWaveAmplitude.value = waveAmplitude }, [ waveAmplitude ]);
   useEffect(() => { uniforms.uFoamDepth.value = foamDepth }, [ foamDepth ]);
 
-  const { planeGeometry, planeMaterial } = useMemo(() => {
+  const { planeMaterial } = useMemo(() => {
 
     // Plane Geometry
-    const planeGeometry = new PlaneGeometry(planeSize, planeSize, planeSegments, planeSegments);
+    // const planeGeometry = new PlaneGeometry(planeSize, planeSize, planeSegments, planeSegments);
 
     const planeMaterial = new MeshStandardMaterial({
       color: planeColor,
       wireframe: planeWireframe,
       roughness: planeRoughness,
       metalness: planeMetalness,
-      displacementMap: displacementTexture,
-      displacementScale: planeDisplacementScale,
+      // displacementMap: displacementTexture,
+      // displacementScale: planeDisplacementScale,
       flatShading: planeFlatShading
     });
 
@@ -119,6 +124,20 @@ export default function Island() {
       shader.uniforms.uFoamDepth = uniforms.uFoamDepth;
 
       shader.vertexShader = `
+          varying vec4 vPosition;
+          
+          ${shader.vertexShader}      
+      `.replace(
+            `#include <displacementmap_vertex>`,
+            `
+              #include <displacementmap_vertex>
+              
+              // Output position
+              vPosition = modelMatrix * vec4(transformed, 1.0);
+            `
+        );
+
+      shader.fragmentShader = `
           uniform float uWaterLevel;
           uniform vec3 uBaseColor;
           uniform vec3 uGrassColor;
@@ -127,19 +146,19 @@ export default function Island() {
           uniform float uWaveSpeed;
           uniform float uWaveAmplitude;
           uniform float uFoamDepth;
-
-          varying vec3 vColor;
-          ${shader.vertexShader}
+          
+          varying vec4 vPosition;
+          
+          ${shader.fragmentShader}
         `.replace(
-          `#include <displacementmap_vertex>`,
+          `#include <color_fragment>`,
           `
-            #include <displacementmap_vertex>
-  
+            #include <color_fragment>
+            
             // Set the current color as the base color
             vec3 baseColor = uBaseColor;
         
-            vec4 wPosition = modelMatrix * vec4(transformed, 1.0);
-            float positionHeight = wPosition.y;        
+            float positionHeight = vPosition.y;        
         
             float a = 0.1;
             float b = 0.04;
@@ -170,31 +189,20 @@ export default function Island() {
             // The current dynamic water height
             float currentWaterHeight = uWaterLevel + sineOffset;
 
-            float stripe = smoothstep(currentWaterHeight + 0.01, currentWaterHeight - 0.01, wPosition.y) - smoothstep(currentWaterHeight + uFoamDepth + 0.01, currentWaterHeight + uFoamDepth - 0.01, wPosition.y);
+            float stripe = smoothstep(currentWaterHeight + 0.01, currentWaterHeight - 0.01, vPosition.y) - 
+                           smoothstep(currentWaterHeight + uFoamDepth + 0.01, currentWaterHeight + uFoamDepth - 0.01, vPosition.y);
             
             vec3 stripeColor = vec3(1.0, 1.0, 1.0); // White stripe
             
             // Apply the foam strip to baseColor    
             vec3 finalColor = mix(baseColor - stripe, stripeColor, stripe);
-        
-            // Output the final color
-            vColor = finalColor;
-          `
-      );
-
-      shader.fragmentShader = `
-          varying vec3 vColor;
-          ${shader.fragmentShader}
-        `.replace(
-          `#include <color_fragment>`,
-          `
-            #include <color_fragment>
-            diffuseColor.rgb = vColor;
+            
+            diffuseColor.rgb = finalColor;
           `
       );
     }
 
-    return { planeGeometry, planeMaterial };
+    return { planeMaterial };
 
   },
   [
@@ -205,19 +213,19 @@ export default function Island() {
     /**
      * Displacement
      */
-    displacementContext.globalCompositeOperation = 'source-over';
-    displacementContext.globalAlpha = planeMoundClearAlpha;
-    displacementContext.fillRect(0, 0, displacementCanvas.width, displacementCanvas.height)
-
-    // Draw mounds
-    displacementContext.globalAlpha = 1;
-    displacementContext.drawImage(
-      displacementMoundImage,
-      0,
-      0,
-      displacementCanvas.width,
-      displacementCanvas.width
-    )
+    // displacementContext.globalCompositeOperation = 'source-over';
+    // displacementContext.globalAlpha = planeMoundClearAlpha;
+    // displacementContext.fillRect(0, 0, displacementCanvas.width, displacementCanvas.height)
+    //
+    // // Draw mounds
+    // displacementContext.globalAlpha = 1;
+    // displacementContext.drawImage(
+    //   displacementMoundImage,
+    //   0,
+    //   0,
+    //   displacementCanvas.width,
+    //   displacementCanvas.width
+    // )
 
     // const numCells = 5;
     // const cellSize = displacementCanvas.width / numCells;
@@ -243,7 +251,7 @@ export default function Island() {
     // });
 
     // Texture
-    displacementTexture.needsUpdate = true
+    // displacementTexture.needsUpdate = true
   });
 
   useFrame(({ clock }) => {
@@ -254,7 +262,7 @@ export default function Island() {
     <mesh
       ref={planeMesh}
       position-y={positionY}
-      rotation-x = {Math.PI * -0.5}
+      // rotation-x = {Math.PI * -0.5}
       castShadow={planeShadows}
       receiveShadow={planeShadows}
       geometry={planeGeometry}
@@ -274,3 +282,5 @@ export default function Island() {
     </mesh>
   </group>
 }
+
+useGLTF.preload('models/terrain.glb', false)
