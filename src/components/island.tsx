@@ -1,5 +1,5 @@
 import {useCallback, useEffect, useMemo, useRef} from "react";
-import {Color, InstancedMesh, Mesh, MeshStandardMaterial, Object3D} from "three";
+import {Color, InstancedMesh, Matrix4, Mesh, MeshStandardMaterial, Object3D, PlaneGeometry} from "three";
 import {useFrame} from "@react-three/fiber";
 import {folder, useControls} from "leva";
 import {GlobalState, useGlobalStore} from "../stores/useGlobalStore.ts";
@@ -19,7 +19,7 @@ const uniforms = {
 const glsl = (x: any) => x;
 
 const CELL_WIDTH = 12.25;
-const count = 25;
+const NUM_CELLS = 25;
 const temp = new Object3D()
 
 const gridState = [
@@ -31,11 +31,32 @@ const gridState = [
 ];
 
 export default function Island() {
-  const instancedMeshRef = useRef<InstancedMesh>(null);
+  const clickableInstancedMeshRef = useRef<InstancedMesh>(null);
   useEffect(() => {
-    if (!instancedMeshRef.current) return;
+    if (!clickableInstancedMeshRef.current) return;
     // Set positions
-    for (let i = 0; i < count; i++) {
+    for (let i = 0; i < NUM_CELLS; i++) {
+      const row = Math.floor(i / 5);
+      const column = (i % 5);
+
+      const x = column * CELL_WIDTH - (2 * CELL_WIDTH);
+      const y = 2;
+      const z = row * CELL_WIDTH - (2 * CELL_WIDTH);
+
+      temp.position.set(x, y, z);
+      temp.updateMatrix();
+      clickableInstancedMeshRef.current.setMatrixAt(i, temp.matrix);
+    }
+    // Update the instance
+    clickableInstancedMeshRef.current.instanceMatrix.needsUpdate = true
+  }, [])
+
+
+  const islandInstancedMeshRef = useRef<InstancedMesh>(null);
+  useEffect(() => {
+    if (!islandInstancedMeshRef.current) return;
+    // Set positions
+    for (let i = 0; i < NUM_CELLS; i++) {
       const row = Math.floor(i / 5);
       const column = (i % 5);
 
@@ -49,16 +70,14 @@ export default function Island() {
 
       temp.position.set(x, y, z);
       temp.updateMatrix();
-      instancedMeshRef.current.setMatrixAt(i, temp.matrix);
+      islandInstancedMeshRef.current.setMatrixAt(i, temp.matrix);
     }
     // Update the instance
-    instancedMeshRef.current.instanceMatrix.needsUpdate = true
+    islandInstancedMeshRef.current.instanceMatrix.needsUpdate = true
   }, [])
     
-  const onIslandClicked = useCallback((event: any) => {
-    // console.log(event.instanceId);
-
-    if (!instancedMeshRef.current) return;
+  const onClicked = useCallback((event: any) => {
+    if (!islandInstancedMeshRef.current) return;
 
     const i = event.instanceId;
 
@@ -67,16 +86,15 @@ export default function Island() {
 
     const isUp = gridState[row][column] === 1;
     gridState[row][column] = isUp ? 0 : 1;
+
+    const x = column * CELL_WIDTH - (2 * CELL_WIDTH);
     const y = isUp ? -1.2 : -0.01;
+    const z = row * CELL_WIDTH - (2 * CELL_WIDTH);
 
-    instancedMeshRef.current.getMatrixAt(i, temp.matrix);
-
-    temp.position.setY(y);
+    temp.position.set(x, y, z);
     temp.updateMatrix();
-
-    instancedMeshRef.current.setMatrixAt(i, temp.matrix);
-    instancedMeshRef.current.instanceMatrix.needsUpdate = true;
-
+    islandInstancedMeshRef.current.setMatrixAt(i, temp.matrix);
+    islandInstancedMeshRef.current.instanceMatrix.needsUpdate = true;
   }, []);
   
   const { nodes } = useGLTF('models/terrain2.glb', false);
@@ -87,7 +105,7 @@ export default function Island() {
   const foamDepth = useGlobalStore((state) => state.foamDepth)
 
   const {
-    underwaterColor, planeMetalness, planeRoughness, planeWireframe, planeFlatShading, planeShadows
+    underwaterColor, planeMetalness, planeRoughness, planeWireframe, planeFlatShading, islandShadows
   } = useControls(
     'Island',
     {
@@ -100,7 +118,7 @@ export default function Island() {
           planeRoughness: { value: 0.7, label: 'roughness', min: 0, max: 1, step: 0.01 },
           planeWireframe: { value: false, label: 'wireframe' },
           planeFlatShading: { value: false, label: 'flatShading' },
-          planeShadows: { value: false, label: 'shadows' },
+          islandShadows: { value: false, label: 'shadows' },
         }
       )
     },
@@ -114,11 +132,19 @@ export default function Island() {
   useEffect(() => { uniforms.uWaveAmplitude.value = waveAmplitude }, [ waveAmplitude ]);
   useEffect(() => { uniforms.uFoamDepth.value = foamDepth }, [ foamDepth ]);
 
-  const { planeGeometry, planeMaterial } = useMemo(() => {
+  const { clickableGeometry, clickableMaterial, islandGeometry, islandMaterial } = useMemo(() => {
 
-    const planeGeometry = (nodes['Terrain-02'] as Mesh).geometry;
+    // -- Clickables --
+    const clickableGeometry = new PlaneGeometry();
+    clickableGeometry.rotateX(Math.PI * -0.5);
+    clickableGeometry.scale(CELL_WIDTH, 1, CELL_WIDTH);
+    const clickableMaterial = new MeshStandardMaterial();
+    clickableMaterial.wireframe = true;
 
-    const planeMaterial = new MeshStandardMaterial({
+    // -- Islands --
+    const islandGeometry = (nodes['Terrain-02'] as Mesh).geometry;
+
+    const islandMaterial = new MeshStandardMaterial({
       wireframe: planeWireframe,
       roughness: planeRoughness,
       metalness: planeMetalness,
@@ -126,7 +152,7 @@ export default function Island() {
       toneMapped: false
     });
 
-    planeMaterial.onBeforeCompile = (shader) => {
+    islandMaterial.onBeforeCompile = (shader) => {
       shader.uniforms.uBaseColor = uniforms.uBaseColor;
       shader.uniforms.uGrassColor = uniforms.uGrassColor;
       shader.uniforms.uUnderwaterColor = uniforms.uUnderwaterColor;
@@ -221,7 +247,7 @@ export default function Island() {
       );
     }
 
-    return { planeGeometry, planeMaterial };
+    return { clickableGeometry, clickableMaterial, islandGeometry, islandMaterial };
   },
   [
     nodes, planeMetalness, planeRoughness, planeWireframe, planeFlatShading
@@ -232,21 +258,28 @@ export default function Island() {
   })
 
   return <group dispose={null}>
+    {/* Clickables */}
+    <instancedMesh 
+      ref={clickableInstancedMeshRef} 
+      args={[undefined, undefined, NUM_CELLS]}
+      geometry={clickableGeometry}
+      material={clickableMaterial}
+      onClick={onClicked}
+    />
     {/* Islands */}
     <instancedMesh 
-      ref={instancedMeshRef} 
-      args={[undefined, undefined, count]}
-      geometry={planeGeometry}
-      material={planeMaterial}
-      castShadow={planeShadows}
-      receiveShadow={planeShadows}
-      onClick={onIslandClicked}
-    >
-    </instancedMesh>    
+      ref={islandInstancedMeshRef} 
+      args={[undefined, undefined, NUM_CELLS]}
+      geometry={islandGeometry}
+      material={islandMaterial}
+      castShadow={islandShadows}
+      receiveShadow={islandShadows}
+    />
     {/* Underwater Ground Plane */}
     <mesh
       rotation-x={-Math.PI / 2}
       receiveShadow={true}
+      visible={true}
     >
       <planeGeometry args={[256, 256]} />
       <meshStandardMaterial
