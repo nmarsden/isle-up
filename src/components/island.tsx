@@ -1,4 +1,4 @@
-import {useEffect, useMemo, useRef} from "react";
+import {useEffect, useMemo} from "react";
 import {Color, Mesh, MeshStandardMaterial} from "three";
 import {useFrame} from "@react-three/fiber";
 import {folder, useControls} from "leva";
@@ -16,17 +16,15 @@ const uniforms = {
   uFoamDepth: { value: 0 },
 }
 
-export default function Island() {
-  const { nodes } = useGLTF('models/terrain.glb', false);
+const glsl = (x: any) => x;
 
-  const planeGeometry = (nodes.Plane as Mesh).geometry;
+export default function Island() {
+  const { nodes } = useGLTF('models/terrain2.glb', false);
 
   const waterLevel = useGlobalStore((state: GlobalState) => state.waterLevel);
   const waveSpeed = useGlobalStore((state: GlobalState) => state.waveSpeed);
   const waveAmplitude = useGlobalStore((state: GlobalState) => state.waveAmplitude);
   const foamDepth = useGlobalStore((state) => state.foamDepth)
-
-  const planeMesh = useRef<Mesh>(null!);
 
   const {
     underwaterColor, planeMetalness, planeRoughness, positionY, planeWireframe, planeFlatShading, planeShadows
@@ -36,14 +34,14 @@ export default function Island() {
       'Plane': folder(
         {
           sandBaseColor: { value: "#ff9900", label: "Sand", onChange: (value) => { uniforms.uBaseColor.value = new Color(value); } },
-          grassColor: { value: "#85a02b", label: "Grass", onChange: (value) => { uniforms.uGrassColor.value = new Color(value); } },
+          grassColor: { value: "yellow", label: "Grass", onChange: (value) => { uniforms.uGrassColor.value = new Color(value); } },
           underwaterColor: { value: "#118a4f", label: "Underwater", transient: false, onChange: (value) => { uniforms.uUnderwaterColor.value = new Color(value); } },
           positionY: { value: 0, label: 'positionY', min: -10, max: 10, step: 0.05 },
           planeMetalness: { value: 0.0, label: 'metalness', min: 0, max: 1, step: 0.01 },
           planeRoughness: { value: 0.7, label: 'roughness', min: 0, max: 1, step: 0.01 },
           planeWireframe: { value: false, label: 'wireframe' },
           planeFlatShading: { value: false, label: 'flatShading' },
-          planeShadows: { value: true, label: 'shadows' },
+          planeShadows: { value: false, label: 'shadows' },
         }
       )
     },
@@ -57,7 +55,9 @@ export default function Island() {
   useEffect(() => { uniforms.uWaveAmplitude.value = waveAmplitude }, [ waveAmplitude ]);
   useEffect(() => { uniforms.uFoamDepth.value = foamDepth }, [ foamDepth ]);
 
-  const { planeMaterial } = useMemo(() => {
+  const { planeGeometry, planeMaterial } = useMemo(() => {
+
+    const planeGeometry = (nodes['Terrain-02'] as Mesh).geometry;
 
     const planeMaterial = new MeshStandardMaterial({
       wireframe: planeWireframe,
@@ -77,13 +77,16 @@ export default function Island() {
       shader.uniforms.uWaveAmplitude = uniforms.uWaveAmplitude;
       shader.uniforms.uFoamDepth = uniforms.uFoamDepth;
 
-      shader.vertexShader = `
+      const vertexShaderHeader = glsl`
           varying vec4 vPosition;
+      `;
+      shader.vertexShader = `
+          ${vertexShaderHeader}
           
           ${shader.vertexShader}      
       `.replace(
-            `#include <displacementmap_vertex>`,
-            `
+            glsl`#include <displacementmap_vertex>`,
+            glsl`
               #include <displacementmap_vertex>
               
               // Output position
@@ -91,7 +94,7 @@ export default function Island() {
             `
         );
 
-      shader.fragmentShader = `
+      const fragmentShaderHeader = glsl`
           uniform float uWaterLevel;
           uniform vec3 uBaseColor;
           uniform vec3 uGrassColor;
@@ -102,11 +105,14 @@ export default function Island() {
           uniform float uFoamDepth;
           
           varying vec4 vPosition;
-          
+      `;  
+      shader.fragmentShader = `
+          ${fragmentShaderHeader}
+
           ${shader.fragmentShader}
         `.replace(
-          `#include <color_fragment>`,
-          `
+          glsl`#include <color_fragment>`,
+          glsl`
             #include <color_fragment>
             
             // Set the current color as the base color
@@ -156,10 +162,10 @@ export default function Island() {
       );
     }
 
-    return { planeMaterial };
+    return { planeGeometry, planeMaterial };
   },
   [
-    planeMetalness, planeRoughness, planeWireframe, planeFlatShading
+    nodes, planeMetalness, planeRoughness, planeWireframe, planeFlatShading
   ]);
 
   useFrame(({ clock }) => {
@@ -168,7 +174,6 @@ export default function Island() {
 
   return <group dispose={null}>
     <mesh
-      ref={planeMesh}
       position-y={positionY}
       castShadow={planeShadows}
       receiveShadow={planeShadows}
@@ -178,7 +183,6 @@ export default function Island() {
     <mesh
       rotation-x={-Math.PI / 2}
       position={[0, -0.01, 0]} // Moved it down to prevent the visual glitch from plane collision
-      // position={[0, (positionY - 0.01), 0]} // Moved it down to prevent the visual glitch from plane collision
       receiveShadow={true}
     >
       <planeGeometry args={[256, 256]} />
@@ -191,4 +195,4 @@ export default function Island() {
   </group>
 }
 
-useGLTF.preload('models/terrain.glb', false)
+useGLTF.preload('models/terrain2.glb', false)
