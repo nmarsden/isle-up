@@ -1,4 +1,4 @@
-import {useEffect, useMemo, useRef} from "react";
+import {useCallback, useEffect, useMemo, useRef} from "react";
 import {Color, InstancedMesh, Mesh, MeshStandardMaterial, Object3D} from "three";
 import {useFrame} from "@react-three/fiber";
 import {folder, useControls} from "leva";
@@ -22,26 +22,63 @@ const CELL_WIDTH = 12.25;
 const count = 25;
 const temp = new Object3D()
 
+const gridState = [
+  [1, 1, 0, 1, 1],
+  [1, 1, 1, 1, 1],
+  [1, 1, 1, 1, 0],
+  [1, 1, 1, 1, 1],
+  [1, 1, 1, 1, 1]
+];
+
 export default function Island() {
   const instancedMeshRef = useRef<InstancedMesh>(null);
   useEffect(() => {
     if (!instancedMeshRef.current) return;
     // Set positions
     for (let i = 0; i < count; i++) {
-      const x = (i % 5) * CELL_WIDTH - (2 * CELL_WIDTH);
-      const y = Math.random() > 0.5 ? -1.2 : -0.01;
-      const z = Math.floor(i / 5) * CELL_WIDTH - (2 * CELL_WIDTH);
+      const row = Math.floor(i / 5);
+      const column = (i % 5);
+
+      const isUp = gridState[row][column];
+
+      const x = column * CELL_WIDTH - (2 * CELL_WIDTH);
+      const y = isUp ? -0.01 : -1.2;
+      const z = row * CELL_WIDTH - (2 * CELL_WIDTH);
 
       // console.log(x, z);
 
-      temp.position.set(x, y, z)
-      temp.updateMatrix()
-      instancedMeshRef.current.setMatrixAt(i, temp.matrix)
+      temp.position.set(x, y, z);
+      temp.updateMatrix();
+      instancedMeshRef.current.setMatrixAt(i, temp.matrix);
     }
     // Update the instance
     instancedMeshRef.current.instanceMatrix.needsUpdate = true
   }, [])
     
+  const onIslandClicked = useCallback((event: any) => {
+    // console.log(event.instanceId);
+
+    if (!instancedMeshRef.current) return;
+
+    const i = event.instanceId;
+
+    const row = Math.floor(i / 5);
+    const column = (i % 5);
+
+    const isUp = gridState[row][column] === 1;
+    gridState[row][column] = isUp ? 0 : 1;
+    const y = isUp ? -1.2 : -0.01;
+
+    instancedMeshRef.current.getMatrixAt(i, temp.matrix);
+
+    temp.position.setY(y);
+    temp.updateMatrix();
+
+    instancedMeshRef.current.setMatrixAt(i, temp.matrix);
+    instancedMeshRef.current.instanceMatrix.needsUpdate = true;
+
+  }, []);
+  
   const { nodes } = useGLTF('models/terrain2.glb', false);
 
   const waterLevel = useGlobalStore((state: GlobalState) => state.waterLevel);
@@ -203,6 +240,7 @@ export default function Island() {
       material={planeMaterial}
       castShadow={planeShadows}
       receiveShadow={planeShadows}
+      onClick={onIslandClicked}
     >
     </instancedMesh>    
     {/* Underwater Ground Plane */}

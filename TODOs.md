@@ -8,4 +8,5 @@
         [x] turn off shadows
 
 [x] render a 5 x 5 grid of islands with some below water
+[ ] raise or sink island when clicked
 
