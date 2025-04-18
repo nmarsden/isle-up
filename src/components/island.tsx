@@ -110,7 +110,8 @@ export default function Island() {
       metalness: planeMetalness,
       // displacementMap: displacementTexture,
       // displacementScale: planeDisplacementScale,
-      flatShading: planeFlatShading
+      flatShading: planeFlatShading,
+      toneMapped: false
     });
 
     planeMaterial.onBeforeCompile = (shader) => {
