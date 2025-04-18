@@ -1,5 +1,5 @@
-import {useEffect, useMemo} from "react";
-import {Color, Mesh, MeshStandardMaterial} from "three";
+import {useEffect, useMemo, useRef} from "react";
+import {Color, InstancedMesh, Mesh, MeshStandardMaterial, Object3D} from "three";
 import {useFrame} from "@react-three/fiber";
 import {folder, useControls} from "leva";
 import {GlobalState, useGlobalStore} from "../stores/useGlobalStore.ts";
@@ -18,7 +18,30 @@ const uniforms = {
 
 const glsl = (x: any) => x;
 
+const CELL_WIDTH = 12.25;
+const count = 25;
+const temp = new Object3D()
+
 export default function Island() {
+  const instancedMeshRef = useRef<InstancedMesh>(null);
+  useEffect(() => {
+    if (!instancedMeshRef.current) return;
+    // Set positions
+    for (let i = 0; i < count; i++) {
+      const x = (i % 5) * CELL_WIDTH - (2 * CELL_WIDTH);
+      const y = Math.random() > 0.5 ? -1.2 : -0.01;
+      const z = Math.floor(i / 5) * CELL_WIDTH - (2 * CELL_WIDTH);
+
+      // console.log(x, z);
+
+      temp.position.set(x, y, z)
+      temp.updateMatrix()
+      instancedMeshRef.current.setMatrixAt(i, temp.matrix)
+    }
+    // Update the instance
+    instancedMeshRef.current.instanceMatrix.needsUpdate = true
+  }, [])
+    
   const { nodes } = useGLTF('models/terrain2.glb', false);
 
   const waterLevel = useGlobalStore((state: GlobalState) => state.waterLevel);
@@ -27,7 +50,7 @@ export default function Island() {
   const foamDepth = useGlobalStore((state) => state.foamDepth)
 
   const {
-    underwaterColor, planeMetalness, planeRoughness, positionY, planeWireframe, planeFlatShading, planeShadows
+    underwaterColor, planeMetalness, planeRoughness, planeWireframe, planeFlatShading, planeShadows
   } = useControls(
     'Island',
     {
@@ -36,7 +59,6 @@ export default function Island() {
           sandBaseColor: { value: "#ff9900", label: "Sand", onChange: (value) => { uniforms.uBaseColor.value = new Color(value); } },
           grassColor: { value: "yellow", label: "Grass", onChange: (value) => { uniforms.uGrassColor.value = new Color(value); } },
           underwaterColor: { value: "#118a4f", label: "Underwater", transient: false, onChange: (value) => { uniforms.uUnderwaterColor.value = new Color(value); } },
-          positionY: { value: 0, label: 'positionY', min: -10, max: 10, step: 0.05 },
           planeMetalness: { value: 0.0, label: 'metalness', min: 0, max: 1, step: 0.01 },
           planeRoughness: { value: 0.7, label: 'roughness', min: 0, max: 1, step: 0.01 },
           planeWireframe: { value: false, label: 'wireframe' },
@@ -173,16 +195,19 @@ export default function Island() {
   })
 
   return <group dispose={null}>
-    <mesh
-      position-y={positionY}
-      castShadow={planeShadows}
-      receiveShadow={planeShadows}
+    {/* Islands */}
+    <instancedMesh 
+      ref={instancedMeshRef} 
+      args={[undefined, undefined, count]}
       geometry={planeGeometry}
       material={planeMaterial}
-    />
+      castShadow={planeShadows}
+      receiveShadow={planeShadows}
+    >
+    </instancedMesh>    
+    {/* Underwater Ground Plane */}
     <mesh
       rotation-x={-Math.PI / 2}
-      position={[0, -0.01, 0]} // Moved it down to prevent the visual glitch from plane collision
       receiveShadow={true}
     >
       <planeGeometry args={[256, 256]} />
