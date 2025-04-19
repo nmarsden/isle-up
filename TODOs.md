@@ -12,4 +12,5 @@
     [x] overlay clickable grid
     [x] animate islands which clicked
         * Note: no longer using InstancedMesh as the shader does not take into account the altered position
+    [x] raise or sink neighboring islands
 

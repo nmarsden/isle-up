@@ -57,6 +57,15 @@ export default function Island() {
     clickableInstancedMeshRef.current.instanceMatrix.needsUpdate = true
   }, [])
 
+  const toggleIsland = useCallback((row: number, column: number) => {
+    const isUp = gridState[row][column] === 1;
+    gridState[row][column] = isUp ? 0 : 1;
+
+    const index = Math.floor((row * 5) + column);
+    islands[index].animating = true;
+    islands[index].up = !isUp;
+  }, []);
+
   const onClicked = useCallback((event: any) => {
     const i = event.instanceId;
 
@@ -65,15 +74,16 @@ export default function Island() {
     // Do nothing if already animating
     if (islands.some(island => island.animating)) return;
 
+    islandAnimationStartTime = new Date().getTime();
+
+    // Toggle islands
     const row = Math.floor(i / 5);
     const column = (i % 5);
-
-    const isUp = gridState[row][column] === 1;
-    gridState[row][column] = isUp ? 0 : 1;
-
-    islandAnimationStartTime = new Date().getTime();
-    islands[i].animating = true;
-    islands[i].up = !isUp;
+    toggleIsland(row, column);
+    if (row > 0) toggleIsland(row - 1, column);
+    if (row < 4) toggleIsland(row + 1, column);
+    if (column > 0) toggleIsland(row, column - 1);
+    if (column < 4) toggleIsland(row, column + 1);
   }, []);
   
   const { nodes } = useGLTF('models/terrain2.glb', false);
