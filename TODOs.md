@@ -8,6 +8,8 @@
         [x] turn off shadows
 
 [x] render a 5 x 5 grid of islands with some below water
-[ ] raise or sink island when clicked
+[x] raise or sink island when clicked
     [x] overlay clickable grid
-    
+    [x] animate islands which clicked
+        * Note: no longer using InstancedMesh as the shader does not take into account the altered position
+

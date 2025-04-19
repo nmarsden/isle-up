@@ -1,9 +1,10 @@
 import {useCallback, useEffect, useMemo, useRef} from "react";
-import {Color, InstancedMesh, Matrix4, Mesh, MeshStandardMaterial, Object3D, PlaneGeometry} from "three";
+import {Color, InstancedMesh, Mesh, MeshStandardMaterial, Object3D, PlaneGeometry} from "three";
 import {useFrame} from "@react-three/fiber";
 import {folder, useControls} from "leva";
 import {GlobalState, useGlobalStore} from "../stores/useGlobalStore.ts";
 import {useGLTF} from "@react-three/drei";
+import {lerp} from "three/src/math/MathUtils.js";
 
 const uniforms = {
   uBaseColor: { value: new Color() },
@@ -21,14 +22,19 @@ const glsl = (x: any) => x;
 const CELL_WIDTH = 12.25;
 const NUM_CELLS = 25;
 const temp = new Object3D()
+const Y_UP = -0.01;
+const Y_DOWN = -1.2;
 
 const gridState = [
-  [1, 1, 0, 1, 1],
   [1, 1, 1, 1, 1],
-  [1, 1, 1, 1, 0],
   [1, 1, 1, 1, 1],
-  [1, 1, 1, 1, 1]
+  [1, 1, 1, 1, 1],
+  [1, 1, 1, 1, 1],
+  [1, 1, 0, 1, 1]
 ];
+
+let islandAnimationStartTime = new Date().getTime();
+const islandAnimationDurationMSecs = 300;
 
 export default function Island() {
   const clickableInstancedMeshRef = useRef<InstancedMesh>(null);
@@ -51,35 +57,13 @@ export default function Island() {
     clickableInstancedMeshRef.current.instanceMatrix.needsUpdate = true
   }, [])
 
-
-  const islandInstancedMeshRef = useRef<InstancedMesh>(null);
-  useEffect(() => {
-    if (!islandInstancedMeshRef.current) return;
-    // Set positions
-    for (let i = 0; i < NUM_CELLS; i++) {
-      const row = Math.floor(i / 5);
-      const column = (i % 5);
-
-      const isUp = gridState[row][column];
-
-      const x = column * CELL_WIDTH - (2 * CELL_WIDTH);
-      const y = isUp ? -0.01 : -1.2;
-      const z = row * CELL_WIDTH - (2 * CELL_WIDTH);
-
-      // console.log(x, z);
-
-      temp.position.set(x, y, z);
-      temp.updateMatrix();
-      islandInstancedMeshRef.current.setMatrixAt(i, temp.matrix);
-    }
-    // Update the instance
-    islandInstancedMeshRef.current.instanceMatrix.needsUpdate = true
-  }, [])
-    
   const onClicked = useCallback((event: any) => {
-    if (!islandInstancedMeshRef.current) return;
-
     const i = event.instanceId;
+
+    if (!islandMeshRef.current || !islandMeshRef.current[i]) return;
+
+    // Do nothing if already animating
+    if (islands.some(island => island.animating)) return;
 
     const row = Math.floor(i / 5);
     const column = (i % 5);
@@ -87,14 +71,9 @@ export default function Island() {
     const isUp = gridState[row][column] === 1;
     gridState[row][column] = isUp ? 0 : 1;
 
-    const x = column * CELL_WIDTH - (2 * CELL_WIDTH);
-    const y = isUp ? -1.2 : -0.01;
-    const z = row * CELL_WIDTH - (2 * CELL_WIDTH);
-
-    temp.position.set(x, y, z);
-    temp.updateMatrix();
-    islandInstancedMeshRef.current.setMatrixAt(i, temp.matrix);
-    islandInstancedMeshRef.current.instanceMatrix.needsUpdate = true;
+    islandAnimationStartTime = new Date().getTime();
+    islands[i].animating = true;
+    islands[i].up = !isUp;
   }, []);
   
   const { nodes } = useGLTF('models/terrain2.glb', false);
@@ -132,7 +111,9 @@ export default function Island() {
   useEffect(() => { uniforms.uWaveAmplitude.value = waveAmplitude }, [ waveAmplitude ]);
   useEffect(() => { uniforms.uFoamDepth.value = foamDepth }, [ foamDepth ]);
 
-  const { clickableGeometry, clickableMaterial, islandGeometry, islandMaterial } = useMemo(() => {
+  const islandMeshRef = useRef<Array<Mesh | null>>([]);
+
+  const { clickableGeometry, clickableMaterial, islands, islandGeometry, islandMaterial } = useMemo(() => {
 
     // -- Clickables --
     const clickableGeometry = new PlaneGeometry();
@@ -142,6 +123,20 @@ export default function Island() {
     clickableMaterial.wireframe = true;
 
     // -- Islands --
+    const islands: { position: [number, number, number], animating: boolean, up: boolean }[] = [];
+    for (let i=0; i<NUM_CELLS; i++) {
+      const row = Math.floor(i / 5);
+      const column = (i % 5);
+  
+      const isUp = (gridState[row][column] === 1);
+  
+      const x = column * CELL_WIDTH - (2 * CELL_WIDTH);
+      const y = isUp ? Y_UP : Y_DOWN;
+      const z = row * CELL_WIDTH - (2 * CELL_WIDTH);
+  
+      islands.push({ position: [x, y, z], animating: false, up: false });
+    }
+
     const islandGeometry = (nodes['Terrain-02'] as Mesh).geometry;
 
     const islandMaterial = new MeshStandardMaterial({
@@ -247,7 +242,7 @@ export default function Island() {
       );
     }
 
-    return { clickableGeometry, clickableMaterial, islandGeometry, islandMaterial };
+    return { clickableGeometry, clickableMaterial, islands, islandGeometry, islandMaterial };
   },
   [
     nodes, planeMetalness, planeRoughness, planeWireframe, planeFlatShading
@@ -255,6 +250,23 @@ export default function Island() {
 
   useFrame(({ clock }) => {
     uniforms.uTime.value = clock.getElapsedTime();
+
+    if (!islandMeshRef.current) return;
+
+    // Animate islands y position
+    const elapsedTime = new Date().getTime() - islandAnimationStartTime;
+    const animationProgress = elapsedTime / islandAnimationDurationMSecs;
+    for (let i=0; i<NUM_CELLS; i++) {
+      const island = islands[i];
+      if (island.animating) {
+        if ((animationProgress > 1)) {
+          island.animating = false;
+          continue;
+        }
+        const y = island.up ? lerp(Y_DOWN, Y_UP, animationProgress) : lerp(Y_UP, Y_DOWN, animationProgress);
+        (islandMeshRef.current[i] as Mesh).position.y = y;
+      }
+    }
   })
 
   return <group dispose={null}>
@@ -267,14 +279,15 @@ export default function Island() {
       onClick={onClicked}
     />
     {/* Islands */}
-    <instancedMesh 
-      ref={islandInstancedMeshRef} 
-      args={[undefined, undefined, NUM_CELLS]}
+    {islands.map((island, index) => <mesh 
+      key={index}
+      ref={el => islandMeshRef.current[index] = el} 
+      position={island.position}
       geometry={islandGeometry}
       material={islandMaterial}
       castShadow={islandShadows}
       receiveShadow={islandShadows}
-    />
+    />)}
     {/* Underwater Ground Plane */}
     <mesh
       rotation-x={-Math.PI / 2}
