@@ -5,6 +5,7 @@ import {folder, useControls} from "leva";
 import {GlobalState, useGlobalStore} from "../stores/useGlobalStore.ts";
 import {useGLTF} from "@react-three/drei";
 import {lerp} from "three/src/math/MathUtils.js";
+import Tree from "./tree.tsx";
 
 const uniforms = {
   uBaseColor: { value: new Color() },
@@ -107,7 +108,7 @@ export default function Island() {
           planeRoughness: { value: 0.7, label: 'roughness', min: 0, max: 1, step: 0.01 },
           planeWireframe: { value: false, label: 'wireframe' },
           planeFlatShading: { value: false, label: 'flatShading' },
-          islandShadows: { value: false, label: 'shadows' },
+          islandShadows: { value: true, label: 'shadows' },
         }
       )
     },
@@ -297,7 +298,9 @@ export default function Island() {
       material={islandMaterial}
       castShadow={islandShadows}
       receiveShadow={islandShadows}
-    />)}
+    >
+      <Tree key={`tree=${index}`} />
+    </mesh>)}
     {/* Underwater Ground Plane */}
     <mesh
       rotation-x={-Math.PI / 2}

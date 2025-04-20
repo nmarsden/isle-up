@@ -13,4 +13,11 @@
     [x] animate islands which clicked
         * Note: no longer using InstancedMesh as the shader does not take into account the altered position
     [x] raise or sink neighboring islands
-
+[ ] deformer (aka. ) 
+    [ ] show above the islands
+    [ ] beams of light shine down on the island?
+[ ] add island features
+    [ ] palm trees
+    [ ] rocks
+    [ ] hut
+    [ ] sea gulls

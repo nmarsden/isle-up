@@ -27,16 +27,16 @@ export default function Lights() {
         {
           directionalColor: {value: 'white', label: 'color'},
           directionalIntensity: {value: 2, min: 0, max: 10, step: 0.1, label: 'intensity'},
-          directionalPosition: {value: [5, 2.5, -5], label: 'position'},
+          directionalPosition: {value: [26, 13, -26], label: 'position'},
           directionalShadowNormalBias: {value: 0.05, min: 0, max: 1, step: 0.01, label: 'shadowNormalBias'},
           directionalShadowBias: {value: 0.0, min: 0, max: 1, step: 0.01, label: 'shadowBias'},
           directionalShadowCamNear: {value: 0.1, min: 0, max: 50, step: 0.01, label: 'shadowCamNear'},
-          directionalShadowCamFar: {value: 22.0, min: 0, max: 50, step: 0.01, label: 'shadowCamFar'},
+          directionalShadowCamFar: {value: 100.0, min: 0, max: 100, step: 0.01, label: 'shadowCamFar'},
           directionalShadowMapPOT: {value: 9, min: 0, max: 12, step: 1, label: 'shadowMapPOT'},
-          directionalShadowCamFrustumTop: {value: 5.25, min: -20, max: 20, step: 0.01, label: 'shadowCamFrustumTop'},
-          directionalShadowCamFrustumBottom: {value: -0.5, min: -20, max: 20, step: 0.01, label: 'shadowCamFrustumBottom'},
-          directionalShadowCamFrustumLeft: {value: -13.0, min: -20, max: 20, step: 0.01, label: 'shadowCamFrustumLeft'},
-          directionalShadowCamFrustumRight: {value: 9.0, min: -20, max: 20, step: 0.01, label: 'shadowCamFrustumRight'},
+          directionalShadowCamFrustumTop: {value: 18.0, min: -20, max: 20, step: 0.01, label: 'shadowCamFrustumTop'},
+          directionalShadowCamFrustumBottom: {value: -12.0, min: -20, max: 20, step: 0.01, label: 'shadowCamFrustumBottom'},
+          directionalShadowCamFrustumLeft: {value: -40.0, min: -40, max: 40, step: 0.01, label: 'shadowCamFrustumLeft'},
+          directionalShadowCamFrustumRight: {value: 40.0, min: -40, max: 40, step: 0.01, label: 'shadowCamFrustumRight'},
           directionalShadowHelperEnabled: {value: false, label: 'showHelper'}
         }
       )
