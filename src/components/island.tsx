@@ -49,7 +49,7 @@ export default function Island() {
       const column = (i % 5);
 
       const x = column * CELL_WIDTH - (2 * CELL_WIDTH);
-      const y = 2;
+      const y = 0.5;
       const z = row * CELL_WIDTH - (2 * CELL_WIDTH);
 
       temp.position.set(x, y, z);
@@ -143,7 +143,10 @@ export default function Island() {
     clickableGeometry.rotateX(Math.PI * -0.5);
     clickableGeometry.scale(CELL_WIDTH, 1, CELL_WIDTH);
     const clickableMaterial = new MeshStandardMaterial();
-    clickableMaterial.wireframe = true;
+    clickableMaterial.wireframe = false;
+    clickableMaterial.transparent = true;
+    clickableMaterial.opacity = 0;
+    clickableMaterial.depthTest = false;
 
     // -- Islands --
     const islands: { position: [number, number, number], animating: boolean, up: boolean }[] = [];
