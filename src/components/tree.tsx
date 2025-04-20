@@ -4,31 +4,37 @@ import { Mesh, MeshStandardMaterial } from "three";
 import { GlobalState, useGlobalStore } from "../stores/useGlobalStore";
 import { useFrame } from "@react-three/fiber";
 
-const uniforms = {
-  uWaterLevel: { value: 0 },
-  uTime: { value: 1 },
-  uWaveSpeed: { value: 0 },
-  uWaveAmplitude: { value: 0 },
-  uFoamDepth: { value: 0 },
-}
-
 const glsl = (x: any) => x;
-export default function Tree () {
+
+export default function Tree ({ id }: { id: number }) {
   const {scene} = useGLTF("models/palm-bend.glb");
     
   const waterLevel = useGlobalStore((state: GlobalState) => state.waterLevel);
   const waveSpeed = useGlobalStore((state: GlobalState) => state.waveSpeed);
   const waveAmplitude = useGlobalStore((state: GlobalState) => state.waveAmplitude);
   const foamDepth = useGlobalStore((state) => state.foamDepth)
+  const hoveredIds = useGlobalStore((state: GlobalState) => state.hoveredIds);
+
+  const uniforms = useMemo(() => {
+    return {
+      uWaterLevel: { value: 0 },
+      uTime: { value: 1 },
+      uWaveSpeed: { value: 0 },
+      uWaveAmplitude: { value: 0 },
+      uFoamDepth: { value: 0 },
+      uHovered: { value: 0 }
+    }
+  }, []);
 
   useEffect(() => { uniforms.uWaterLevel.value = waterLevel }, [ waterLevel ]);
   useEffect(() => { uniforms.uWaveSpeed.value = waveSpeed }, [ waveSpeed ]);
   useEffect(() => { uniforms.uWaveAmplitude.value = waveAmplitude }, [ waveAmplitude ]);
   useEffect(() => { uniforms.uFoamDepth.value = foamDepth * 5 }, [ foamDepth ]);  
+  useEffect(() => { uniforms.uHovered.value = hoveredIds.includes(id) ? 1 : 0 }, [ hoveredIds ]);  
 
-  const { geometry, material } = useMemo(() => {
+  const { geometry, material, rotationY } = useMemo(() => {
       const geometry = (scene.children[0] as Mesh).geometry;
-      const material = (scene.children[0] as Mesh).material as MeshStandardMaterial;
+      const material = ((scene.children[0] as Mesh).material as MeshStandardMaterial).clone();
 
       material.onBeforeCompile = (shader) => {
           shader.uniforms.uWaterLevel = uniforms.uWaterLevel;
@@ -36,6 +42,7 @@ export default function Tree () {
           shader.uniforms.uWaveSpeed = uniforms.uWaveSpeed;
           shader.uniforms.uWaveAmplitude = uniforms.uWaveAmplitude;
           shader.uniforms.uFoamDepth = uniforms.uFoamDepth;
+          shader.uniforms.uHovered = uniforms.uHovered;
     
           const vertexShaderHeader = glsl`
               varying vec4 vPosition;
@@ -60,6 +67,7 @@ export default function Tree () {
               uniform float uWaveSpeed;
               uniform float uWaveAmplitude;
               uniform float uFoamDepth;
+              uniform float uHovered;
               
               varying vec4 vPosition;
           `;  
@@ -92,12 +100,18 @@ export default function Tree () {
                 // Apply the foam strip to baseColor    
                 vec3 finalColor = mix(baseColor - stripe, stripeColor, stripe);
                 
+                // Apply the hovered color according to uHovered
+                vec3 hoveredColor = vec3(1.0, 1.0, 1.0); // White
+                finalColor = mix(finalColor, hoveredColor, uHovered * 0.25);
+
                 diffuseColor.rgb = finalColor;
               `
           );
         }
     
-      return { geometry, material }
+        const rotationY = Math.PI * Math.random();
+
+      return { geometry, material, rotationY }
   }, []);
     
   useFrame(({ clock }) => {
@@ -107,7 +121,7 @@ export default function Tree () {
   return (
     <mesh 
       position={[0, 1, 0]}
-      rotation-y={Math.PI * Math.random()}
+      rotation-y={rotationY}
       geometry={geometry}
       material={material}
       castShadow={true}

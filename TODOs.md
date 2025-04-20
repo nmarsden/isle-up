@@ -14,7 +14,8 @@
         * Note: no longer using InstancedMesh as the shader does not take into account the altered position
     [x] raise or sink neighboring islands
 [ ] selector
-    [ ] highlight island & palm tree on on hover
+    [x] highlight palm tree on hover
+    [ ] highlight island on hover
 [ ] add island features
     [x] palm trees
         [x] use custom shader to show foam at water level

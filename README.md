@@ -12,6 +12,7 @@ Built with React, TypeScript, & Vite.
 - Extending three.js materials with GLSL - https://medium.com/@pailhead011/extending-three-js-materials-with-glsl-78ea7bbb9270
 - Modifying MeshBasicMaterial - https://jsfiddle.net/prisoner849/k542eo19/
 - React Three Fiber - How do I create a helper for a shadow camera - https://stackoverflow.com/questions/69096623/react-three-fiber-how-do-i-create-a-helper-for-a-shadow-camera
+- Clone a ShaderMaterial and Have Different Uniforms for Different Copies of the Material - https://discourse.threejs.org/t/clone-a-shadermaterial-and-have-different-uniforms-for-different-copies-of-the-material/49713
 
 ### Assets
 - Kenny - Pirate Kit - https://kenney.nl/assets/pirate-kit

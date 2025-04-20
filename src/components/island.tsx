@@ -38,6 +38,8 @@ let islandAnimationStartTime = new Date().getTime();
 const islandAnimationDurationMSecs = 300;
 
 export default function Island() {
+  const setHovered = useGlobalStore((state: GlobalState) => state.setHovered);
+
   const clickableInstancedMeshRef = useRef<InstancedMesh>(null);
   useEffect(() => {
     if (!clickableInstancedMeshRef.current) return;
@@ -87,6 +89,16 @@ export default function Island() {
     if (column < 4) toggleIsland(row, column + 1);
   }, []);
   
+  const onPointerOver = useCallback((event: any) => {
+    const i = event.instanceId;
+    setHovered(i, true);
+  }, []);
+
+  const onPointerOut = useCallback((event: any) => {
+    const i = event.instanceId;
+    setHovered(i, false);
+  }, []);
+
   const { nodes } = useGLTF('models/terrain2.glb', false);
 
   const waterLevel = useGlobalStore((state: GlobalState) => state.waterLevel);
@@ -288,6 +300,8 @@ export default function Island() {
       geometry={clickableGeometry}
       material={clickableMaterial}
       onClick={onClicked}
+      onPointerOver={onPointerOver}
+      onPointerOut={onPointerOut}
     />
     {/* Islands */}
     {islands.map((island, index) => <mesh 
@@ -299,7 +313,7 @@ export default function Island() {
       castShadow={islandShadows}
       receiveShadow={islandShadows}
     >
-      <Tree key={`tree=${index}`} />
+      <Tree id={index} key={`tree=${index}`} />
     </mesh>)}
     {/* Underwater Ground Plane */}
     <mesh
