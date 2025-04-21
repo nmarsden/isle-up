@@ -197,7 +197,7 @@ export default function Island ({ id, position, children }: { id: number, positi
             
             // Apply the hovered color according to uHovered
             float aboveWaterLevel = step(currentWaterHeight, positionHeight);
-            float hovered = aboveWaterLevel * uHovered * (0.2 + ((1.0 + sin(uTime * uHovered * 2.0)) * 0.3));
+            float hovered = aboveWaterLevel * uHovered * (0.0 + ((1.0 + sin((positionHeight * 30.0) + (uTime * 4.0))) * 0.3));
             finalColor = mix(finalColor, uHoveredColor, hovered);
 
             diffuseColor.rgb = finalColor;
