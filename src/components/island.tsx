@@ -1,113 +1,43 @@
-import {useCallback, useEffect, useMemo, useRef} from "react";
-import {Color, InstancedMesh, Mesh, MeshStandardMaterial, Object3D, PlaneGeometry} from "three";
-import {useFrame} from "@react-three/fiber";
-import {folder, useControls} from "leva";
-import {GlobalState, useGlobalStore} from "../stores/useGlobalStore.ts";
-import {useGLTF} from "@react-three/drei";
-import {lerp} from "three/src/math/MathUtils.js";
-import Tree from "./tree.tsx";
-
-const uniforms = {
-  uBaseColor: { value: new Color() },
-  uGrassColor: { value: new Color() },
-  uUnderwaterColor: { value: new Color() },
-  uWaterLevel: { value: 0 },
-  uTime: { value: 1 },
-  uWaveSpeed: { value: 0 },
-  uWaveAmplitude: { value: 0 },
-  uFoamDepth: { value: 0 },
-}
+import { useGLTF } from "@react-three/drei";
+import { ReactNode, useEffect, useMemo, useRef } from "react";
+import { Color, Mesh, MeshStandardMaterial, Vector3 } from "three";
+import { GlobalState, useGlobalStore, Y_DOWN, Y_UP } from "../stores/useGlobalStore";
+import { folder, useControls } from "leva";
+import { useFrame } from "@react-three/fiber";
+import { lerp } from "three/src/math/MathUtils.js";
 
 const glsl = (x: any) => x;
 
-const CELL_WIDTH = 12.25;
-const NUM_CELLS = 25;
-const temp = new Object3D()
-const Y_UP = -0.01;
-const Y_DOWN = -1.2;
-
-const gridState = [
-  [1, 1, 1, 1, 1],
-  [1, 1, 1, 1, 1],
-  [1, 1, 1, 1, 1],
-  [1, 1, 1, 1, 1],
-  [1, 1, 0, 1, 1]
-];
-
-let islandAnimationStartTime = new Date().getTime();
 const islandAnimationDurationMSecs = 300;
 
-export default function Island() {
-  const setHovered = useGlobalStore((state: GlobalState) => state.setHovered);
-
-  const clickableInstancedMeshRef = useRef<InstancedMesh>(null);
-  useEffect(() => {
-    if (!clickableInstancedMeshRef.current) return;
-    // Set positions
-    for (let i = 0; i < NUM_CELLS; i++) {
-      const row = Math.floor(i / 5);
-      const column = (i % 5);
-
-      const x = column * CELL_WIDTH - (2 * CELL_WIDTH);
-      const y = 0.5;
-      const z = row * CELL_WIDTH - (2 * CELL_WIDTH);
-
-      temp.position.set(x, y, z);
-      temp.updateMatrix();
-      clickableInstancedMeshRef.current.setMatrixAt(i, temp.matrix);
-    }
-    // Update the instance
-    clickableInstancedMeshRef.current.instanceMatrix.needsUpdate = true
-  }, [])
-
-  const toggleIsland = useCallback((row: number, column: number) => {
-    const isUp = gridState[row][column] === 1;
-    gridState[row][column] = isUp ? 0 : 1;
-
-    const index = Math.floor((row * 5) + column);
-    islands[index].animating = true;
-    islands[index].up = !isUp;
-  }, []);
-
-  const onClicked = useCallback((event: any) => {
-    const i = event.instanceId;
-
-    if (!islandMeshRef.current || !islandMeshRef.current[i]) return;
-
-    // Do nothing if already animating
-    if (islands.some(island => island.animating)) return;
-
-    islandAnimationStartTime = new Date().getTime();
-
-    // Toggle islands
-    const row = Math.floor(i / 5);
-    const column = (i % 5);
-    toggleIsland(row, column);
-    if (row > 0) toggleIsland(row - 1, column);
-    if (row < 4) toggleIsland(row + 1, column);
-    if (column > 0) toggleIsland(row, column - 1);
-    if (column < 4) toggleIsland(row, column + 1);
-  }, []);
-  
-  const onPointerOver = useCallback((event: any) => {
-    const i = event.instanceId;
-    setHovered(i, true);
-  }, []);
-
-  const onPointerOut = useCallback((event: any) => {
-    const i = event.instanceId;
-    setHovered(i, false);
-  }, []);
-
+export default function Island ({ id, position, children }: { id: number, position: [number, number, number], children: ReactNode }) {
   const { nodes } = useGLTF('models/terrain2.glb', false);
+  const mesh = useRef<Mesh>(null);
 
   const waterLevel = useGlobalStore((state: GlobalState) => state.waterLevel);
   const waveSpeed = useGlobalStore((state: GlobalState) => state.waveSpeed);
   const waveAmplitude = useGlobalStore((state: GlobalState) => state.waveAmplitude);
   const foamDepth = useGlobalStore((state) => state.foamDepth)
 
+  const upIds = useGlobalStore((state: GlobalState) => state.upIds);
+
+  const islandAnimationStartTime = useRef(new Date().getTime());
+  const animating = useRef(false);
+  const previousUp = useRef<null | boolean>(null);
+
+  const up = useMemo(() => {
+    const up = upIds.includes(id);
+    if (previousUp.current !== null && previousUp.current !== up) {
+      // toggle detected - starting animating
+      animating.current = true;
+      islandAnimationStartTime.current = new Date().getTime();
+    }
+    previousUp.current = up;
+    return up;
+  }, [ upIds ]);  
+
   const {
-    underwaterColor, planeMetalness, planeRoughness, planeWireframe, planeFlatShading, islandShadows
+    planeMetalness, planeRoughness, planeWireframe, planeFlatShading, islandShadows
   } = useControls(
     'Island',
     {
@@ -134,37 +64,27 @@ export default function Island() {
   useEffect(() => { uniforms.uWaveAmplitude.value = waveAmplitude }, [ waveAmplitude ]);
   useEffect(() => { uniforms.uFoamDepth.value = foamDepth }, [ foamDepth ]);
 
-  const islandMeshRef = useRef<Array<Mesh | null>>([]);
+  const { islandPosition, islandGeometry, islandMaterial, uniforms } = useMemo(() => {
 
-  const { clickableGeometry, clickableMaterial, islands, islandGeometry, islandMaterial } = useMemo(() => {
+    /* Position */
+    const islandPosition = new Vector3(position[0], position[1], position[2]);
 
-    // -- Clickables --
-    const clickableGeometry = new PlaneGeometry();
-    clickableGeometry.rotateX(Math.PI * -0.5);
-    clickableGeometry.scale(CELL_WIDTH, 1, CELL_WIDTH);
-    const clickableMaterial = new MeshStandardMaterial();
-    clickableMaterial.wireframe = false;
-    clickableMaterial.transparent = true;
-    clickableMaterial.opacity = 0;
-    clickableMaterial.depthTest = false;
-
-    // -- Islands --
-    const islands: { position: [number, number, number], animating: boolean, up: boolean }[] = [];
-    for (let i=0; i<NUM_CELLS; i++) {
-      const row = Math.floor(i / 5);
-      const column = (i % 5);
-  
-      const isUp = (gridState[row][column] === 1);
-  
-      const x = column * CELL_WIDTH - (2 * CELL_WIDTH);
-      const y = isUp ? Y_UP : Y_DOWN;
-      const z = row * CELL_WIDTH - (2 * CELL_WIDTH);
-  
-      islands.push({ position: [x, y, z], animating: false, up: false });
-    }
-
+    /* Geometry */
     const islandGeometry = (nodes['Terrain-02'] as Mesh).geometry;
 
+    /* Uniforms */
+    const uniforms = {
+      uBaseColor: { value: new Color() },
+      uGrassColor: { value: new Color() },
+      uUnderwaterColor: { value: new Color() },
+      uWaterLevel: { value: 0 },
+      uTime: { value: 1 },
+      uWaveSpeed: { value: 0 },
+      uWaveAmplitude: { value: 0 },
+      uFoamDepth: { value: 0 },
+    }
+
+    /* Material */
     const islandMaterial = new MeshStandardMaterial({
       wireframe: planeWireframe,
       roughness: planeRoughness,
@@ -268,70 +188,42 @@ export default function Island() {
       );
     }
 
-    return { clickableGeometry, clickableMaterial, islands, islandGeometry, islandMaterial };
+    return { islandPosition, islandGeometry, islandMaterial, uniforms };
   },
   [
-    nodes, planeMetalness, planeRoughness, planeWireframe, planeFlatShading
+    planeMetalness, planeRoughness, planeWireframe, planeFlatShading
   ]);
 
   useFrame(({ clock }) => {
     uniforms.uTime.value = clock.getElapsedTime();
 
-    if (!islandMeshRef.current) return;
+    if (!mesh.current) return;
 
     // Animate islands y position
-    const elapsedTime = new Date().getTime() - islandAnimationStartTime;
+    const elapsedTime = new Date().getTime() - islandAnimationStartTime.current;
     const animationProgress = elapsedTime / islandAnimationDurationMSecs;
-    for (let i=0; i<NUM_CELLS; i++) {
-      const island = islands[i];
-      if (island.animating) {
-        if ((animationProgress > 1)) {
-          island.animating = false;
-          continue;
-        }
-        const y = island.up ? lerp(Y_DOWN, Y_UP, animationProgress) : lerp(Y_UP, Y_DOWN, animationProgress);
-        (islandMeshRef.current[i] as Mesh).position.y = y;
+    if (animating.current) {
+      if ((animationProgress > 1)) {
+        animating.current = false;
+      } else {
+        const y = up ? lerp(Y_DOWN, Y_UP, animationProgress) : lerp(Y_UP, Y_DOWN, animationProgress);
+        (mesh.current as Mesh).position.y = y;
       }
     }
-  })
-
-  return <group dispose={null}>
-    {/* Clickables */}
-    <instancedMesh 
-      ref={clickableInstancedMeshRef} 
-      args={[undefined, undefined, NUM_CELLS]}
-      geometry={clickableGeometry}
-      material={clickableMaterial}
-      onClick={onClicked}
-      onPointerOver={onPointerOver}
-      onPointerOut={onPointerOut}
-    />
-    {/* Islands */}
-    {islands.map((island, index) => <mesh 
-      key={index}
-      ref={el => islandMeshRef.current[index] = el} 
-      position={island.position}
+  });
+  
+  return (
+    <mesh 
+      ref={mesh} 
+      position={islandPosition}
       geometry={islandGeometry}
       material={islandMaterial}
       castShadow={islandShadows}
       receiveShadow={islandShadows}
     >
-      <Tree id={index} key={`tree=${index}`} />
-    </mesh>)}
-    {/* Underwater Ground Plane */}
-    <mesh
-      rotation-x={-Math.PI / 2}
-      receiveShadow={true}
-      visible={true}
-    >
-      <planeGeometry args={[256, 256]} />
-      <meshStandardMaterial
-        color={underwaterColor}
-        roughness={planeRoughness}
-        metalness={planeMetalness}
-      />
+      {children}
     </mesh>
-  </group>
+  )
 }
 
-useGLTF.preload('models/terrain2.glb', false)
+useGLTF.preload('models/terrain2.glb', false);

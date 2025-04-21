@@ -5,7 +5,7 @@ import Debug from "./debug.tsx";
 import Performance from "./performance.tsx";
 import Lights from "./lights.tsx";
 import Camera from "./camera.tsx";
-import Island from "./island.tsx";
+import Islands from "./islands.tsx";
 import Water from "./water.tsx";
 import Fog from './fog.tsx';
 
@@ -26,7 +26,7 @@ export default function App() {
           <OrbitControls />
           <Lights />
           <Camera />
-          <Island />
+          <Islands />
           <Water />
         </Suspense>
       </Canvas>
