@@ -1,6 +1,6 @@
 import { useGLTF } from "@react-three/drei";
 import { useEffect, useMemo } from "react";
-import { Mesh, MeshStandardMaterial } from "three";
+import { Color, Mesh, MeshStandardMaterial } from "three";
 import { GlobalState, useGlobalStore } from "../stores/useGlobalStore";
 import { useFrame } from "@react-three/fiber";
 
@@ -14,6 +14,7 @@ export default function Tree ({ id }: { id: number }) {
   const waveAmplitude = useGlobalStore((state: GlobalState) => state.waveAmplitude);
   const foamDepth = useGlobalStore((state) => state.foamDepth)
   const hoveredIds = useGlobalStore((state: GlobalState) => state.hoveredIds);
+  const hoveredColor = useGlobalStore((state: GlobalState) => state.hoveredColor);
 
   const uniforms = useMemo(() => {
     return {
@@ -22,7 +23,8 @@ export default function Tree ({ id }: { id: number }) {
       uWaveSpeed: { value: 0 },
       uWaveAmplitude: { value: 0 },
       uFoamDepth: { value: 0 },
-      uHovered: { value: 0 }
+      uHovered: { value: 0 },
+      uHoveredColor: { value: new Color() }
     }
   }, []);
 
@@ -31,6 +33,7 @@ export default function Tree ({ id }: { id: number }) {
   useEffect(() => { uniforms.uWaveAmplitude.value = waveAmplitude }, [ waveAmplitude ]);
   useEffect(() => { uniforms.uFoamDepth.value = foamDepth * 5 }, [ foamDepth ]);  
   useEffect(() => { uniforms.uHovered.value = hoveredIds.includes(id) ? 1 : 0 }, [ hoveredIds ]);  
+  useEffect(() => { uniforms.uHoveredColor.value = hoveredColor }, [ hoveredColor ]);  
 
   const { geometry, material, rotationY } = useMemo(() => {
       const geometry = (scene.children[0] as Mesh).geometry;
@@ -43,6 +46,7 @@ export default function Tree ({ id }: { id: number }) {
           shader.uniforms.uWaveAmplitude = uniforms.uWaveAmplitude;
           shader.uniforms.uFoamDepth = uniforms.uFoamDepth;
           shader.uniforms.uHovered = uniforms.uHovered;
+          shader.uniforms.uHoveredColor = uniforms.uHoveredColor;
     
           const vertexShaderHeader = glsl`
               varying vec4 vPosition;
@@ -68,7 +72,8 @@ export default function Tree ({ id }: { id: number }) {
               uniform float uWaveAmplitude;
               uniform float uFoamDepth;
               uniform float uHovered;
-              
+              uniform vec3 uHoveredColor;
+
               varying vec4 vPosition;
           `;  
           shader.fragmentShader = `
@@ -101,8 +106,9 @@ export default function Tree ({ id }: { id: number }) {
                 vec3 finalColor = mix(baseColor - stripe, stripeColor, stripe);
                 
                 // Apply the hovered color according to uHovered
-                vec3 hoveredColor = vec3(1.0, 1.0, 1.0); // White
-                finalColor = mix(finalColor, hoveredColor, uHovered * 0.25);
+                float aboveWaterLevel = step(currentWaterHeight, positionHeight);
+                float hovered = aboveWaterLevel * uHovered * (0.2 + ((1.0 + sin(uTime * uHovered * 2.0)) * 0.3));
+                finalColor = mix(finalColor, uHoveredColor, hovered);
 
                 diffuseColor.rgb = finalColor;
               `

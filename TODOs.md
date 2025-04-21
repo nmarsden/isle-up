@@ -13,9 +13,11 @@
     [x] animate islands which clicked
         * Note: no longer using InstancedMesh as the shader does not take into account the altered position
     [x] raise or sink neighboring islands
-[ ] selector
+[x] selector
     [x] highlight palm tree on hover
-    [ ] highlight island on hover
+    [x] highlight island on hover
+    [x] pulse animate selector
+    [x] support tweaking selector color
 [ ] add island features
     [x] palm trees
         [x] use custom shader to show foam at water level

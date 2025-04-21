@@ -18,6 +18,9 @@ export default function Island ({ id, position, children }: { id: number, positi
   const waveSpeed = useGlobalStore((state: GlobalState) => state.waveSpeed);
   const waveAmplitude = useGlobalStore((state: GlobalState) => state.waveAmplitude);
   const foamDepth = useGlobalStore((state) => state.foamDepth)
+  const hoveredIds = useGlobalStore((state: GlobalState) => state.hoveredIds);
+  const hoveredColor = useGlobalStore((state: GlobalState) => state.hoveredColor);
+  const setHoveredColor = useGlobalStore((state: GlobalState) => state.setHoveredColor);
 
   const upIds = useGlobalStore((state: GlobalState) => state.upIds);
 
@@ -46,6 +49,7 @@ export default function Island ({ id, position, children }: { id: number, positi
           sandBaseColor: { value: "#ff9900", label: "Sand", onChange: (value) => { uniforms.uBaseColor.value = new Color(value); } },
           grassColor: { value: "yellow", label: "Grass", onChange: (value) => { uniforms.uGrassColor.value = new Color(value); } },
           underwaterColor: { value: "#118a4f", label: "Underwater", transient: false, onChange: (value) => { uniforms.uUnderwaterColor.value = new Color(value); } },
+          hoveredColor: { value: "#ffffff", label: "Hovered", transient: false, onChange: (value) => { setHoveredColor(new Color(value)); } },
           planeMetalness: { value: 0.0, label: 'metalness', min: 0, max: 1, step: 0.01 },
           planeRoughness: { value: 0.7, label: 'roughness', min: 0, max: 1, step: 0.01 },
           planeWireframe: { value: false, label: 'wireframe' },
@@ -63,6 +67,8 @@ export default function Island ({ id, position, children }: { id: number, positi
   useEffect(() => { uniforms.uWaveSpeed.value = waveSpeed }, [ waveSpeed ]);
   useEffect(() => { uniforms.uWaveAmplitude.value = waveAmplitude }, [ waveAmplitude ]);
   useEffect(() => { uniforms.uFoamDepth.value = foamDepth }, [ foamDepth ]);
+  useEffect(() => { uniforms.uHovered.value = hoveredIds.includes(id) ? 1 : 0 }, [ hoveredIds ]);  
+  useEffect(() => { uniforms.uHoveredColor.value = hoveredColor }, [ hoveredColor ]);
 
   const { islandPosition, islandGeometry, islandMaterial, uniforms } = useMemo(() => {
 
@@ -77,11 +83,13 @@ export default function Island ({ id, position, children }: { id: number, positi
       uBaseColor: { value: new Color() },
       uGrassColor: { value: new Color() },
       uUnderwaterColor: { value: new Color() },
+      uHoveredColor: { value: new Color() },
       uWaterLevel: { value: 0 },
       uTime: { value: 1 },
       uWaveSpeed: { value: 0 },
       uWaveAmplitude: { value: 0 },
       uFoamDepth: { value: 0 },
+      uHovered: { value: 0 }
     }
 
     /* Material */
@@ -97,11 +105,13 @@ export default function Island ({ id, position, children }: { id: number, positi
       shader.uniforms.uBaseColor = uniforms.uBaseColor;
       shader.uniforms.uGrassColor = uniforms.uGrassColor;
       shader.uniforms.uUnderwaterColor = uniforms.uUnderwaterColor;
+      shader.uniforms.uHoveredColor = uniforms.uHoveredColor;
       shader.uniforms.uWaterLevel = uniforms.uWaterLevel;
       shader.uniforms.uTime = uniforms.uTime;
       shader.uniforms.uWaveSpeed = uniforms.uWaveSpeed;
       shader.uniforms.uWaveAmplitude = uniforms.uWaveAmplitude;
       shader.uniforms.uFoamDepth = uniforms.uFoamDepth;
+      shader.uniforms.uHovered = uniforms.uHovered;
 
       const vertexShaderHeader = glsl`
           varying vec4 vPosition;
@@ -124,12 +134,14 @@ export default function Island ({ id, position, children }: { id: number, positi
           uniform float uWaterLevel;
           uniform vec3 uBaseColor;
           uniform vec3 uGrassColor;
-          uniform vec3 uUnderwaterColor;      
+          uniform vec3 uUnderwaterColor;
+          uniform vec3 uHoveredColor;
           uniform float uTime;
           uniform float uWaveSpeed;
           uniform float uWaveAmplitude;
           uniform float uFoamDepth;
-          
+          uniform float uHovered;
+
           varying vec4 vPosition;
       `;  
       shader.fragmentShader = `
@@ -175,14 +187,19 @@ export default function Island ({ id, position, children }: { id: number, positi
             // The current dynamic water height
             float currentWaterHeight = uWaterLevel + sineOffset;
 
-            float stripe = smoothstep(currentWaterHeight + 0.01, currentWaterHeight - 0.01, vPosition.y) - 
-                           smoothstep(currentWaterHeight + uFoamDepth + 0.01, currentWaterHeight + uFoamDepth - 0.01, vPosition.y);
+            float stripe = smoothstep(currentWaterHeight + 0.01, currentWaterHeight - 0.01, positionHeight) - 
+                           smoothstep(currentWaterHeight + uFoamDepth + 0.01, currentWaterHeight + uFoamDepth - 0.01, positionHeight);
             
             vec3 stripeColor = vec3(1.0, 1.0, 1.0); // White stripe
             
             // Apply the foam strip to baseColor    
             vec3 finalColor = mix(baseColor - stripe, stripeColor, stripe);
             
+            // Apply the hovered color according to uHovered
+            float aboveWaterLevel = step(currentWaterHeight, positionHeight);
+            float hovered = aboveWaterLevel * uHovered * (0.2 + ((1.0 + sin(uTime * uHovered * 2.0)) * 0.3));
+            finalColor = mix(finalColor, uHoveredColor, hovered);
+
             diffuseColor.rgb = finalColor;
           `
       );

@@ -1,3 +1,4 @@
+import { Color } from 'three';
 import { create } from 'zustand'
 
 export const CELL_WIDTH = 12.25;
@@ -64,6 +65,7 @@ export type GlobalState = {
   foamDepth: number;
   hoveredIds: number[];
   upIds: number[];
+  hoveredColor: Color;
   
   setWaterLevel: (waterLevel: number) => void;
   setWaveSpeed: (waveSpeed: number) => void;
@@ -71,6 +73,7 @@ export type GlobalState = {
   setFoamDepth: (foamDepth: number) => void;
   setHovered: (id: number, hovered: boolean) => void;
   toggleUp: (id: number) => void;
+  setHoveredColor: (hoveredColor: Color) => void;
 };
 
 const setHoveredState = (row: number, column: number, hovered: boolean) => {
@@ -100,6 +103,7 @@ export const useGlobalStore = create<GlobalState>((set) => {
     hoveredIds: [],
     animatingIds: [],
     upIds: getInitialUpIds(),
+    hoveredColor: new Color('#ffffff'),
 
     setWaterLevel: (waterLevel: number) => set(() => ({ waterLevel })),
     setWaveSpeed: (waveSpeed: number) => set(() => ({ waveSpeed })),
@@ -124,6 +128,7 @@ export const useGlobalStore = create<GlobalState>((set) => {
         if (column > 0) toggleUp(row, column - 1);
         if (column < 4) toggleUp(row, column + 1);
         return { upIds: getUpIds() };
-    })
+    }),
+    setHoveredColor: (hoveredColor: Color) => set(() => ({ hoveredColor })),
   }
 })
