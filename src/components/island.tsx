@@ -1,7 +1,7 @@
 import { useGLTF } from "@react-three/drei";
 import { ReactNode, useEffect, useMemo, useRef } from "react";
 import { Color, Mesh, MeshStandardMaterial, Vector3 } from "three";
-import { GlobalState, useGlobalStore, Y_DOWN, Y_UP } from "../stores/useGlobalStore";
+import { CELL_WIDTH, GlobalState, toRowAndCol, useGlobalStore, Y_DOWN, Y_UP } from "../stores/useGlobalStore";
 import { folder, useControls } from "leva";
 import { useFrame } from "@react-three/fiber";
 import { lerp } from "three/src/math/MathUtils.js";
@@ -10,7 +10,7 @@ const glsl = (x: any) => x;
 
 const islandAnimationDurationMSecs = 300;
 
-export default function Island ({ id, position, children }: { id: number, position: [number, number, number], children: ReactNode }) {
+export default function Island ({ id, children }: { id: number, children: ReactNode }) {
   const { nodes } = useGLTF('models/terrain2.glb', false);
   const mesh = useRef<Mesh>(null);
 
@@ -22,22 +22,21 @@ export default function Island ({ id, position, children }: { id: number, positi
   const hoveredColor = useGlobalStore((state: GlobalState) => state.hoveredColor);
   const setHoveredColor = useGlobalStore((state: GlobalState) => state.setHoveredColor);
 
-  const upIds = useGlobalStore((state: GlobalState) => state.upIds);
+  const toggledIds = useGlobalStore((state: GlobalState) => state.toggledIds);
 
   const islandAnimationStartTime = useRef(new Date().getTime());
   const animating = useRef(false);
-  const previousUp = useRef<null | boolean>(null);
+  const up = useRef(true);
 
-  const up = useMemo(() => {
-    const up = upIds.includes(id);
-    if (previousUp.current !== null && previousUp.current !== up) {
+  useEffect(() => {
+    if (toggledIds.includes(id)) {
+      up.current = !up.current;
+
       // toggle detected - starting animating
       animating.current = true;
       islandAnimationStartTime.current = new Date().getTime();
     }
-    previousUp.current = up;
-    return up;
-  }, [ upIds ]);  
+  }, [ toggledIds ]);  
 
   const {
     planeMetalness, planeRoughness, planeWireframe, planeFlatShading, islandShadows
@@ -73,7 +72,11 @@ export default function Island ({ id, position, children }: { id: number, positi
   const { islandPosition, islandGeometry, islandMaterial, uniforms } = useMemo(() => {
 
     /* Position */
-    const islandPosition = new Vector3(position[0], position[1], position[2]);
+    const { row, col } = toRowAndCol(id);
+    const x = col * CELL_WIDTH - (2 * CELL_WIDTH);
+    const y = Y_UP;
+    const z = row * CELL_WIDTH - (2 * CELL_WIDTH);
+    const islandPosition = new Vector3(x, y, z);
 
     /* Geometry */
     const islandGeometry = (nodes['Terrain-02'] as Mesh).geometry;
@@ -223,7 +226,7 @@ export default function Island ({ id, position, children }: { id: number, positi
       if ((animationProgress > 1)) {
         animating.current = false;
       } else {
-        const y = up ? lerp(Y_DOWN, Y_UP, animationProgress) : lerp(Y_UP, Y_DOWN, animationProgress);
+        const y = up.current ? lerp(Y_DOWN, Y_UP, animationProgress) : lerp(Y_UP, Y_DOWN, animationProgress);
         (mesh.current as Mesh).position.y = y;
       }
     }

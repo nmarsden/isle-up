@@ -1,4 +1,4 @@
-import {Suspense} from 'react';
+import {Suspense, useEffect} from 'react';
 import {Canvas} from "@react-three/fiber";
 import {Loader, OrbitControls, Sky} from "@react-three/drei";
 import Debug from "./debug.tsx";
@@ -8,8 +8,16 @@ import Camera from "./camera.tsx";
 import Islands from "./islands.tsx";
 import Water from "./water.tsx";
 import Fog from './fog.tsx';
+import { GlobalState, useGlobalStore } from '../stores/useGlobalStore.ts';
 
 export default function App() {
+  const setLevel = useGlobalStore((state: GlobalState) => state.setLevel);
+
+  useEffect(() => {
+    // Temp: set level here
+    setTimeout(() => setLevel(0), 1000);
+  }, []);
+  
   return (
     <>
       <Debug />

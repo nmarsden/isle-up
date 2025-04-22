@@ -1,23 +1,33 @@
 import { Color } from 'three';
 import { create } from 'zustand'
 
+export const NUM_CELLS = 25;
 export const CELL_WIDTH = 12.25;
 export const Y_UP = -0.01;
 export const Y_DOWN = -1.2;
 
-const gridState = [
-  [1, 1, 1, 1, 1],
-  [1, 1, 1, 1, 1],
-  [1, 1, 1, 1, 1],
-  [1, 1, 1, 1, 1],
-  [1, 1, 0, 1, 1]
+const LEVELS: number[][] = [
+  [
+    1, 1, 1, 1, 1,
+    1, 1, 1, 1, 1,
+    1, 1, 1, 1, 1,
+    1, 1, 1, 1, 1,
+    1, 1, 0, 1, 1
+  ],
+  [
+    1, 1, 1, 1, 1,
+    1, 1, 1, 1, 1,
+    1, 1, 0, 1, 1,
+    1, 1, 1, 1, 1,
+    1, 1, 1, 1, 1
+  ],
 ];
 
 const toIndex = (row: number, column: number): number => {
   return Math.floor((row * 5) + column);
 };
 
-const toRowAndCol = (index: number): { row: number, col: number } => {
+export const toRowAndCol = (index: number): { row: number, col: number } => {
   return {
     row: Math.floor(index / 5),
     col: (index % 5)
@@ -25,36 +35,18 @@ const toRowAndCol = (index: number): { row: number, col: number } => {
 };
   
 const getInitialUpIds = (): number[] => {
-  const upIds = [];  
-  for (let row=0; row<5; row++) {
-    for (let col=0; col<5; col++) {
-        const up = gridState[row][col] === 1;
-        if (up) {
-            upIds.push(toIndex(row, col));
-        }
-    }
-  }
-  return upIds;
+  return new Array(NUM_CELLS).fill(25).map((_, index) => index);
 };
 
 type IslandState = {
-  position: [number, number, number];
   hovered: boolean;
   up: boolean;
 };
 
-const islandStates: IslandState[] = new Array(25).fill({}).map((_, index) => {
-  const {row, col} = toRowAndCol(index);
-  const up = gridState[row][col] === 1;
-
-  const x = col * CELL_WIDTH - (2 * CELL_WIDTH);
-  const y = up ? Y_UP : Y_DOWN;
-  const z = row * CELL_WIDTH - (2 * CELL_WIDTH);
-
+const islandStates: IslandState[] = new Array(25).fill({}).map(() => {
   return {
-    position: [x, y, z],
     hovered: false,
-    up
+    up: true
   }
 });
 
@@ -65,6 +57,7 @@ export type GlobalState = {
   foamDepth: number;
   hoveredIds: number[];
   upIds: number[];
+  toggledIds: number[];
   hoveredColor: Color;
   
   setWaterLevel: (waterLevel: number) => void;
@@ -74,6 +67,7 @@ export type GlobalState = {
   setHovered: (id: number, hovered: boolean) => void;
   toggleUp: (id: number) => void;
   setHoveredColor: (hoveredColor: Color) => void;
+  setLevel: (level: number) => void;
 };
 
 const setHoveredState = (row: number, column: number, hovered: boolean) => {
@@ -103,6 +97,7 @@ export const useGlobalStore = create<GlobalState>((set) => {
     hoveredIds: [],
     animatingIds: [],
     upIds: getInitialUpIds(),
+    toggledIds: [],
     hoveredColor: new Color('#ffffff'),
 
     setWaterLevel: (waterLevel: number) => set(() => ({ waterLevel })),
@@ -120,15 +115,41 @@ export const useGlobalStore = create<GlobalState>((set) => {
         return { hoveredIds: getHoveredIds() };
     }),
     toggleUp: (id: number) => set(() => {
-        const row = Math.floor(id / 5);
-        const column = (id % 5);
-        toggleUp(row, column);
-        if (row > 0) toggleUp(row - 1, column);
-        if (row < 4) toggleUp(row + 1, column);
-        if (column > 0) toggleUp(row, column - 1);
-        if (column < 4) toggleUp(row, column + 1);
-        return { upIds: getUpIds() };
+      const { row, col } = toRowAndCol(id);
+      const toggledIds = [];
+
+      toggleUp(row, col);
+      toggledIds.push(toIndex(row, col));
+
+      if (row > 0) {
+        toggleUp(row - 1, col);
+        toggledIds.push(toIndex(row - 1, col));
+      }
+      if (row < 4) {
+        toggleUp(row + 1, col);
+        toggledIds.push(toIndex(row + 1, col));
+      }
+      if (col > 0) {
+        toggleUp(row, col - 1);
+        toggledIds.push(toIndex(row, col - 1));
+      }
+      if (col < 4) {
+        toggleUp(row, col + 1);
+        toggledIds.push(toIndex(row, col + 1));
+      }
+      return { upIds: getUpIds(), toggledIds };
     }),
     setHoveredColor: (hoveredColor: Color) => set(() => ({ hoveredColor })),
+    setLevel: (level: number) => set(() => {
+      const toggledIds: number[] = [];
+      LEVELS[level].forEach((up, index) => {
+        const { row, col } = toRowAndCol(index);
+        if (!up) {
+          toggleUp(row, col);
+          toggledIds.push(toIndex(row, col));
+        }
+      })
+      return { upIds: getUpIds(), toggledIds };
+    })
   }
 })

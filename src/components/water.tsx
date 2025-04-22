@@ -1,8 +1,12 @@
-import {useEffect, useMemo} from "react";
+import {useEffect, useMemo, useRef} from "react";
 import {Color, MeshStandardMaterial, PlaneGeometry} from "three";
 import {folder, useControls} from "leva";
 import {useGlobalStore, GlobalState} from "../stores/useGlobalStore.ts";
 import {useFrame} from "@react-three/fiber";
+
+const islandRippleAnimationDurationMSecs = 1000;
+
+const glsl = (x: any) => x;
 
 const uniforms = {
   uTime: {value: 1},
@@ -11,6 +15,7 @@ const uniforms = {
   uColorNear: {value: new Color()},
   uColorFar: {value: new Color()},
   uTextureSize: {value: 45},
+  uRippleIslands: {value: new Array(25).fill(0)}
 };
 
 export default function Water() {
@@ -18,10 +23,14 @@ export default function Water() {
   const waveSpeed = useGlobalStore((state: GlobalState) => state.waveSpeed);
   const waveAmplitude = useGlobalStore((state: GlobalState) => state.waveAmplitude);
   const foamDepth = useGlobalStore((state: GlobalState) => state.foamDepth);
+  const toggledIds = useGlobalStore((state: GlobalState) => state.toggledIds);
   const setWaterLevel = useGlobalStore((state: GlobalState) => state.setWaterLevel);
   const setWaveSpeed = useGlobalStore((state: GlobalState) => state.setWaveSpeed);
   const setWaveAmplitude = useGlobalStore((state: GlobalState) => state.setWaveAmplitude);
   const setFoamDepth = useGlobalStore((state: GlobalState) => state.setFoamDepth);
+
+  const islandRippleAnimationStartTime = useRef(new Date().getTime());
+  const animatingRipples = useRef(false);
 
   const {
     planeColor, planeAlpha, planeMetalness, planeRoughness, planeSegments, planeWireframe, planeFlatShading
@@ -59,7 +68,16 @@ export default function Water() {
 
   useEffect(() => { uniforms.uWaveSpeed.value = waveSpeed }, [ waveSpeed ]);
   useEffect(() => { uniforms.uWaveAmplitude.value = waveAmplitude }, [ waveAmplitude ]);
+  useEffect(() => {
 
+    for (let i=0; i<25; i++) {
+      uniforms.uRippleIslands.value[i] = toggledIds.includes(i) ? 1.0 : 0.0;
+    }
+    islandRippleAnimationStartTime.current = new Date().getTime();
+    animatingRipples.current = true;
+
+  }, [ toggledIds ]);
+  
   const { planeGeometry, planeMaterial } = useMemo(() => {
 
     // Plane Geometry
@@ -84,17 +102,23 @@ export default function Water() {
       shader.uniforms.uColorNear = uniforms.uColorNear;
       shader.uniforms.uColorFar = uniforms.uColorFar;
       shader.uniforms.uTextureSize = uniforms.uTextureSize;
+      shader.uniforms.uRippleIslands = uniforms.uRippleIslands;
+
+      const vertextShaderHeader = glsl`
+        uniform float uTime;
+        uniform float uWaveSpeed;
+        uniform float uWaveAmplitude;
+        
+        varying vec2 vUv;
+      `;
 
       shader.vertexShader = `
-          uniform float uTime;
-          uniform float uWaveSpeed;
-          uniform float uWaveAmplitude;
-          
-          varying vec2 vUv;
-          ${shader.vertexShader}
-        `.replace(
-        `#include <begin_vertex>`,
-        `
+        ${vertextShaderHeader}
+
+        ${shader.vertexShader}
+      `.replace(
+        glsl`#include <begin_vertex>`,
+        glsl`
           #include <begin_vertex>
           
           // Send the uv coordinates to fragmentShader
@@ -111,18 +135,24 @@ export default function Water() {
         `
       );
 
-      shader.fragmentShader = `
+      const fragmentShaderHeader = glsl`
         uniform float uTime;
         uniform vec3 uColorNear;
         uniform vec3 uColorFar;
         uniform float uTextureSize;
+        uniform float uRippleIslands[25];
     
         varying vec2 vUv;
+      `;
+
+      shader.fragmentShader = `
+        ${fragmentShaderHeader}
+
         ${shader.fragmentShader}
       `;
       shader.fragmentShader = shader.fragmentShader.replace(
-        `#include <common>`,
-        `
+        glsl`#include <common>`,
+        glsl`
           #include <common>
 
           vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
@@ -161,13 +191,12 @@ export default function Water() {
         `);
 
       shader.fragmentShader = shader.fragmentShader.replace(
-        `#include <color_fragment>`,
-        `
+        glsl`#include <color_fragment>`,
+        glsl`
           #include <color_fragment>
 
           // Set the current color as the base color.
           vec3 finalColor = diffuseColor.rgb;
-          // vec3 finalColor = csm_FragColor.rgb;
 
           // Set an initial alpha value
           vec3 alpha = vec3(1.0);
@@ -219,15 +248,40 @@ export default function Water() {
           alpha = mix(vec3(0.2), vec3(1.0), foamEffect);
           alpha = mix(alpha, vec3(1.0), vignette + 0.5);
 
+          // Ripples Experiment
+          for(int i=0; i<25; i++){
+            float rippleStrength = uRippleIslands[i];
+
+            if (rippleStrength > 0.0) {
+              float islandIndex = float(i);
+              // float islandIndex = 22.0;
+
+              float islandRow = floor(islandIndex / 5.0);
+              float islandCol = mod(islandIndex, 5.0);
+  
+              float rippleX = islandCol - 2.0;
+              float rippleY = islandRow - 2.0;
+  
+              vec2 ripplePosition = vec2(rippleX, -rippleY) * 0.0475;
+              float rippleRadius = 1.0;
+              vec3 rippleColor = vec3(1.0, 1.0, 1.0);
+              vec2 offsetUv = vec2(vUv.x - ripplePosition.x, vUv.y - ripplePosition.y);
+              float rippleAlpha = step(length(offsetUv - 0.5) * (12.0 - rippleRadius), 0.5);
+  
+              rippleAlpha *= (1.0 + sin((2.0 * uTime) - (500.0 * length(offsetUv - 0.5)))) * 0.5 * rippleStrength;
+  
+              finalColor = mix(finalColor, rippleColor, rippleAlpha);
+            }
+
+          }
+
           // Output the final color
           diffuseColor = vec4(finalColor, alpha);
-          // csm_FragColor = vec4(finalColor, alpha);
           `
       );
     }
 
     return { planeGeometry, planeMaterial };
-
   },
   [
     planeColor, planeAlpha, planeMetalness, planeRoughness, planeSegments, planeWireframe, planeFlatShading
@@ -235,6 +289,31 @@ export default function Water() {
 
   useFrame(({ clock }) => {
       uniforms.uTime.value = clock.getElapsedTime();
+
+    // Animate island ripples
+    const elapsedTime = new Date().getTime() - islandRippleAnimationStartTime.current;
+    const animationProgress = elapsedTime / islandRippleAnimationDurationMSecs;
+    if (animatingRipples.current) {
+      if ((animationProgress > 1)) {
+        animatingRipples.current = false;
+        // Clear all ripples
+        for (let i=0; i<25; i++) {
+          uniforms.uRippleIslands.value[i] = 0.0;
+        }
+      } else {
+        // Adjust ripple strengths
+        const newRippleStrength = 1.0 - animationProgress;
+
+        for (let i=0; i<25; i++) {
+          let rippleStrength = uniforms.uRippleIslands.value[i];
+          if (rippleStrength > 0) {
+            rippleStrength = newRippleStrength;
+          }
+          uniforms.uRippleIslands.value[i] = rippleStrength;
+        }
+      }
+    }
+
   })
 
   return <mesh
