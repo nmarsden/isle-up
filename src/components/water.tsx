@@ -1,10 +1,10 @@
 import {useEffect, useMemo, useRef} from "react";
 import {Color, MeshStandardMaterial, PlaneGeometry} from "three";
 import {folder, useControls} from "leva";
-import {useGlobalStore, GlobalState} from "../stores/useGlobalStore.ts";
+import {useGlobalStore, GlobalState, NUM_CELLS} from "../stores/useGlobalStore.ts";
 import {useFrame} from "@react-three/fiber";
 
-const islandRippleAnimationDurationMSecs = 1000;
+const islandRippleAnimationDurationMSecs = 3000;
 
 const glsl = (x: any) => x;
 
@@ -18,6 +18,11 @@ const uniforms = {
   uRippleIslands: {value: new Array(25).fill(0)}
 };
 
+type IslandRippleAnimation = {
+  startTime: number;
+  isAnimating: boolean;
+};
+
 export default function Water() {
   const waterLevel = useGlobalStore((state: GlobalState) => state.waterLevel);
   const waveSpeed = useGlobalStore((state: GlobalState) => state.waveSpeed);
@@ -29,8 +34,7 @@ export default function Water() {
   const setWaveAmplitude = useGlobalStore((state: GlobalState) => state.setWaveAmplitude);
   const setFoamDepth = useGlobalStore((state: GlobalState) => state.setFoamDepth);
 
-  const islandRippleAnimationStartTime = useRef(new Date().getTime());
-  const animatingRipples = useRef(false);
+  const islandRippleAnimations = useRef<IslandRippleAnimation[]>(new Array(NUM_CELLS).fill({}).map(() => ({ startTime: new Date().getTime(), isAnimating: false })));
 
   const {
     planeColor, planeAlpha, planeMetalness, planeRoughness, planeSegments, planeWireframe, planeFlatShading
@@ -69,13 +73,13 @@ export default function Water() {
   useEffect(() => { uniforms.uWaveSpeed.value = waveSpeed }, [ waveSpeed ]);
   useEffect(() => { uniforms.uWaveAmplitude.value = waveAmplitude }, [ waveAmplitude ]);
   useEffect(() => {
-
-    for (let i=0; i<25; i++) {
-      uniforms.uRippleIslands.value[i] = toggledIds.includes(i) ? 1.0 : 0.0;
+    for (let i=0; i<NUM_CELLS; i++) {
+      if (toggledIds.includes(i)) {
+        uniforms.uRippleIslands.value[i] = 1.0;
+        islandRippleAnimations.current[i].startTime = new Date().getTime();
+        islandRippleAnimations.current[i].isAnimating = true;
+      }
     }
-    islandRippleAnimationStartTime.current = new Date().getTime();
-    animatingRipples.current = true;
-
   }, [ toggledIds ]);
   
   const { planeGeometry, planeMaterial } = useMemo(() => {
@@ -291,20 +295,18 @@ export default function Water() {
       uniforms.uTime.value = clock.getElapsedTime();
 
     // Animate island ripples
-    const elapsedTime = new Date().getTime() - islandRippleAnimationStartTime.current;
-    const animationProgress = elapsedTime / islandRippleAnimationDurationMSecs;
-    if (animatingRipples.current) {
-      if ((animationProgress > 1)) {
-        animatingRipples.current = false;
-        // Clear all ripples
-        for (let i=0; i<25; i++) {
+    for (let i=0; i<NUM_CELLS; i++) {
+      const rippleAnim = islandRippleAnimations.current[i];
+      if (rippleAnim.isAnimating) {
+        const elapsedTime = new Date().getTime() - rippleAnim.startTime;
+        const animationProgress = elapsedTime / islandRippleAnimationDurationMSecs;
+        if ((animationProgress > 1)) {
+          rippleAnim.isAnimating = false;
           uniforms.uRippleIslands.value[i] = 0.0;
-        }
-      } else {
-        // Adjust ripple strengths
-        const newRippleStrength = 1.0 - animationProgress;
+        } else {
+          // Adjust ripple strengths
+          const newRippleStrength = 1.0 - animationProgress;
 
-        for (let i=0; i<25; i++) {
           let rippleStrength = uniforms.uRippleIslands.value[i];
           if (rippleStrength > 0) {
             rippleStrength = newRippleStrength;
@@ -313,7 +315,6 @@ export default function Water() {
         }
       }
     }
-
   })
 
   return <mesh

@@ -15,7 +15,9 @@
     [x] raise or sink neighboring islands
     [x] show ripples on water which island toggled
     [ ] improve ripples on toggle
-        [ ] keep animating previous ripples when new ripples triggered
+        [x] keep animating previous ripples when new ripples triggered
+        [ ] make ripples more spaced out
+        [ ] make ripples peaks more defined
         [ ] have different ripples for up and down
 [x] selector
     [x] highlight palm tree on hover
