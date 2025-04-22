@@ -24,6 +24,7 @@
     [x] highlight island on hover
     [x] pulse animate selector
     [x] support tweaking selector color
+    [x] improve hover effect
 [ ] add island features
     [x] palm trees
         [x] use custom shader to show foam at water level
