@@ -4,7 +4,7 @@ import {folder, useControls} from "leva";
 import {useGlobalStore, GlobalState, NUM_CELLS} from "../stores/useGlobalStore.ts";
 import {useFrame} from "@react-three/fiber";
 
-const islandRippleAnimationDurationMSecs = 3000;
+const islandRippleAnimationDurationMSecs = 2000;
 
 const glsl = (x: any) => x;
 
@@ -258,7 +258,6 @@ export default function Water() {
 
             if (rippleStrength > 0.0) {
               float islandIndex = float(i);
-              // float islandIndex = 22.0;
 
               float islandRow = floor(islandIndex / 5.0);
               float islandCol = mod(islandIndex, 5.0);
@@ -267,12 +266,17 @@ export default function Water() {
               float rippleY = islandRow - 2.0;
   
               vec2 ripplePosition = vec2(rippleX, -rippleY) * 0.0475;
-              float rippleRadius = 1.0;
+              float rippleRadius = 2.5;
               vec3 rippleColor = vec3(1.0, 1.0, 1.0);
               vec2 offsetUv = vec2(vUv.x - ripplePosition.x, vUv.y - ripplePosition.y);
-              float rippleAlpha = step(length(offsetUv - 0.5) * (12.0 - rippleRadius), 0.5);
-  
-              rippleAlpha *= (1.0 + sin((2.0 * uTime) - (500.0 * length(offsetUv - 0.5)))) * 0.5 * rippleStrength;
+              float distance = length(offsetUv - 0.5);
+              float rippleAmplitude = 5.0;
+              float rippleYOffset = rippleAmplitude * -0.5;
+
+              float rippleSine = max((rippleAmplitude * sin((PI * 2.0 * rippleStrength) + (PI * 40.0 * distance))) + rippleYOffset, 0.0) + (rippleYOffset * 0.5);
+
+              float rippleAlpha = step(distance * (12.0 - rippleRadius), 0.5);
+              rippleAlpha *= (1.0 + rippleSine) * 0.5 * rippleStrength;
   
               finalColor = mix(finalColor, rippleColor, rippleAlpha);
             }
