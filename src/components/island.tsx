@@ -134,7 +134,7 @@ export default function Island ({ id, children }: { id: number, children: ReactN
               
               // Output position
               vPosition = modelMatrix * vec4(transformed, 1.0);
-              vPosition2 = projectionMatrix * viewMatrix * modelMatrix * vec4(transformed, 1.0);
+              vPosition2 = viewMatrix * modelMatrix * vec4(transformed, 1.0);
             `
         );
 
@@ -206,7 +206,7 @@ export default function Island ({ id, children }: { id: number, children: ReactN
             
             // Apply the hovered color according to uHovered
             float aboveWaterLevel = step(currentWaterHeight, positionHeight);
-            float hovered = aboveWaterLevel * uHovered * ((1.0 + sin((vPosition2.x * 30.0) + (uTime * 4.0))) * 0.3) * (1.0 + (sin(PI * uTime) * 0.5));
+            float hovered = aboveWaterLevel * uHovered * ((1.0 + sin((vPosition2.x * PI) + (uTime * 4.0))) * 0.3) * (1.0 + (sin(PI * uTime) * 0.5));
             finalColor = mix(finalColor, uHoveredColor, hovered);
 
             diffuseColor.rgb = finalColor;
