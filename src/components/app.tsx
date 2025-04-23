@@ -34,7 +34,7 @@ export default function App() {
         <Performance />
         <Suspense>
           <OrbitControls 
-            enableZoom={false}
+            enableZoom={true}
             enablePan={false}
             minPolarAngle={0}
             maxPolarAngle={Math.PI * 0.45}
