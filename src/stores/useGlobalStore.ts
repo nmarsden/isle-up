@@ -6,21 +6,35 @@ export const CELL_WIDTH = 12.25;
 export const Y_UP = -0.01;
 export const Y_DOWN = -1.2;
 
-const LEVELS: number[][] = [
+export const LEVELS: number[][] = [
   [
-    1, 1, 1, 1, 1,
-    1, 1, 1, 1, 1,
-    1, 1, 1, 1, 1,
-    1, 1, 1, 1, 1,
-    1, 1, 0, 1, 1
-  ],
-  [
-    1, 1, 1, 1, 1,
     1, 1, 1, 1, 1,
     1, 1, 0, 1, 1,
-    1, 1, 1, 1, 1,
+    1, 0, 0, 0, 1,
+    1, 1, 0, 1, 1,
     1, 1, 1, 1, 1
   ],
+  [
+    0, 0, 1, 0, 0,
+    0, 1, 1, 1, 0,
+    1, 1, 1, 1, 1,
+    0, 1, 1, 1, 0,
+    0, 0, 1, 0, 0
+  ],
+  [
+    1, 0, 0, 0, 1,
+    0, 1, 0, 1, 0,
+    0, 0, 1, 0, 0,
+    0, 1, 0, 1, 0,
+    1, 0, 0, 0, 1
+  ],
+  // [
+  //   1, 1, 1, 1, 1,
+  //   1, 1, 1, 1, 1,
+  //   1, 1, 1, 1, 1,
+  //   1, 1, 1, 1, 1,
+  //   1, 1, 1, 1, 1
+  // ],
 ];
 
 const toIndex = (row: number, column: number): number => {
@@ -60,7 +74,9 @@ export type GlobalState = {
   upIds: number[];
   toggledIds: number[];
   hoveredColor: Color;
-  
+  level: number;
+  moves: number;
+
   setUnderwaterColor: (underwaterColor: Color) => void;
   setWaterLevel: (waterLevel: number) => void;
   setWaveSpeed: (waveSpeed: number) => void;
@@ -69,7 +85,7 @@ export type GlobalState = {
   setHovered: (id: number, hovered: boolean) => void;
   toggleUp: (id: number) => void;
   setHoveredColor: (hoveredColor: Color) => void;
-  setLevel: (level: number) => void;
+  resetLevel: (level: number) => void;
 };
 
 const setHoveredState = (row: number, column: number, hovered: boolean) => {
@@ -102,6 +118,8 @@ export const useGlobalStore = create<GlobalState>((set) => {
     upIds: getInitialUpIds(),
     toggledIds: [],
     hoveredColor: new Color('#ffffff'),
+    level: 0,
+    moves: 0,
 
     setUnderwaterColor: (underwaterColor: Color) => set(() => ({ underwaterColor })),
     setWaterLevel: (waterLevel: number) => set(() => ({ waterLevel })),
@@ -118,7 +136,7 @@ export const useGlobalStore = create<GlobalState>((set) => {
         if (column < 4) setHoveredState(row, column + 1, hovered);
         return { hoveredIds: getHoveredIds() };
     }),
-    toggleUp: (id: number) => set(() => {
+    toggleUp: (id: number) => set(({ moves }) => {
       const { row, col } = toRowAndCol(id);
       const toggledIds = [];
 
@@ -141,19 +159,23 @@ export const useGlobalStore = create<GlobalState>((set) => {
         toggleUp(row, col + 1);
         toggledIds.push(toIndex(row, col + 1));
       }
-      return { upIds: getUpIds(), toggledIds };
+      return { upIds: getUpIds(), toggledIds, moves: moves + 1 };
     }),
     setHoveredColor: (hoveredColor: Color) => set(() => ({ hoveredColor })),
-    setLevel: (level: number) => set(() => {
+    resetLevel: (level: number) => set(() => {
+      // Perform toggles to change state to the desired level state
       const toggledIds: number[] = [];
       LEVELS[level].forEach((up, index) => {
         const { row, col } = toRowAndCol(index);
-        if (!up) {
+        const upCurrent = islandStates[index].up;
+        const upTarget = up === 1;
+
+        if (upCurrent !== upTarget) {
           toggleUp(row, col);
           toggledIds.push(toIndex(row, col));
         }
       })
-      return { upIds: getUpIds(), toggledIds };
+      return { upIds: getUpIds(), toggledIds, level, moves: 0 };
     })
   }
 })

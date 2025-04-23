@@ -39,7 +39,16 @@
 [x] tweak water wave speed and amplitude
 [ ] UI
     [x] Heading 
-    [ ] Level
+    [x] Level
+        [x] level selector overlay
     [x] About
-    [ ] Moves
+    [x] Moves
+        [x] track number of moves
     [ ] Reset
+        [ ] reset level
+    [ ] Level Completed    
+        [ ] show 'WELL DONE'
+        [ ] completed in n moves
+        [ ] 'NEXT LEVEL' button
+        [ ] 'RETRY' button
+

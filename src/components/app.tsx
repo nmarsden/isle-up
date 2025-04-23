@@ -12,11 +12,12 @@ import { GlobalState, useGlobalStore } from '../stores/useGlobalStore.ts';
 import Ui from './ui/ui.tsx';
 
 export default function App() {
-  const setLevel = useGlobalStore((state: GlobalState) => state.setLevel);
+  const level = useGlobalStore((state: GlobalState) => state.level);
+  const resetLevel = useGlobalStore((state: GlobalState) => state.resetLevel);
 
   useEffect(() => {
     // Temp: set level here
-    setTimeout(() => setLevel(0), 2000);
+    setTimeout(() => resetLevel(level), 2000);
   }, []);
   
   return (
