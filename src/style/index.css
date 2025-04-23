@@ -1,9 +1,15 @@
 :root {
 	--main-text-colour: #040337;
 	--link-colour: #000499;
-	--background-colour: #62c3e1;
-	--banner-background-colour: #008dca;
+	--background-colour: white;
+  --dark-color: 10, 10, 10;
+  --light-color: 240, 240, 240;
 }
+
+/* @font-face {
+  font-family: 'Doto';
+  src: url('/fonts/Doto-ExtraBold.ttf');
+} */
 
 html,
 body,
@@ -14,23 +20,7 @@ body,
 	left: 0;
 	width: 100%;
 	height: 100%;
-	background-image: linear-gradient(
-			45deg,
-			hsl(240deg 100% 20%) 0%,
-			hsl(281deg 100% 21%) 8%,
-			hsl(304deg 100% 23%) 17%,
-			hsl(319deg 100% 30%) 25%,
-			hsl(329deg 100% 36%) 33%,
-			hsl(336deg 100% 41%) 42%,
-			hsl(346deg 83% 51%) 50%,
-			hsl(3deg 95% 61%) 58%,
-			hsl(17deg 100% 59%) 67%,
-			hsl(30deg 100% 55%) 75%,
-			hsl(40deg 100% 50%) 83%,
-			hsl(48deg 100% 50%) 92%,
-			hsl(55deg 100% 50%) 100%
-	);
-	/*background: black;*/
+	background: var(--background-colour);
 }
 
 body {

@@ -37,3 +37,9 @@
 [x] restrict OrbitControls
 [x] adjust camera position & fov to fit all islands on mobile
 [x] tweak water wave speed and amplitude
+[ ] UI
+    [x] Heading 
+    [ ] Level
+    [x] About
+    [ ] Moves
+    [ ] Reset

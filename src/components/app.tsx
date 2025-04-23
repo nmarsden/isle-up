@@ -9,6 +9,7 @@ import Islands from "./islands.tsx";
 import Water from "./water.tsx";
 import Fog from './fog.tsx';
 import { GlobalState, useGlobalStore } from '../stores/useGlobalStore.ts';
+import Ui from './ui/ui.tsx';
 
 export default function App() {
   const setLevel = useGlobalStore((state: GlobalState) => state.setLevel);
@@ -43,6 +44,7 @@ export default function App() {
           <Water />
         </Suspense>
       </Canvas>
+      <Ui />
       <Loader containerStyles={{ background: '#ffffff' }}/>
     </>
   );

@@ -1,0 +1,19 @@
+import './info.css';
+
+export default function Info({ show, onClose }: { show: boolean, onClose: () => void }) {
+    return (
+      <div className={`infoOverlay ${show ? 'show' : 'hide'}`}>
+          <div className="infoHeading">Isle Up</div>
+          <div className="infoTagLine">Raise all the islands</div>
+          <div className="infoLinks">
+              <a href="https://github.com/nmarsden/isle-up" target="_blank">github</a>|
+              <a href="https://nmarsden.com" target="_blank">projects</a>
+          </div>
+          <div className="infoSubHeading">credits</div>
+          <div className="infoLinks">
+              <a href="https://dustyroom.com/free-casual-game-sounds" target="_blank">sound</a>
+          </div>
+          <div className="infoCloseButton" onClick={onClose}>CLOSE</div>
+      </div>
+    )
+}
