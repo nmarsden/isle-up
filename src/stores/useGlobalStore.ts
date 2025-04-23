@@ -94,8 +94,8 @@ export const useGlobalStore = create<GlobalState>((set) => {
   return {
     underwaterColor: new Color('#0053ff'),
     waterLevel: 0.7,
-    waveSpeed: 0.8,
-    waveAmplitude: 0.05,
+    waveSpeed: 0.2,
+    waveAmplitude: 0.09,
     foamDepth: 0.02,
     hoveredIds: [],
     animatingIds: [],

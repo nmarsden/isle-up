@@ -49,8 +49,8 @@ export default function Island ({ id, children }: { id: number, children: ReactN
         {
           sandBaseColor: { value: "#ff9900", label: "Sand", onChange: (value) => { uniforms.uBaseColor.value = new Color(value); } },
           grassColor: { value: "yellow", label: "Grass", onChange: (value) => { uniforms.uGrassColor.value = new Color(value); } },
-          underwaterColor: { value: "#0053ff", label: "Underwater", transient: false, onChange: (value) => { setUnderwaterColor(new Color(value)); } },
-          hoveredColor: { value: "#ffffff", label: "Hovered", transient: false, onChange: (value) => { setHoveredColor(new Color(value)); } },
+          underwaterColor: { value: `#${underwaterColor.getHexString()}`, label: "Underwater", transient: false, onChange: (value) => { setUnderwaterColor(new Color(value)); } },
+          hoveredColor: { value: `#${hoveredColor.getHexString()}`, label: "Hovered", transient: false, onChange: (value) => { setHoveredColor(new Color(value)); } },
           planeMetalness: { value: 0.0, label: 'metalness', min: 0, max: 1, step: 0.01 },
           planeRoughness: { value: 0.7, label: 'roughness', min: 0, max: 1, step: 0.01 },
           planeWireframe: { value: false, label: 'wireframe' },
@@ -241,6 +241,7 @@ export default function Island ({ id, children }: { id: number, children: ReactN
   return (
     <mesh 
       ref={mesh} 
+      scale={0.95}
       position={islandPosition}
       geometry={islandGeometry}
       material={islandMaterial}

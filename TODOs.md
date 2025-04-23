@@ -36,3 +36,4 @@
 [x] increase size of water plane so the corners can't be seen
 [x] restrict OrbitControls
 [x] adjust camera position & fov to fit all islands on mobile
+[x] tweak water wave speed and amplitude

@@ -4,7 +4,6 @@ import {useControls} from "leva";
 import {CELL_WIDTH, GlobalState, NUM_CELLS, useGlobalStore} from "../stores/useGlobalStore.ts";
 import Tree from "./tree.tsx";
 import Island from "./island.tsx";
-import { useThree } from "@react-three/fiber";
 
 const temp = new Object3D()
 
