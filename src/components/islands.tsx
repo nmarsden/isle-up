@@ -4,10 +4,12 @@ import {useControls} from "leva";
 import {CELL_WIDTH, GlobalState, NUM_CELLS, useGlobalStore} from "../stores/useGlobalStore.ts";
 import Tree from "./tree.tsx";
 import Island from "./island.tsx";
+import { useThree } from "@react-three/fiber";
 
 const temp = new Object3D()
 
 export default function Islands() {
+  const underwaterColor = useGlobalStore((state: GlobalState) => state.underwaterColor);
   const setHovered = useGlobalStore((state: GlobalState) => state.setHovered);
   const toggleUp = useGlobalStore((state: GlobalState) => state.toggleUp);
 
@@ -44,11 +46,10 @@ export default function Islands() {
   }, []);
 
   const {
-    underwaterColor, planeMetalness, planeRoughness
+    planeMetalness, planeRoughness
   } = useControls(
     'Underwater',
     {
-      underwaterColor: { value: "#118a4f", label: "Underwater" },
       planeMetalness: { value: 0.0, label: 'metalness', min: 0, max: 1, step: 0.01 },
       planeRoughness: { value: 0.7, label: 'roughness', min: 0, max: 1, step: 0.01 }
     },
@@ -98,7 +99,7 @@ export default function Islands() {
       receiveShadow={true}
       visible={true}
     >
-      <planeGeometry args={[256, 256]} />
+      <planeGeometry args={[1000, 1000]} />
       <meshStandardMaterial
         color={underwaterColor}
         roughness={planeRoughness}

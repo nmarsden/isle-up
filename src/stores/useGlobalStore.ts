@@ -51,6 +51,7 @@ const islandStates: IslandState[] = new Array(25).fill({}).map(() => {
 });
 
 export type GlobalState = {
+  underwaterColor: Color;
   waterLevel: number;
   waveSpeed: number;
   waveAmplitude: number;
@@ -60,6 +61,7 @@ export type GlobalState = {
   toggledIds: number[];
   hoveredColor: Color;
   
+  setUnderwaterColor: (underwaterColor: Color) => void;
   setWaterLevel: (waterLevel: number) => void;
   setWaveSpeed: (waveSpeed: number) => void;
   setWaveAmplitude: (waveAmplitude: number) => void;
@@ -90,6 +92,7 @@ const getUpIds = (): number[] => {
 
 export const useGlobalStore = create<GlobalState>((set) => {
   return {
+    underwaterColor: new Color('#0053ff'),
     waterLevel: 0.7,
     waveSpeed: 0.8,
     waveAmplitude: 0.05,
@@ -100,6 +103,7 @@ export const useGlobalStore = create<GlobalState>((set) => {
     toggledIds: [],
     hoveredColor: new Color('#ffffff'),
 
+    setUnderwaterColor: (underwaterColor: Color) => set(() => ({ underwaterColor })),
     setWaterLevel: (waterLevel: number) => set(() => ({ waterLevel })),
     setWaveSpeed: (waveSpeed: number) => set(() => ({ waveSpeed })),
     setWaveAmplitude: (waveAmplitude: number) => set(() => ({ waveAmplitude })),

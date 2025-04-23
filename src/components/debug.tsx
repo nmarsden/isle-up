@@ -2,7 +2,7 @@ import {Leva} from "leva";
 import {useEffect, useState} from "react";
 
 export default function Debug (){
-  const [hidden, setHidden] = useState(false);
+  const [hidden, setHidden] = useState(true);
 
   useEffect(() => {
     if (window.location.hash === '#debug') {

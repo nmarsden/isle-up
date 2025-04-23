@@ -47,8 +47,8 @@ export default function Water() {
           waveSpeed: { value: waveSpeed, min: 0, max: 2.0, step: 0.01, label: "Wave Speed", onChange: (value) => setWaveSpeed(value) },
           waveAmplitude: { value: waveAmplitude, min: 0, max: 0.5, step: 0.01, label: "Wave Amplitude", onChange: (value) => setWaveAmplitude(value) },
           foamDepth: { value: foamDepth, min: 0, max: 1, step: 0.001, label: "Foam Depth", onChange: (value) => setFoamDepth(value) },
-          colorNear: { value: '#00fccd', label: 'colorNear', onChange: (value) => { uniforms.uColorNear.value = new Color(value); } },
-          colorFar: { value: '#1ceeff', label: 'colorFar', onChange: (value) => { uniforms.uColorFar.value = new Color(value); } },
+          colorNear: { value: '#00ddfc', label: 'colorNear', onChange: (value) => { uniforms.uColorNear.value = new Color(value); } },
+          colorFar: { value: '#81edf5', label: 'colorFar', onChange: (value) => { uniforms.uColorFar.value = new Color(value); } },
           textureSize: { value: 45, label: 'textureSize', min: 0, max: 100, step: 1 , onChange: (value) => { uniforms.uTextureSize.value = value; } }
         }
       ),
@@ -85,7 +85,7 @@ export default function Water() {
   const { planeGeometry, planeMaterial } = useMemo(() => {
 
     // Plane Geometry
-    const planeGeometry = new PlaneGeometry(256, 256, planeSegments, planeSegments);
+    const planeGeometry = new PlaneGeometry(1000, 1000, planeSegments, planeSegments);
 
     // Plane Material
     const planeMaterial = new MeshStandardMaterial({
@@ -265,7 +265,7 @@ export default function Water() {
               float rippleX = islandCol - 2.0;
               float rippleY = islandRow - 2.0;
   
-              vec2 ripplePosition = vec2(rippleX, -rippleY) * 0.0475;
+              vec2 ripplePosition = vec2(rippleX, -rippleY) * (12.25 / 1000.0);
               float rippleRadius = 2.5;
               vec3 rippleColor = vec3(1.0, 1.0, 1.0);
               vec2 offsetUv = vec2(vUv.x - ripplePosition.x, vUv.y - ripplePosition.y);
@@ -273,9 +273,9 @@ export default function Water() {
               float rippleAmplitude = 5.0;
               float rippleYOffset = rippleAmplitude * -0.5;
 
-              float rippleSine = max((rippleAmplitude * sin((PI * 2.0 * rippleStrength) + (PI * 40.0 * distance))) + rippleYOffset, 0.0) + (rippleYOffset * 0.5);
+              float rippleSine = max((rippleAmplitude * sin((PI * 2.0 * rippleStrength) + (PI * 140.0 * distance))) + rippleYOffset, 0.0) + (rippleYOffset * 0.5);
 
-              float rippleAlpha = step(distance * (12.0 - rippleRadius), 0.5);
+              float rippleAlpha = step(distance * (36.0 - rippleRadius), 0.5);
               rippleAlpha *= (1.0 + rippleSine) * 0.5 * rippleStrength;
   
               finalColor = mix(finalColor, rippleColor, rippleAlpha);
@@ -296,7 +296,7 @@ export default function Water() {
   ]);
 
   useFrame(({ clock }) => {
-      uniforms.uTime.value = clock.getElapsedTime();
+    uniforms.uTime.value = clock.getElapsedTime();
 
     // Animate island ripples
     for (let i=0; i<NUM_CELLS; i++) {

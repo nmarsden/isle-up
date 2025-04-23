@@ -31,3 +31,8 @@
     [ ] rocks
     [ ] hut
     [ ] sea gulls
+[ ] change pointer on hover
+[x] tweak water colors
+[x] increase size of water plane so the corners can't be seen
+[x] restrict OrbitControls
+[x] adjust camera position & fov to fit all islands on mobile

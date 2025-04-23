@@ -14,12 +14,14 @@ export default function Island ({ id, children }: { id: number, children: ReactN
   const { nodes } = useGLTF('models/terrain2.glb', false);
   const mesh = useRef<Mesh>(null);
 
+  const underwaterColor = useGlobalStore((state: GlobalState) => state.underwaterColor);
   const waterLevel = useGlobalStore((state: GlobalState) => state.waterLevel);
   const waveSpeed = useGlobalStore((state: GlobalState) => state.waveSpeed);
   const waveAmplitude = useGlobalStore((state: GlobalState) => state.waveAmplitude);
   const foamDepth = useGlobalStore((state) => state.foamDepth)
   const hoveredIds = useGlobalStore((state: GlobalState) => state.hoveredIds);
   const hoveredColor = useGlobalStore((state: GlobalState) => state.hoveredColor);
+  const setUnderwaterColor = useGlobalStore((state: GlobalState) => state.setUnderwaterColor);
   const setHoveredColor = useGlobalStore((state: GlobalState) => state.setHoveredColor);
 
   const toggledIds = useGlobalStore((state: GlobalState) => state.toggledIds);
@@ -47,7 +49,7 @@ export default function Island ({ id, children }: { id: number, children: ReactN
         {
           sandBaseColor: { value: "#ff9900", label: "Sand", onChange: (value) => { uniforms.uBaseColor.value = new Color(value); } },
           grassColor: { value: "yellow", label: "Grass", onChange: (value) => { uniforms.uGrassColor.value = new Color(value); } },
-          underwaterColor: { value: "#118a4f", label: "Underwater", transient: false, onChange: (value) => { uniforms.uUnderwaterColor.value = new Color(value); } },
+          underwaterColor: { value: "#0053ff", label: "Underwater", transient: false, onChange: (value) => { setUnderwaterColor(new Color(value)); } },
           hoveredColor: { value: "#ffffff", label: "Hovered", transient: false, onChange: (value) => { setHoveredColor(new Color(value)); } },
           planeMetalness: { value: 0.0, label: 'metalness', min: 0, max: 1, step: 0.01 },
           planeRoughness: { value: 0.7, label: 'roughness', min: 0, max: 1, step: 0.01 },
@@ -62,6 +64,7 @@ export default function Island ({ id, children }: { id: number, children: ReactN
     }
   );
 
+  useEffect(() => { uniforms.uUnderwaterColor.value = underwaterColor }, [ underwaterColor ]);
   useEffect(() => { uniforms.uWaterLevel.value = waterLevel }, [ waterLevel ]);
   useEffect(() => { uniforms.uWaveSpeed.value = waveSpeed }, [ waveSpeed ]);
   useEffect(() => { uniforms.uWaveAmplitude.value = waveAmplitude }, [ waveAmplitude ]);

@@ -5,7 +5,7 @@ export default function Performance (){
   const { showPerf } = useControls(
     'Performance',
     {
-      showPerf: { value: true, label: 'show' }
+      showPerf: { value: false, label: 'show' }
     },
     {
       collapsed: true

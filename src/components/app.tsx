@@ -15,7 +15,7 @@ export default function App() {
 
   useEffect(() => {
     // Temp: set level here
-    setTimeout(() => setLevel(0), 1000);
+    setTimeout(() => setLevel(0), 2000);
   }, []);
   
   return (
@@ -31,7 +31,12 @@ export default function App() {
         />
         <Performance />
         <Suspense>
-          <OrbitControls />
+          <OrbitControls 
+            enableZoom={false}
+            enablePan={false}
+            minPolarAngle={0}
+            maxPolarAngle={Math.PI * 0.45}
+          />
           <Lights />
           <Camera />
           <Islands />
