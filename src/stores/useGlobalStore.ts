@@ -76,6 +76,7 @@ export type GlobalState = {
   hoveredColor: Color;
   level: number;
   moves: number;
+  levelCompleted: boolean;
 
   setUnderwaterColor: (underwaterColor: Color) => void;
   setWaterLevel: (waterLevel: number) => void;
@@ -120,6 +121,7 @@ export const useGlobalStore = create<GlobalState>((set) => {
     hoveredColor: new Color('#ffffff'),
     level: 0,
     moves: 0,
+    levelCompleted: false,
 
     setUnderwaterColor: (underwaterColor: Color) => set(() => ({ underwaterColor })),
     setWaterLevel: (waterLevel: number) => set(() => ({ waterLevel })),
@@ -159,7 +161,9 @@ export const useGlobalStore = create<GlobalState>((set) => {
         toggleUp(row, col + 1);
         toggledIds.push(toIndex(row, col + 1));
       }
-      return { upIds: getUpIds(), toggledIds, moves: moves + 1 };
+      const upIds = getUpIds();
+      const levelCompleted = upIds.length === NUM_CELLS;
+      return { upIds, toggledIds, moves: moves + 1, levelCompleted };
     }),
     setHoveredColor: (hoveredColor: Color) => set(() => ({ hoveredColor })),
     resetLevel: (level: number) => set(() => {
@@ -175,7 +179,7 @@ export const useGlobalStore = create<GlobalState>((set) => {
           toggledIds.push(toIndex(row, col));
         }
       })
-      return { upIds: getUpIds(), toggledIds, level, moves: 0 };
+      return { upIds: getUpIds(), toggledIds, level, moves: 0, levelCompleted: false };
     })
   }
 })

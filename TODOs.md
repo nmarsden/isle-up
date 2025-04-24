@@ -41,14 +41,31 @@
     [x] Heading 
     [x] Level
         [x] level selector overlay
+        [ ] only completed levels and next uncompleted level (ie. unlocked level) can be selected
     [x] About
     [x] Moves
         [x] track number of moves
     [ ] Reset
         [ ] reset level
+    [ ] Splash screen
+        [ ] Welcome to 'Isle Up'
+        [ ] Tag line: Raise all the islands
+        [ ] Play button
     [ ] Level Completed    
-        [ ] show 'WELL DONE'
-        [ ] completed in n moves
-        [ ] 'NEXT LEVEL' button
-        [ ] 'RETRY' button
+        [x] show 'WELL DONE'
+        [ ] Level n completed in n moves
+        [ ] Handle all levels completed
+            [x] show 'ALL LEVELS COMPLETED'
+            [x] show 'OK' button
+        [x] 'NEXT LEVEL' button
+        [x] 'RETRY' button
+[ ] Sound
+    [ ] Ambient sound - waves?
+    [ ] Sound FX
+        [ ] Island Raise/Sink
+[ ] Local Storage
+    [ ] Save - on level completed
+    [ ] Load - on initial page load, determines which level is selected
+    [ ] Data
+        [ ] # moves per completed level
 
