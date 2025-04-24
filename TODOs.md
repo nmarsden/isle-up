@@ -41,7 +41,7 @@
     [x] Heading 
     [x] Level
         [x] level selector overlay
-        [ ] only completed levels and next uncompleted level (ie. unlocked level) can be selected
+        [x] only completed levels and next uncompleted level (ie. unlocked level) can be selected
     [x] About
     [x] Moves
         [x] track number of moves
@@ -63,9 +63,10 @@
     [ ] Ambient sound - waves?
     [ ] Sound FX
         [ ] Island Raise/Sink
-[ ] Local Storage
-    [ ] Save - on level completed
-    [ ] Load - on initial page load, determines which level is selected
-    [ ] Data
-        [ ] # moves per completed level
+[x] Local Storage (using persist from zustand/middleware)
+    [x] Save
+    [x] Load
+    [x] Data
+        [x] level (last level played)
+        [x] bestMoves (array of best # moves per level)
 

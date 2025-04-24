@@ -1,19 +1,29 @@
-import { LEVELS } from '../../../stores/useGlobalStore';
+import { formattedLevel, GlobalState, LEVELS, useGlobalStore } from '../../../stores/useGlobalStore';
 import './levels.css';
 
 export default function Levels({ show, onLevelSelected }: { show: boolean, onLevelSelected: (level: number) => void }) {
-    return (
-      <div className={`levelsOverlay ${show ? 'show' : 'hide'}`}>
-          <div className="levelsHeading">Select a Level</div>
-          {LEVELS.map((_, index) => 
+  const bestMoves = useGlobalStore((state: GlobalState) => state.bestMoves);
+
+  return (
+    <div className={`levelsOverlay ${show ? 'show' : 'hide'}`}>
+        <div className="levelsHeading">Select a Level</div>
+        {LEVELS.map((_, index) => {
+          const isUnlocked = index <= bestMoves.length;
+          return (
             <div 
-                key={index}
-                className="levelsButton" 
-                onClick={() => onLevelSelected(index)}
+              key={index}
+              className={`levelsButton ${isUnlocked ? 'unlocked' : 'locked'}`}
+              onClick={() => {
+                if (isUnlocked) {
+                  onLevelSelected(index);
+                } 
+              }}
             >
-                Level {index + 1}
+              {formattedLevel(index)}
             </div>
-        )}
-      </div>
-    )
+          );
+        }
+      )}
+    </div>
+  )
 }

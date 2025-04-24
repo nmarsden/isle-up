@@ -1,4 +1,4 @@
-import { GlobalState, LEVELS, useGlobalStore } from '../../stores/useGlobalStore';
+import { formattedLevel, GlobalState, LEVELS, useGlobalStore } from '../../stores/useGlobalStore';
 import Completed from './completed/completed';
 import Info from './info/info';
 import Levels from './levels/levels';
@@ -48,7 +48,7 @@ export default function Ui() {
               <div className="header">
                 <div className="heading">Isle Up</div>
                 <div className="actions">
-                  <div className="level" onClick={onLevelsButtonClicked}>LEVEL&nbsp;{level + 1}</div>
+                  <div className="level" onClick={onLevelsButtonClicked}>LEVEL&nbsp;{formattedLevel(level)}</div>
                   <div className="about" onClick={onInfoButtonClicked}>ABOUT</div>
                 </div>
               </div>

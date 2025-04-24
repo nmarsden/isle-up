@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { GlobalState, LEVELS, useGlobalStore } from '../../../stores/useGlobalStore';
+import { formattedLevel, GlobalState, LEVELS, useGlobalStore } from '../../../stores/useGlobalStore';
 import './completed.css';
 
 export default function Completed({ show, onRetrySelected, onNextLevelSelected }: { 
@@ -21,7 +21,7 @@ export default function Completed({ show, onRetrySelected, onNextLevelSelected }
         </>
       ) : (
         <>
-          <div className="completedHeading">LEVEL {level + 1} COMPLETED!</div>
+          <div className="completedHeading">LEVEL {formattedLevel(level)} COMPLETED!</div>
           <div className="completedButton" onClick={() => onRetrySelected()}>RETRY</div>
           <div className="completedButton" onClick={() => onNextLevelSelected()}>NEXT LEVEL</div>
         </>

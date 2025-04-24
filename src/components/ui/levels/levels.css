@@ -36,9 +36,16 @@
   line-height: 24px;
   padding: 10px;
   margin-top: 10px;
-  border: 1px solid rgba(var(--light-color), 1.0);
 }
-.levelsButton:hover {
+.levelsButton.unlocked {
+  color: rgba(var(--light-color), 0.9);
+  border: 1px solid rgba(var(--light-color), 0.9);
+}
+.levelsButton.unlocked:hover {
   color: rgba(var(--light-color), 0.6);
   cursor: pointer;
+}
+.levelsButton.locked {
+  color: rgba(var(--light-color), 0.5);
+  border: 1px solid rgba(var(--light-color), 0.5);
 }
