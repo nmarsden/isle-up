@@ -1,4 +1,4 @@
-# Isle Scape
+# Isle Up
 
 Built with React, TypeScript, & Vite.
 
