@@ -92,5 +92,6 @@
     [ ] completed 00 - 09 in minimum moves
     [ ] completed 10 - 19 in minimum moves
     [ ] completed 20 - 29 in minimum moves
-
+[ ] Fix bug - sometimes hovering and clicking islands is not working
+            - refresh seems to fix it
 

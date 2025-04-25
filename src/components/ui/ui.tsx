@@ -3,7 +3,7 @@ import { formattedLevel, GlobalState, useGlobalStore } from '../../stores/useGlo
 import Completed from './completed/completed';
 import Info from './info/info';
 import Levels from './levels/levels';
-import SplashScreen from './splashScreen/splashscreen';
+import SplashScreen from './splashScreen/splashScreen';
 import './ui.css';
 import {useCallback, useEffect, useState} from "react";
 
