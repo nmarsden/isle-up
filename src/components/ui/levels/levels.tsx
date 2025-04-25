@@ -15,7 +15,8 @@ export default function Levels({ show, onLevelSelected }: { show: boolean, onLev
 
   const groupedLevels: GroupedLevels[] = useMemo(() => {
     const groupedLevels: GroupedLevels[] = [];
-    for (let i=0; i<10; i++) {
+    const numGroups = Math.floor(LEVELS_DATA.length / 10);
+    for (let i=0; i<numGroups; i++) {
       groupedLevels.push({ id: i, levels: [] })
       for (let j=0; j<10; j++) {
         groupedLevels[i].levels.push(LEVELS_DATA[(i * 10) + j]);

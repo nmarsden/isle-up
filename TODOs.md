@@ -59,6 +59,8 @@
             [x] show 'OK' button
         [x] 'NEXT LEVEL' button
         [x] 'RETRY' button
+        [ ] animation?
+            [ ] raise & sink islands in a pattern?
 [ ] Sound
     [ ] Ambient sound - waves?
     [ ] Sound FX

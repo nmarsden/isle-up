@@ -83,6 +83,32 @@ const getUpIds = (): number[] => {
     return islandStates.map((state, index) => state.up ? index: -1).filter(i => i >= 0);
 }
 
+const logLevel = (level: number, upIds: number[], moves: number) => {
+  const outputStrings: string[] = [];
+  outputStrings.push(`  // -- ${formattedLevel(level)} -- (moves: ${moves})`);
+  outputStrings.push(`  [`);
+  for (let row=0; row<5; row++) {
+    const rowStrings: string[] = [];
+    for (let col=0; col<5; col++) {
+      const index = toIndex(row, col);
+      if (col === 0) {
+        rowStrings.push(upIds.includes(index) ? '    1': '    0');
+      } else {
+        rowStrings.push(upIds.includes(index) ? ' 1': ' 0');
+      }
+    }
+    let rowString = rowStrings.join(',');
+    if (row < 4) {
+      rowString += ',';
+    }
+    outputStrings.push(rowString);
+  }
+  outputStrings.push(`  ],`);
+
+  const output = outputStrings.join('\n');
+  console.log(output);
+}
+
 export const useGlobalStore = create<GlobalState>()(
   persist(
     (set) => {
@@ -158,6 +184,10 @@ export const useGlobalStore = create<GlobalState>()(
               }
             }
           }
+
+          // Output level data (Note: uncomment when creating levels)
+          // logLevel(level, upIds, updatedMoves);
+
           return { upIds, toggledIds, moves: updatedMoves, levelCompleted, bestMoves };
         }),
         setHoveredColor: (hoveredColor: Color) => set(() => ({ hoveredColor })),
