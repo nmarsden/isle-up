@@ -1,4 +1,5 @@
-import { formattedLevel, GlobalState, LEVELS, useGlobalStore } from '../../stores/useGlobalStore';
+import { LEVELS_DATA } from '../../levelsData';
+import { formattedLevel, GlobalState, useGlobalStore } from '../../stores/useGlobalStore';
 import Completed from './completed/completed';
 import Info from './info/info';
 import Levels from './levels/levels';
@@ -31,7 +32,7 @@ export default function Ui() {
 
   const onNextLevelSelected = useCallback(() => {
     setShowCompleted(false);
-    const nextLevel = (level + 1) % LEVELS.length;
+    const nextLevel = (level + 1) % LEVELS_DATA.length;
     resetLevel(nextLevel);
   }, [ level ]);
 

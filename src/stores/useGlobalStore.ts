@@ -1,52 +1,12 @@
 import { Color } from 'three';
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware';
+import { LEVELS_DATA } from '../levelsData';
 
 export const NUM_CELLS = 25;
 export const CELL_WIDTH = 12.25;
 export const Y_UP = -0.01;
 export const Y_DOWN = -1.2;
-
-export const LEVELS: number[][] = [
-  [
-    1, 1, 1, 1, 1,
-    1, 1, 0, 1, 1,
-    1, 0, 0, 0, 1,
-    1, 1, 0, 1, 1,
-    1, 1, 1, 1, 1
-  ],
-  [
-    0, 0, 1, 0, 0,
-    0, 1, 1, 1, 0,
-    1, 1, 1, 1, 1,
-    0, 1, 1, 1, 0,
-    0, 0, 1, 0, 0
-  ],
-  [
-    1, 0, 0, 0, 1,
-    0, 1, 0, 1, 0,
-    0, 0, 1, 0, 0,
-    0, 1, 0, 1, 0,
-    1, 0, 0, 0, 1
-  ],
-  // [
-  //   1, 1, 1, 1, 1,
-  //   1, 1, 1, 1, 1,
-  //   1, 1, 1, 1, 1,
-  //   1, 1, 1, 1, 1,
-  //   1, 1, 1, 1, 1
-  // ],
-];
-// Temp. fill 100 levels 
-for (let i=3; i<100; i++) {
-  LEVELS.push([
-    1, 0, 0, 0, 1,
-    0, 1, 0, 1, 0,
-    0, 0, 1, 0, 0,
-    0, 1, 0, 1, 0,
-    1, 0, 0, 0, 1
-  ]);
-}
 
 export const formattedLevel = (level: number): string => {
   return (level + '').padStart(2, '0');
@@ -204,7 +164,7 @@ export const useGlobalStore = create<GlobalState>()(
         resetLevel: (level: number) => set(() => {
           // Perform toggles to change state to the desired level state
           const toggledIds: number[] = [];
-          LEVELS[level].forEach((up, index) => {
+          LEVELS_DATA[level].forEach((up, index) => {
             const { row, col } = toRowAndCol(index);
             const upCurrent = islandStates[index].up;
             const upTarget = up === 1;

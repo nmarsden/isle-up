@@ -20,13 +20,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 10px;
 }
 
 .level {
   font-size: 24px;
   line-height: 24px;
   padding: 10px;
-  margin: 10px;
   border: 1px solid rgba(var(--dark-color), 0.6);
 }
 .level:hover {
@@ -38,7 +38,6 @@
   font-size: 24px;
   line-height: 24px;
   padding: 10px;
-  margin: 10px;
   border: 1px solid rgba(var(--dark-color), 0.6);
 }
 .about:hover {

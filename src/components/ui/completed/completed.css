@@ -32,11 +32,15 @@
   margin-bottom: 50px;
 }
 
+.completedButtons {
+  display: flex;
+  gap: 10px;
+}
+
 .completedButton {
   font-size: 24px;
   line-height: 24px;
   padding: 10px;
-  margin-top: 10px;
   border: 1px solid rgba(var(--light-color), 1.0);
 }
 .completedButton:hover {

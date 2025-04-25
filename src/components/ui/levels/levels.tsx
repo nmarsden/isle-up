@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react';
-import { formattedLevel, GlobalState, LEVELS, useGlobalStore } from '../../../stores/useGlobalStore';
+import { formattedLevel, GlobalState, useGlobalStore } from '../../../stores/useGlobalStore';
 import './levels.css';
+import { LEVELS_DATA } from '../../../levelsData';
 
 type GroupedLevels = {
   id: number;
@@ -17,7 +18,7 @@ export default function Levels({ show, onLevelSelected }: { show: boolean, onLev
     for (let i=0; i<10; i++) {
       groupedLevels.push({ id: i, levels: [] })
       for (let j=0; j<10; j++) {
-        groupedLevels[i].levels.push(LEVELS[(i * 10) + j]);
+        groupedLevels[i].levels.push(LEVELS_DATA[(i * 10) + j]);
       }
     }
     return groupedLevels;
