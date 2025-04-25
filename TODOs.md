@@ -73,5 +73,5 @@
     [x] group levels
     [x] only show one level group at a time
     [x] highlight selected level
-
+    [x] highlight group for selected level 
 

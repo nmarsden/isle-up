@@ -46,9 +46,12 @@ export default function Levels({ show, onLevelSelected }: { show: boolean, onLev
   }, [ level ]);
   
   const renderLevelsGroup = (grplevels: GroupedLevels) => {
-    const groupHeading = `${formattedLevel(grplevels.id * 10)} - ${formattedLevel((grplevels.id * 10) + 9)}`;
+    const groupRange = { min: grplevels.id * 10, max: (grplevels.id * 10) + 9 };
+    const groupHeading = `${formattedLevel(groupRange.min)} - ${formattedLevel(groupRange.max)}`;
+    const selectedGroup = level >= groupRange.min && level <= groupRange.max;
     return (
       <details 
+        className={`${selectedGroup ? 'selected' : ''}`}
         ref={(element) => { detailsRefs.current[grplevels.id] = element; }} 
         key={grplevels.id} 
         onClick={(event) => {

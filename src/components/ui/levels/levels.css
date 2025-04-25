@@ -68,6 +68,9 @@ details * {
 details {
   overflow: hidden;
 }
+details.selected {
+  color: rgba(var(--selected-colour), 0.9);
+}
 
 details::details-content {
   block-size: 0;
