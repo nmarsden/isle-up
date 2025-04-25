@@ -45,8 +45,8 @@
     [x] About
     [x] Moves
         [x] track number of moves
-    [ ] Reset
-        [ ] reset level
+    [x] Reset
+        [x] reset level
     [ ] Splash screen
         [ ] Welcome to 'Isle Up'
         [ ] Tag line: Raise all the islands

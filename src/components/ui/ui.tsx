@@ -24,6 +24,7 @@ export default function Ui() {
 
   const onInfoButtonClicked = useCallback(() => setShowInfo(true), []);
   const onInfoClose = useCallback(() => setShowInfo(false), []);
+  const onResetButtonClicked = useCallback(() => resetLevel(level), [ level ]);
 
   const onRetrySelected = useCallback(() => {
     setShowCompleted(false);
@@ -55,6 +56,7 @@ export default function Ui() {
               </div>
               <div className="footer">
                 <div className="moves">MOVES: {moves}</div>
+                <div className="reset" onClick={onResetButtonClicked}>RESET</div>
               </div>
             </>
           )}
