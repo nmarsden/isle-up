@@ -40,6 +40,7 @@ const islandStates: IslandState[] = new Array(25).fill({}).map(() => {
 });
 
 export type GlobalState = {
+  playing: boolean;
   underwaterColor: Color;
   waterLevel: number;
   waveSpeed: number;
@@ -54,6 +55,7 @@ export type GlobalState = {
   levelCompleted: boolean;
   bestMoves: number[];
 
+  setPlaying: () => void;
   setUnderwaterColor: (underwaterColor: Color) => void;
   setWaterLevel: (waterLevel: number) => void;
   setWaveSpeed: (waveSpeed: number) => void;
@@ -114,6 +116,7 @@ export const useGlobalStore = create<GlobalState>()(
   persist(
     (set) => {
       return {
+        playing: false,
         underwaterColor: new Color('#0053ff'),
         waterLevel: 0.7,
         waveSpeed: 0.2,
@@ -129,6 +132,7 @@ export const useGlobalStore = create<GlobalState>()(
         levelCompleted: false,
         bestMoves: [],
 
+        setPlaying: () => set(() => ({ playing: true })),
         setUnderwaterColor: (underwaterColor: Color) => set(() => ({ underwaterColor })),
         setWaterLevel: (waterLevel: number) => set(() => ({ waterLevel })),
         setWaveSpeed: (waveSpeed: number) => set(() => ({ waveSpeed })),

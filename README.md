@@ -15,4 +15,7 @@ Built with React, TypeScript, & Vite.
 - Clone a ShaderMaterial and Have Different Uniforms for Different Copies of the Material - https://discourse.threejs.org/t/clone-a-shadermaterial-and-have-different-uniforms-for-different-copies-of-the-material/49713
 
 ### Assets
+#### Models
 - Kenny - Pirate Kit - https://kenney.nl/assets/pirate-kit
+#### Audio
+- Waves SFX - https://opengameart.org/content/beach-ocean-waves

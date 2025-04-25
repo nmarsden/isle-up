@@ -47,10 +47,10 @@
         [x] track number of moves
     [x] Reset
         [x] reset level
-    [ ] Splash screen
-        [ ] Welcome to 'Isle Up'
-        [ ] Tag line: Raise all the islands
-        [ ] Play button
+    [x] Splash screen
+        [x] Welcome to 'Isle Up'
+        [x] Tag line: Raise all the islands
+        [x] Play button
     [ ] Level Completed    
         [x] show 'WELL DONE'
         [ ] Level n completed in n moves
@@ -59,12 +59,13 @@
             [x] show 'OK' button
         [x] 'NEXT LEVEL' button
         [x] 'RETRY' button
-        [ ] animation?
+        [ ] level complete animation
             [ ] raise & sink islands in a pattern?
+            [ ] sparkling water?
 [ ] Sound
-    [ ] Ambient sound - waves?
+    [ ] Ambient sound - waves, seagulls?
     [ ] Sound FX
-        [ ] Island Raise/Sink
+        [x] Island Raise/Sink - wave
 [x] Local Storage (using persist from zustand/middleware)
     [x] Save
     [x] Load
@@ -76,4 +77,20 @@
     [x] only show one level group at a time
     [x] highlight selected level
     [x] highlight group for selected level 
+[ ] Acheivements
+    [ ] completed a level
+    [ ] completed 3 levels in minimum moves
+    [ ] completed 00 - 04
+    [ ] completed 00 - 09
+    [ ] completed 00 - 14
+    [ ] completed 00 - 19
+    [ ] completed 00 - 24
+    [ ] completed 00 - 29
+    [ ] repeated a move 3 times
+    [ ] repeated a move 5 times
+    [ ] repeated a move 9 times
+    [ ] completed 00 - 09 in minimum moves
+    [ ] completed 10 - 19 in minimum moves
+    [ ] completed 20 - 29 in minimum moves
+
 

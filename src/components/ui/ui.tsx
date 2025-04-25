@@ -3,18 +3,27 @@ import { formattedLevel, GlobalState, useGlobalStore } from '../../stores/useGlo
 import Completed from './completed/completed';
 import Info from './info/info';
 import Levels from './levels/levels';
+import SplashScreen from './splashScreen/splashscreen';
 import './ui.css';
 import {useCallback, useEffect, useState} from "react";
 
 export default function Ui() {
+  const setPlaying = useGlobalStore((state: GlobalState) => state.setPlaying);
   const level = useGlobalStore((state: GlobalState) => state.level);
   const moves = useGlobalStore((state: GlobalState) => state.moves);
   const levelCompleted = useGlobalStore((state: GlobalState) => state.levelCompleted);
   const resetLevel = useGlobalStore((state: GlobalState) => state.resetLevel);
 
+  const [showSplashScreen, setShowSplashScreen] = useState(true);
   const [showLevels, setShowLevels] = useState(false);
   const [showInfo, setShowInfo] = useState(false);
   const [showCompleted, setShowCompleted] = useState(false);
+
+  const onPlaySelected = useCallback(() => {
+    setShowSplashScreen(false);
+    setPlaying();
+    resetLevel(level);
+  }, [ level ]);
 
   const onLevelsButtonClicked = useCallback(() => setShowLevels(true), []);
   const onLevelSelected = useCallback((level: number) => {
@@ -45,7 +54,7 @@ export default function Ui() {
   
   return (
       <>
-          {(showInfo || showLevels) ? '' : (
+          {(showSplashScreen || showInfo || showLevels) ? '' : (
             <>
               <div className="header">
                 <div className="heading">Isle Up</div>
@@ -60,6 +69,7 @@ export default function Ui() {
               </div>
             </>
           )}
+          <SplashScreen show={showSplashScreen} onPlaySelected={onPlaySelected} />
           <Info show={showInfo} onClose={onInfoClose} />
           <Levels show={showLevels} onLevelSelected={onLevelSelected} />
           <Completed show={showCompleted} onRetrySelected={onRetrySelected} onNextLevelSelected={onNextLevelSelected} />
