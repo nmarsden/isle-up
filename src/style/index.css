@@ -4,6 +4,7 @@
 	--background-colour: white;
   --dark-color: 10, 10, 10;
   --light-color: 240, 240, 240;
+	--selected-colour: 255, 255, 0;
 }
 
 /* @font-face {

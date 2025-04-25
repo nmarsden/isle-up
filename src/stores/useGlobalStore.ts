@@ -37,6 +37,16 @@ export const LEVELS: number[][] = [
   //   1, 1, 1, 1, 1
   // ],
 ];
+// Temp. fill 100 levels 
+for (let i=3; i<100; i++) {
+  LEVELS.push([
+    1, 0, 0, 0, 1,
+    0, 1, 0, 1, 0,
+    0, 0, 1, 0, 0,
+    0, 1, 0, 1, 0,
+    1, 0, 0, 0, 1
+  ]);
+}
 
 export const formattedLevel = (level: number): string => {
   return (level + '').padStart(2, '0');

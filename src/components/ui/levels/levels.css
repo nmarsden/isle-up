@@ -1,3 +1,7 @@
+:root {
+  interpolate-size: allow-keywords;
+}
+
 .levelsOverlay {
   position: absolute;
   top: 0;
@@ -31,11 +35,54 @@
   margin-bottom: 50px;
 }
 
+.levelsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.levelsGroup {
+  display: flex;
+  flex-wrap: wrap;
+  max-width: 270px;
+  gap: 5px;
+  padding-block: 10px;
+}
+
+summary {
+  font-size: 24px;
+  line-height: 24px;
+  margin-block-end: 0;
+  cursor: pointer;
+}
+
+summary::marker {
+  font-size: 0.75em;
+  color: hsl(0 0% 40%);
+}
+
+details * {
+  margin: 0;
+}
+
+details {
+  overflow: hidden;
+}
+
+details::details-content {
+  block-size: 0;
+  transition: block-size 300ms, content-visibility 300ms;
+  transition-behavior: allow-discrete;
+}
+
+details:open::details-content {
+  block-size: auto;
+}
+
 .levelsButton {
   font-size: 24px;
   line-height: 24px;
   padding: 10px;
-  margin-top: 10px;
 }
 .levelsButton.unlocked {
   color: rgba(var(--light-color), 0.9);
@@ -48,4 +95,8 @@
 .levelsButton.locked {
   color: rgba(var(--light-color), 0.5);
   border: 1px solid rgba(var(--light-color), 0.5);
+}
+.levelsButton.selected {
+  color: rgba(var(--selected-colour), 0.9);
+  border: 1px solid rgba(var(--selected-colour), 0.9);
 }

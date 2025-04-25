@@ -69,4 +69,9 @@
     [x] Data
         [x] level (last level played)
         [x] bestMoves (array of best # moves per level)
+[x] Level selection improvements
+    [x] group levels
+    [x] only show one level group at a time
+    [x] highlight selected level
+
 
