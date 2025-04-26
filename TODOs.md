@@ -31,7 +31,7 @@
     [ ] rocks
     [ ] hut
     [ ] sea gulls
-[ ] change pointer on hover
+[x] change pointer on hover
 [x] tweak water colors
 [x] increase size of water plane so the corners can't be seen
 [x] restrict OrbitControls
@@ -95,4 +95,4 @@
 [x] Fix bug - sometimes hovering and clicking islands is not working
             - SOLUTION: call computeBoundingSphere() on the instancedMesh after updating positions
 [x] Fix bug - canvas repositions on start
-[ ] Fix bug - cell border render artifact when far from camera
+[x] Fix bug - cell border render artifact when far from camera
