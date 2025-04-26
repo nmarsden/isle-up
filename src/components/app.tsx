@@ -5,6 +5,7 @@ import Debug from "./debug.tsx";
 import Performance from "./performance.tsx";
 import Lights from "./lights.tsx";
 import Camera from "./camera.tsx";
+import Grid from './grid.tsx';
 import Islands from "./islands.tsx";
 import Water from "./water.tsx";
 import Fog from './fog.tsx';
@@ -33,6 +34,7 @@ export default function App() {
           />
           <Lights />
           <Camera />
+          <Grid />
           <Islands />
           <Water />
           <Sounds />

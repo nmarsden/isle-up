@@ -1,49 +1,11 @@
-import {useCallback, useEffect, useMemo, useRef} from "react";
-import {InstancedMesh, MeshStandardMaterial, Object3D, PlaneGeometry} from "three";
+import {useMemo} from "react";
 import {useControls} from "leva";
-import {CELL_WIDTH, GlobalState, NUM_CELLS, useGlobalStore} from "../stores/useGlobalStore.ts";
+import {GlobalState, NUM_CELLS, useGlobalStore} from "../stores/useGlobalStore.ts";
 import Tree from "./tree.tsx";
 import Island from "./island.tsx";
 
-const temp = new Object3D()
-
 export default function Islands() {
   const underwaterColor = useGlobalStore((state: GlobalState) => state.underwaterColor);
-  const setHovered = useGlobalStore((state: GlobalState) => state.setHovered);
-  const toggleUp = useGlobalStore((state: GlobalState) => state.toggleUp);
-
-  const clickableInstancedMeshRef = useRef<InstancedMesh>(null);
-  useEffect(() => {
-    if (!clickableInstancedMeshRef.current) return;
-    // Set positions
-    for (let i = 0; i < NUM_CELLS; i++) {
-      const row = Math.floor(i / 5);
-      const column = (i % 5);
-
-      const x = column * CELL_WIDTH - (2 * CELL_WIDTH);
-      const y = 0.5;
-      const z = row * CELL_WIDTH - (2 * CELL_WIDTH);
-
-      temp.position.set(x, y, z);
-      temp.updateMatrix();
-      clickableInstancedMeshRef.current.setMatrixAt(i, temp.matrix);
-    }
-    // Update the instance
-    clickableInstancedMeshRef.current.instanceMatrix.needsUpdate = true
-    clickableInstancedMeshRef.current.computeBoundingSphere();
-  }, [])
-
-  const onClicked = useCallback((event: any) => {
-    toggleUp(event.instanceId);
-  }, []);
-
-  const onPointerOver = useCallback((event: any) => {
-    setHovered(event.instanceId, true);
-  }, []);
-
-  const onPointerOut = useCallback((event: any) => {
-    setHovered(event.instanceId, false);
-  }, []);
 
   const {
     planeMetalness, planeRoughness
@@ -58,35 +20,14 @@ export default function Islands() {
     }
   );
 
-  const { clickableGeometry, clickableMaterial, islandIds } = useMemo(() => {
+  const { islandIds } = useMemo(() => {
 
-    // -- Clickables --
-    const clickableGeometry = new PlaneGeometry();
-    clickableGeometry.rotateX(Math.PI * -0.5);
-    clickableGeometry.scale(CELL_WIDTH, 1, CELL_WIDTH);
-    const clickableMaterial = new MeshStandardMaterial();
-    clickableMaterial.wireframe = false;
-    clickableMaterial.transparent = true;
-    clickableMaterial.opacity = 0;
-    clickableMaterial.depthTest = false;
-
-    // -- Island Ids --
     const islandIds = new Array(NUM_CELLS).fill(0).map((_, index) => index);
 
-    return { clickableGeometry, clickableMaterial, islandIds };
+    return { islandIds };
   }, []);
 
   return <group dispose={null}>
-    {/* Clickables */}
-    <instancedMesh 
-      ref={clickableInstancedMeshRef} 
-      args={[undefined, undefined, NUM_CELLS]}
-      geometry={clickableGeometry}
-      material={clickableMaterial}
-      onClick={onClicked}
-      onPointerOver={onPointerOver}
-      onPointerOut={onPointerOut}
-    />
     {/* Islands */}
     {islandIds.map((id) => (
       <Island id={id} key={`island-${id}`}>
