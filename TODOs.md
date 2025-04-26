@@ -24,7 +24,7 @@
     [x] pulse animate selector
     [x] support tweaking selector color
     [x] improve hover effect
-    [ ] highlight cell border rather than island
+    [x] highlight cell border rather than island
 [ ] add island features
     [x] palm trees
         [x] use custom shader to show foam at water level
@@ -95,3 +95,4 @@
 [x] Fix bug - sometimes hovering and clicking islands is not working
             - SOLUTION: call computeBoundingSphere() on the instancedMesh after updating positions
 [x] Fix bug - canvas repositions on start
+[ ] Fix bug - cell border render artifact when far from camera

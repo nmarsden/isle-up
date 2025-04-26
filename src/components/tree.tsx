@@ -109,9 +109,9 @@ export default function Tree ({ id }: { id: number }) {
                 vec3 finalColor = mix(baseColor - stripe, stripeColor, stripe);
                 
                 // Apply the hovered color according to uHovered
-                float aboveWaterLevel = step(currentWaterHeight, positionHeight);
-                float hovered = aboveWaterLevel * uHovered * ((1.0 + sin((vPosition2.x * PI) + (uTime * 4.0))) * 0.3) * (1.0 + (sin(PI * uTime) * 0.5));
-                finalColor = mix(finalColor, uHoveredColor, hovered);
+                // float aboveWaterLevel = step(currentWaterHeight, positionHeight);
+                // float hovered = aboveWaterLevel * uHovered * ((1.0 + sin((vPosition2.x * PI) + (uTime * 4.0))) * 0.3) * (1.0 + (sin(PI * uTime) * 0.5));
+                // finalColor = mix(finalColor, uHoveredColor, hovered);
 
                 diffuseColor.rgb = finalColor;
               `
