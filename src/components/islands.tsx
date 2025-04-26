@@ -30,6 +30,7 @@ export default function Islands() {
     }
     // Update the instance
     clickableInstancedMeshRef.current.instanceMatrix.needsUpdate = true
+    clickableInstancedMeshRef.current.computeBoundingSphere();
   }, [])
 
   const onClicked = useCallback((event: any) => {

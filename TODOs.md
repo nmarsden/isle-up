@@ -25,6 +25,7 @@
     [x] pulse animate selector
     [x] support tweaking selector color
     [x] improve hover effect
+    [ ] highlight cell border rather than island
 [ ] add island features
     [x] palm trees
         [x] use custom shader to show foam at water level
@@ -92,6 +93,6 @@
     [ ] completed 00 - 09 in minimum moves
     [ ] completed 10 - 19 in minimum moves
     [ ] completed 20 - 29 in minimum moves
-[ ] Fix bug - sometimes hovering and clicking islands is not working
-            - refresh seems to fix it
-
+[x] Fix bug - sometimes hovering and clicking islands is not working
+            - SOLUTION: call computeBoundingSphere() on the instancedMesh after updating positions
+[ ] Fix bug - canvas repositions on start
