@@ -95,4 +95,4 @@
     [ ] completed 20 - 29 in minimum moves
 [x] Fix bug - sometimes hovering and clicking islands is not working
             - SOLUTION: call computeBoundingSphere() on the instancedMesh after updating positions
-[ ] Fix bug - canvas repositions on start
+[x] Fix bug - canvas repositions on start
