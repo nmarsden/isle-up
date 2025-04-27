@@ -13,9 +13,6 @@ const barrelAnimationDurationMSecs = 300;
 const barrelUpPositionY = 0.6;
 const barrelDownPositionY = 0.9;
 
-const barrelUpRotationX = 0;
-const barrelDownRotationX = Math.PI * 0.5;
-
 export default function Barrel ({ id }: { id: number }) {
   const {scene} = useGLTF("models/barrel.glb");
     
