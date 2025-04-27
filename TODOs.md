@@ -28,6 +28,8 @@
 [ ] add island features
     [x] palm trees
         [x] use custom shader to show foam at water level
+    [ ] barrels - float when island sinks
+    [ ] boats - float when island sinks
     [ ] rocks
     [ ] hut
     [ ] sea gulls

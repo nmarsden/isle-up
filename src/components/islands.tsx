@@ -3,6 +3,7 @@ import {useControls} from "leva";
 import {GlobalState, NUM_CELLS, useGlobalStore} from "../stores/useGlobalStore.ts";
 import Tree from "./tree.tsx";
 import Island from "./island.tsx";
+import Barrel from "./barrel.tsx";
 
 export default function Islands() {
   const underwaterColor = useGlobalStore((state: GlobalState) => state.underwaterColor);
@@ -31,6 +32,7 @@ export default function Islands() {
     {/* Islands */}
     {islandIds.map((id) => (
       <Island id={id} key={`island-${id}`}>
+        <Barrel id={id} />
         <Tree id={id} />
       </Island>
     ))}
