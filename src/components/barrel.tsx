@@ -61,7 +61,8 @@ export default function Barrel ({ id }: { id: number }) {
     }
   }, [ toggledIds ]);  
 
-  const { geometry, material, position, rotationY } = useMemo(() => {
+  const { visible, geometry, material, position, rotationY } = useMemo(() => {
+      const visible = Math.random() < 0.5;
       const geometry = (scene.children[0] as Mesh).geometry;
       const material = ((scene.children[0] as Mesh).material as MeshStandardMaterial).clone();
 
@@ -144,7 +145,7 @@ export default function Barrel ({ id }: { id: number }) {
           );
         }
     
-        const angle = 0.8 * Math.PI * Math.random();
+        const angle = 0.5 * Math.PI * Math.random();
         const radius = 3;
         const x = radius * Math.cos(angle);
         const y = barrelUpPositionY;
@@ -153,7 +154,7 @@ export default function Barrel ({ id }: { id: number }) {
 
         const rotationY = Math.random() * Math.PI * 2;
 
-      return { geometry, material, position, rotationY }
+      return { visible, geometry, material, position, rotationY }
   }, []);
     
   useFrame(({ clock }) => {
@@ -190,11 +191,13 @@ export default function Barrel ({ id }: { id: number }) {
     <group >
       <mesh
         ref={meshRef} 
+        visible={visible}
         position={position}
         rotation-y={rotationY}
         geometry={geometry}
         material={material}
         castShadow={true}
+        receiveShadow={true}
       />
     </group>
   )

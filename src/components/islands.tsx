@@ -5,6 +5,7 @@ import Tree from "./tree.tsx";
 import Island from "./island.tsx";
 import Barrel from "./barrel.tsx";
 import Boat from "./boat.tsx";
+import Chest from "./chest.tsx";
 
 export default function Islands() {
   const underwaterColor = useGlobalStore((state: GlobalState) => state.underwaterColor);
@@ -35,6 +36,7 @@ export default function Islands() {
       <Island id={id} key={`island-${id}`}>
         <Barrel id={id} />
         <Boat id={id} />
+        <Chest id={id} />
         <Tree id={id} />
       </Island>
     ))}

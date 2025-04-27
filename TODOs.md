@@ -30,6 +30,7 @@
         [x] use custom shader to show foam at water level
     [x] barrels - float when island sinks
     [x] boats - float when island sinks
+    [x] chests - float when island sinks
     [ ] rocks
     [ ] hut
     [ ] sea gulls

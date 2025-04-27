@@ -7,15 +7,15 @@ import { lerp } from "three/src/math/MathUtils.js";
 
 const glsl = (x: any) => x;
 
-const boatAnimationDurationMSecs = 300;
+const chestAnimationDurationMSecs = 300;
 
 // Note: these Y positions are relative to the island
-const boatUpPositionY = 0.7;
-const boatDownPositionY = 1.5;
+const chestUpPositionY = 0.6;
+const chestDownPositionY = 0.9;
 
-export default function Boat ({ id }: { id: number }) {
-  const {scene} = useGLTF("models/boat-row-small.glb");
-    
+export default function Chest ({ id }: { id: number }) {
+  const { nodes, materials } = useGLTF("models/chest.glb");
+
   const waterLevel = useGlobalStore((state: GlobalState) => state.waterLevel);
   const waveSpeed = useGlobalStore((state: GlobalState) => state.waveSpeed);
   const waveAmplitude = useGlobalStore((state: GlobalState) => state.waveAmplitude);
@@ -40,7 +40,7 @@ export default function Boat ({ id }: { id: number }) {
     }
   }, []);
 
-  const boatAnimationStartTime = useRef(new Date().getTime());
+  const chestAnimationStartTime = useRef(new Date().getTime());
   const animatingToggle = useRef(false);
   
   useEffect(() => { uniforms.uWaterLevel.value = waterLevel }, [ waterLevel ]);
@@ -57,14 +57,16 @@ export default function Boat ({ id }: { id: number }) {
 
       // toggle detected - starting animating toggle
       animatingToggle.current = true;
-      boatAnimationStartTime.current = new Date().getTime();
+      chestAnimationStartTime.current = new Date().getTime();
     }
   }, [ toggledIds ]);  
 
-  const { visible, geometry, material, position, rotationY } = useMemo(() => {
+  const { visible, chestGeometry, lidGeometry, material, position, rotationY } = useMemo(() => {
       const visible = Math.random() < 0.1;
-      const geometry = (scene.children[0] as Mesh).geometry;
-      const material = ((scene.children[0] as Mesh).material as MeshStandardMaterial).clone();
+      const chestGeometry = (nodes.chest_1 as Mesh).geometry;
+      const lidGeometry = (nodes.lid as Mesh).geometry;
+
+      const material = (materials.colormap as MeshStandardMaterial).clone();
 
       material.onBeforeCompile = (shader) => {
           shader.uniforms.uWaterLevel = uniforms.uWaterLevel;
@@ -145,16 +147,16 @@ export default function Boat ({ id }: { id: number }) {
           );
         }
     
-        const angle = (1.33 * Math.PI) + (0.5 * Math.PI * Math.random());
+        const angle = (0.66 * Math.PI) + (0.5 * Math.PI * Math.random());
         const radius = 3;
         const x = radius * Math.cos(angle);
-        const y = boatUpPositionY;
+        const y = chestUpPositionY;
         const z = radius * Math.sin(angle);
         const position: [number, number, number] = [x, y, z];
 
         const rotationY = Math.random() * Math.PI * 2;
 
-      return { visible, geometry, material, position, rotationY }
+      return { visible, chestGeometry, lidGeometry, material, position, rotationY }
   }, []);
     
   useFrame(({ clock }) => {
@@ -162,45 +164,54 @@ export default function Boat ({ id }: { id: number }) {
 
     if (!meshRef.current) return;
 
-    // animate boat
-    const elapsedTime = new Date().getTime() - boatAnimationStartTime.current;
-    const animationProgress = elapsedTime / boatAnimationDurationMSecs;
+    // animate chest
+    const elapsedTime = new Date().getTime() - chestAnimationStartTime.current;
+    const animationProgress = elapsedTime / chestAnimationDurationMSecs;
     if (animatingToggle.current) {
       if ((animationProgress > 1)) {
         animatingToggle.current = false;
         if (!up.current) {
-          // start animating floating boat
-          boatAnimationStartTime.current = new Date().getTime();
+          // start animating floating chest
+          chestAnimationStartTime.current = new Date().getTime();
         }
       } else {
-        const posY = up.current ? lerp(boatDownPositionY, boatUpPositionY, animationProgress) : lerp(boatUpPositionY, boatDownPositionY, animationProgress);
+        const posY = up.current ? lerp(chestDownPositionY, chestUpPositionY, animationProgress) : lerp(chestUpPositionY, chestDownPositionY, animationProgress);
         meshRef.current.position.y = posY;
         if (up.current) {
           meshRef.current.rotation.x = lerp(meshRef.current.rotation.x, 0, animationProgress);
         }
       }
     } else if (!up.current) {
-      // animate floating boat
-      meshRef.current.position.y = boatDownPositionY + (0.05 * Math.sin(elapsedTime * 0.001));
-      meshRef.current.rotation.x = Math.PI * (0.05 * Math.sin(elapsedTime * 0.001));
-      meshRef.current.rotation.y += 0.0025 * Math.sin(elapsedTime * 0.00025);
+      // animate floating chest
+      meshRef.current.position.y = chestDownPositionY + (0.2 * Math.sin(elapsedTime * 0.001));
+      meshRef.current.rotation.x = Math.PI * (0.1 * Math.sin(elapsedTime * 0.001));
+      meshRef.current.rotation.y += Math.PI * 0.001;
     }
   });
   
   return (
-    <group >
+    <group visible={visible}>
+      {/* Chest */}
       <mesh
         ref={meshRef} 
-        visible={visible}
         position={position}
         rotation-y={rotationY}
-        geometry={geometry}
+        geometry={chestGeometry}
         material={material}
         castShadow={true}
         receiveShadow={true}
-      />
+        >
+        {/* Lid */}
+        <mesh
+          position={[0, 0.51, -0.51]}
+          geometry={lidGeometry}
+          material={material}
+          castShadow={true}
+          receiveShadow={true}
+        />
+      </mesh>
     </group>
   )
 }
 
-useGLTF.preload("models/boat-row-small.glb")
+useGLTF.preload("models/chest.glb")
