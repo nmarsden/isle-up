@@ -7,14 +7,14 @@ import { lerp } from "three/src/math/MathUtils.js";
 
 const glsl = (x: any) => x;
 
-const barrelAnimationDurationMSecs = 300;
+const boatAnimationDurationMSecs = 300;
 
 // Note: these Y positions are relative to the island
-const barrelUpPositionY = 0.6;
-const barrelDownPositionY = 0.9;
+const boatUpPositionY = 0.7;
+const boatDownPositionY = 1.5;
 
-export default function Barrel ({ id }: { id: number }) {
-  const {scene} = useGLTF("models/barrel.glb");
+export default function Boat ({ id }: { id: number }) {
+  const {scene} = useGLTF("models/boat-row-small.glb");
     
   const waterLevel = useGlobalStore((state: GlobalState) => state.waterLevel);
   const waveSpeed = useGlobalStore((state: GlobalState) => state.waveSpeed);
@@ -40,7 +40,7 @@ export default function Barrel ({ id }: { id: number }) {
     }
   }, []);
 
-  const barrelAnimationStartTime = useRef(new Date().getTime());
+  const boatAnimationStartTime = useRef(new Date().getTime());
   const animatingToggle = useRef(false);
   
   useEffect(() => { uniforms.uWaterLevel.value = waterLevel }, [ waterLevel ]);
@@ -57,7 +57,7 @@ export default function Barrel ({ id }: { id: number }) {
 
       // toggle detected - starting animating toggle
       animatingToggle.current = true;
-      barrelAnimationStartTime.current = new Date().getTime();
+      boatAnimationStartTime.current = new Date().getTime();
     }
   }, [ toggledIds ]);  
 
@@ -144,10 +144,10 @@ export default function Barrel ({ id }: { id: number }) {
           );
         }
     
-        const angle = 0.8 * Math.PI * Math.random();
+        const angle = Math.PI + (0.8 * Math.PI * Math.random());
         const radius = 3;
         const x = radius * Math.cos(angle);
-        const y = barrelUpPositionY;
+        const y = boatUpPositionY;
         const z = radius * Math.sin(angle);
         const position: [number, number, number] = [x, y, z];
 
@@ -161,28 +161,28 @@ export default function Barrel ({ id }: { id: number }) {
 
     if (!meshRef.current) return;
 
-    // animate barrel
-    const elapsedTime = new Date().getTime() - barrelAnimationStartTime.current;
-    const animationProgress = elapsedTime / barrelAnimationDurationMSecs;
+    // animate boat
+    const elapsedTime = new Date().getTime() - boatAnimationStartTime.current;
+    const animationProgress = elapsedTime / boatAnimationDurationMSecs;
     if (animatingToggle.current) {
       if ((animationProgress > 1)) {
         animatingToggle.current = false;
         if (!up.current) {
-          // start animating floating barrel
-          barrelAnimationStartTime.current = new Date().getTime();
+          // start animating floating boat
+          boatAnimationStartTime.current = new Date().getTime();
         }
       } else {
-        const posY = up.current ? lerp(barrelDownPositionY, barrelUpPositionY, animationProgress) : lerp(barrelUpPositionY, barrelDownPositionY, animationProgress);
+        const posY = up.current ? lerp(boatDownPositionY, boatUpPositionY, animationProgress) : lerp(boatUpPositionY, boatDownPositionY, animationProgress);
         meshRef.current.position.y = posY;
         if (up.current) {
           meshRef.current.rotation.x = lerp(meshRef.current.rotation.x, 0, animationProgress);
         }
       }
     } else if (!up.current) {
-      // animate floating barrel
-      meshRef.current.position.y = barrelDownPositionY + (0.2 * Math.sin(elapsedTime * 0.001));
-      meshRef.current.rotation.x = Math.PI * (0.1 * Math.sin(elapsedTime * 0.001));
-      meshRef.current.rotation.y += Math.PI * 0.001;
+      // animate floating boat
+      meshRef.current.position.y = boatDownPositionY + (0.05 * Math.sin(elapsedTime * 0.001));
+      meshRef.current.rotation.x = Math.PI * (0.05 * Math.sin(elapsedTime * 0.001));
+      meshRef.current.rotation.y += 0.0025 * Math.sin(elapsedTime * 0.00025);
     }
   });
   
@@ -200,4 +200,4 @@ export default function Barrel ({ id }: { id: number }) {
   )
 }
 
-useGLTF.preload("models/barrel.glb")
+useGLTF.preload("models/boat-row-small.glb")

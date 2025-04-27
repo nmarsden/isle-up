@@ -4,6 +4,7 @@ import {GlobalState, NUM_CELLS, useGlobalStore} from "../stores/useGlobalStore.t
 import Tree from "./tree.tsx";
 import Island from "./island.tsx";
 import Barrel from "./barrel.tsx";
+import Boat from "./boat.tsx";
 
 export default function Islands() {
   const underwaterColor = useGlobalStore((state: GlobalState) => state.underwaterColor);
@@ -33,6 +34,7 @@ export default function Islands() {
     {islandIds.map((id) => (
       <Island id={id} key={`island-${id}`}>
         <Barrel id={id} />
+        <Boat id={id} />
         <Tree id={id} />
       </Island>
     ))}

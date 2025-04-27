@@ -72,7 +72,7 @@ export default function Island ({ id, children }: { id: number, children: ReactN
   useEffect(() => { uniforms.uHovered.value = hoveredIds.includes(id) ? 1 : 0 }, [ hoveredIds ]);  
   useEffect(() => { uniforms.uHoveredColor.value = hoveredColor }, [ hoveredColor ]);
 
-  const { islandPosition, islandGeometry, islandMaterial, uniforms } = useMemo(() => {
+  const { islandPosition, islandRotationY, islandGeometry, islandMaterial, uniforms } = useMemo(() => {
 
     /* Position */
     const { row, col } = toRowAndCol(id);
@@ -80,6 +80,9 @@ export default function Island ({ id, children }: { id: number, children: ReactN
     const y = Y_UP;
     const z = row * CELL_WIDTH - (2 * CELL_WIDTH);
     const islandPosition = new Vector3(x, y, z);
+
+    /* Rotation Y */
+    const islandRotationY = Math.random() * Math.PI * 2;
 
     /* Geometry */
     const islandGeometry = (nodes['Terrain-02'] as Mesh).geometry;
@@ -214,7 +217,7 @@ export default function Island ({ id, children }: { id: number, children: ReactN
       );
     }
 
-    return { islandPosition, islandGeometry, islandMaterial, uniforms };
+    return { islandPosition, islandRotationY, islandGeometry, islandMaterial, uniforms };
   },
   [
     planeMetalness, planeRoughness, planeWireframe, planeFlatShading
@@ -243,6 +246,7 @@ export default function Island ({ id, children }: { id: number, children: ReactN
       ref={mesh} 
       scale={0.95}
       position={islandPosition}
+      rotation-y={islandRotationY}
       geometry={islandGeometry}
       material={islandMaterial}
       castShadow={islandShadows}

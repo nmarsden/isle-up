@@ -28,8 +28,8 @@
 [ ] add island features
     [x] palm trees
         [x] use custom shader to show foam at water level
-    [ ] barrels - float when island sinks
-    [ ] boats - float when island sinks
+    [x] barrels - float when island sinks
+    [x] boats - float when island sinks
     [ ] rocks
     [ ] hut
     [ ] sea gulls
@@ -98,3 +98,4 @@
             - SOLUTION: call computeBoundingSphere() on the instancedMesh after updating positions
 [x] Fix bug - canvas repositions on start
 [x] Fix bug - cell border render artifact when far from camera
+[ ] Fix bug - shadows do not render properly sometimes
