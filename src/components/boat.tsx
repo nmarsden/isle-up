@@ -14,7 +14,7 @@ const boatUpPositionY = 0.7;
 const boatDownPositionY = 1.5;
 
 export default function Boat ({ id }: { id: number }) {
-  const {scene} = useGLTF("models/boat-row-small.glb");
+  const { nodes, materials } = useGLTF("models/boat-row-small.glb");
     
   const waterLevel = useGlobalStore((state: GlobalState) => state.waterLevel);
   const waveSpeed = useGlobalStore((state: GlobalState) => state.waveSpeed);
@@ -61,10 +61,11 @@ export default function Boat ({ id }: { id: number }) {
     }
   }, [ toggledIds ]);  
 
-  const { visible, geometry, material, position, rotationY } = useMemo(() => {
+  const { visible, boatGeometry, paddlesGeometry, material, position, rotationY } = useMemo(() => {
       const visible = Math.random() < 0.1;
-      const geometry = (scene.children[0] as Mesh).geometry;
-      const material = ((scene.children[0] as Mesh).material as MeshStandardMaterial).clone();
+      const boatGeometry = (nodes['boat-row-small_1'] as Mesh).geometry;
+      const paddlesGeometry = (nodes['paddles'] as Mesh).geometry;
+      const material = (materials.colormap as MeshStandardMaterial).clone();
 
       material.onBeforeCompile = (shader) => {
           shader.uniforms.uWaterLevel = uniforms.uWaterLevel;
@@ -154,7 +155,7 @@ export default function Boat ({ id }: { id: number }) {
 
         const rotationY = Math.random() * Math.PI * 2;
 
-      return { visible, geometry, material, position, rotationY }
+      return { visible, boatGeometry, paddlesGeometry, material, position, rotationY }
   }, []);
     
   useFrame(({ clock }) => {
@@ -194,11 +195,19 @@ export default function Boat ({ id }: { id: number }) {
         visible={visible}
         position={position}
         rotation-y={rotationY}
-        geometry={geometry}
+        geometry={boatGeometry}
         material={material}
         castShadow={true}
         receiveShadow={true}
-      />
+      >
+        <mesh
+          position={[0, 0.056, -0.175]}
+          geometry={paddlesGeometry}
+          material={material}
+          castShadow={true}
+          receiveShadow={true}
+        />
+      </mesh>
     </group>
   )
 }
