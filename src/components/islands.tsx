@@ -42,15 +42,17 @@ export default function Islands() {
     ))}
     {/* Underwater Ground Plane */}
     <mesh
-      rotation-x={-Math.PI / 2}
-      receiveShadow={true}
       visible={true}
+      position-y={0.0}
+      rotation-x={-Math.PI / 2}
+      receiveShadow={false}
     >
       <planeGeometry args={[1000, 1000]} />
       <meshStandardMaterial
         color={underwaterColor}
         roughness={planeRoughness}
         metalness={planeMetalness}
+        depthWrite={false}
       />
     </mesh>
   </group>

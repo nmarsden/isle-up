@@ -31,6 +31,8 @@ export default function App() {
             enablePan={false}
             minPolarAngle={0}
             maxPolarAngle={Math.PI * 0.45}
+            minDistance={5.0}
+            maxDistance={71.0}
           />
           <Lights />
           <Camera />

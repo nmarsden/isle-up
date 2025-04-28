@@ -101,9 +101,10 @@
     [ ] completed 00 - 09 in minimum moves
     [ ] completed 10 - 19 in minimum moves
     [ ] completed 20 - 29 in minimum moves
+[x] favicon
 [x] Fix bug - sometimes hovering and clicking islands is not working
             - SOLUTION: call computeBoundingSphere() on the instancedMesh after updating positions
 [x] Fix bug - canvas repositions on start
 [x] Fix bug - cell border render artifact when far from camera
 [x] Fix bug - shadows do not render properly sometimes
-[x] favicon
+[x] Fix bug - render issue when water reaches the lowest level (z-fighting?)
