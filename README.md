@@ -16,8 +16,10 @@ Built with React, TypeScript, & Vite.
 
 ### Assets
 #### Models
-- Kenny - Pirate Kit - https://kenney.nl/assets/pirate-kit
+- Pirate Kit - Kenny - https://kenney.nl/assets/pirate-kit
 #### Audio
-- Waves SFX - https://opengameart.org/content/beach-ocean-waves
+- Waves SFX - jasinski - https://opengameart.org/content/beach-ocean-waves
 #### Icons
 - Island On Water - icon8 - https://icons8.com/icon/NEQRj9jAWRbb/island-on-water
+#### Fonts
+- Shrikhand - Google Fonts - https://fonts.google.com/specimen/Shrikhand

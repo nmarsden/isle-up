@@ -104,4 +104,4 @@
 [x] Fix bug - canvas repositions on start
 [x] Fix bug - cell border render artifact when far from camera
 [x] Fix bug - shadows do not render properly sometimes
-[ ] favicon
+[x] favicon
