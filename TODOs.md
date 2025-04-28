@@ -99,4 +99,4 @@
             - SOLUTION: call computeBoundingSphere() on the instancedMesh after updating positions
 [x] Fix bug - canvas repositions on start
 [x] Fix bug - cell border render artifact when far from camera
-[ ] Fix bug - shadows do not render properly sometimes
+[x] Fix bug - shadows do not render properly sometimes
