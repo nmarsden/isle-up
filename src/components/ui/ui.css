@@ -23,28 +23,6 @@
   gap: 10px;
 }
 
-.level {
-  font-size: 24px;
-  line-height: 24px;
-  padding: 10px;
-  border: 1px solid rgba(var(--dark-color), 0.6);
-}
-.level:hover {
-  color: rgba(var(--dark-color), 0.6);
-  cursor: pointer;
-}
-
-.about {
-  font-size: 24px;
-  line-height: 24px;
-  padding: 10px;
-  border: 1px solid rgba(var(--dark-color), 0.6);
-}
-.about:hover {
-  color: rgba(var(--dark-color), 0.6);
-  cursor: pointer;
-}
-
 .footer {
   position: fixed;
   bottom: 20px;
@@ -58,15 +36,4 @@
 
 .moves {
   padding: 10px;
-}
-
-.reset {
-  font-size: 24px;
-  line-height: 24px;
-  padding: 10px;
-  border: 1px solid rgba(var(--dark-color), 0.6);
-}
-.reset:hover {
-  color: rgba(var(--dark-color), 0.6);
-  cursor: pointer;
 }

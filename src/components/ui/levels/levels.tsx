@@ -86,8 +86,8 @@ export default function Levels({ show, onLevelSelected }: { show: boolean, onLev
   }
 
   return (
-    <div className={`levelsOverlay ${show ? 'show' : 'hide'}`}>
-      <div className="levelsHeading">Select a Level</div>
+    <div className={`overlay ${show ? 'show' : 'hide'}`}>
+      <div className="overlayHeading">Select a Level</div>
       <div className="levelsContainer">
         {groupedLevels.map((grplevels) => renderLevelsGroup(grplevels))}
       </div>

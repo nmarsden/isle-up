@@ -14,18 +14,18 @@ export default function Completed({ show, onRetrySelected, onNextLevelSelected }
   }, [ level ])
 
   return (
-    <div className={`completedOverlay ${show ? 'show' : 'hide'}`}>
+    <div className={`overlay ${show ? 'show' : 'hide'}`}>
       {isAllCompleted ? (
         <>
-          <div className="completedHeading">ALL LEVELS COMPLETED!</div>
-          <div className="completedButton" onClick={() => onNextLevelSelected()}>OK</div>
+          <div className="overlayHeading">All Levels Completed!</div>
+          <div className="button-light" onClick={() => onNextLevelSelected()}>OK</div>
         </>
       ) : (
         <>
-          <div className="completedHeading">LEVEL {formattedLevel(level)} COMPLETED!</div>
+          <div className="overlayHeading">Level {formattedLevel(level)} Completed!</div>
           <div className="completedButtons">
-            <div className="completedButton" onClick={() => onRetrySelected()}>RETRY</div>
-            <div className="completedButton" onClick={() => onNextLevelSelected()}>NEXT</div>
+            <div className="button-light" onClick={() => onRetrySelected()}>RETRY</div>
+            <div className="button-light" onClick={() => onNextLevelSelected()}>NEXT</div>
           </div>
         </>
       )}

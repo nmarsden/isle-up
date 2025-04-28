@@ -2,40 +2,8 @@
   interpolate-size: allow-keywords;
 }
 
-.levelsOverlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  padding: 20px;
-  background-color: rgba(var(--dark-color), 0.8);
-  color: rgba(var(--light-color), 0.9);
-  font-size: 40px;
-  font-family: 'Doto', sans-serif;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-.levelsOverlay.show {
-  display: flex;
-}
-
-.levelsOverlay.hide {
-  display: none;
-}
-
-.levelsHeading {
-  font-size: 45px;
-  color: white;
-  text-shadow: 0 0 30px white;
-  margin-bottom: 50px;
-}
-
 .levelsContainer {
+  margin-top: 20px;
   display: flex;
   flex-direction: column;
   gap: 5px;
@@ -58,7 +26,7 @@ summary {
 
 summary::marker {
   font-size: 0.75em;
-  color: hsl(0 0% 40%);
+  color: rgba(var(--light-color), 0.9);
 }
 
 details * {
@@ -88,7 +56,7 @@ details:open::details-content {
   padding: 10px;
 }
 .levelsButton.unlocked {
-  color: rgba(var(--light-color), 0.9);
+  color: rgba(var(--light-color), 1.0);
   border: 1px solid rgba(var(--light-color), 0.9);
 }
 .levelsButton.unlocked:hover {

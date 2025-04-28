@@ -1,49 +1,4 @@
-.splashScreenOverlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  padding: 20px;
-  background-color: rgba(var(--dark-color), 0.8);
-  color: rgba(var(--light-color), 0.9);
-  font-size: 40px;
-  font-family: 'Doto', sans-serif;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-.splashScreenOverlay.show {
-  display: flex;
-}
-
-.splashScreenOverlay.hide {
-  display: none;
-}
-
-.splashScreenHeading {
-  font-size: 45px;
-  line-height: 50px;;
-  color: white;
-  text-shadow: 0 0 30px white;
-  margin-bottom: 50px;
-}
-
 .splashScreenTagLine {
   margin-block: 30px;
   line-height: 44px;
-}
-
-.splashScreenButton {
-  font-size: 24px;
-  line-height: 24px;
-  padding: 10px;
-  border: 1px solid rgba(var(--light-color), 1.0);
-}
-.splashScreenButton:hover {
-  color: rgba(var(--light-color), 0.6);
-  cursor: pointer;
 }
