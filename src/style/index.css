@@ -125,10 +125,10 @@ a:hover {
 .logo-icon {
   width: 50px;
   height: 50px;
-  background-image: url('icons/icons8-island-on-water-50.png');
+  background-image: url('/isle-up/icons/icons8-island-on-water-50.png');
 }
 .logo-icon.light {
-	background-image: url('icons/icons8-island-on-water-50-white.png');
+	background-image: url('/isle-up/icons/icons8-island-on-water-50-white.png');
 }
 
 .logo-text {
