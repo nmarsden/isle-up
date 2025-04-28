@@ -6,8 +6,11 @@ export default function SplashScreen({ show, onPlaySelected }: {
 }) {
   return (
     <div className={`overlay ${show ? 'show' : 'hide'}`}>
-        <div className="overlayHeading">Isle Up</div>
-        <div className="splashScreenTagLine">Raise all the islands</div>
+        <div className="logo">
+          <div className="logo-icon light"></div>
+          <div className="logo-text">Isle Up</div>
+        </div>
+        <div className="tagLine">Raise all the islands</div>
         <div className="button-light" onClick={() => onPlaySelected()}>PLAY</div>
     </div>
   )

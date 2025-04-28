@@ -19,3 +19,5 @@ Built with React, TypeScript, & Vite.
 - Kenny - Pirate Kit - https://kenney.nl/assets/pirate-kit
 #### Audio
 - Waves SFX - https://opengameart.org/content/beach-ocean-waves
+#### Icons
+- Island On Water - icon8 - https://icons8.com/icon/NEQRj9jAWRbb/island-on-water

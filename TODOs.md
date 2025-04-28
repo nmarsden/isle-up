@@ -42,10 +42,12 @@
 [x] tweak water wave speed and amplitude
 [ ] UI
     [x] Heading 
+        [x] island logo?
     [x] Level
         [x] level selector overlay
         [x] only completed levels and next uncompleted level (ie. unlocked level) can be selected
     [x] About
+        [x] island logo?
     [x] Moves
         [x] track number of moves
     [x] Reset
@@ -54,6 +56,8 @@
         [x] Welcome to 'Isle Up'
         [x] Tag line: Raise all the islands
         [x] Play button
+        [x] island logo?
+
     [ ] Level Completed    
         [x] show 'WELL DONE'
         [ ] Level n completed in n moves
@@ -100,3 +104,4 @@
 [x] Fix bug - canvas repositions on start
 [x] Fix bug - cell border render artifact when far from camera
 [x] Fix bug - shadows do not render properly sometimes
+[ ] favicon

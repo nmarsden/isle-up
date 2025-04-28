@@ -7,10 +7,10 @@
 	--selected-colour: 255, 255, 0;
 }
 
-/* @font-face {
-  font-family: 'Doto';
-  src: url('/fonts/Doto-ExtraBold.ttf');
-} */
+@font-face {
+  font-family: 'Shrikhand';
+  src: url('/fonts/Shrikhand-Regular.ttf');
+}
 
 html,
 body,
@@ -72,7 +72,6 @@ a:hover {
   background-color: rgba(var(--dark-color), 0.5);
   color: rgba(var(--light-color), 1.0);
   font-size: 40px;
-  font-family: 'Doto', sans-serif;
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -93,6 +92,7 @@ a:hover {
   font-size: 45px;
   line-height: 50px;
   margin-bottom: 50px;
+  font-family: 'Shrikhand', sans-serif;  
 }
 
 .button-light {
@@ -115,4 +115,32 @@ a:hover {
 .button-dark:hover {
   color: rgba(var(--dark-color), 0.6);
   cursor: pointer;
+}
+
+.logo {
+  display: flex;
+  gap: 5px;
+}
+
+.logo-icon {
+  width: 50px;
+  height: 50px;
+  background-image: url('icons/icons8-island-on-water-50.png');
+}
+.logo-icon.light {
+	background-image: url('icons/icons8-island-on-water-50-white.png');
+}
+
+.logo-text {
+	font-size: 48px;
+  line-height: 48px;
+  font-family: 'Shrikhand', sans-serif;
+}
+
+.tagLine {
+  margin-block: 30px;
+  line-height: 44px;
+  font-size: 24px;
+  letter-spacing: 1px;
+  font-family: 'Shrikhand', sans-serif;  
 }

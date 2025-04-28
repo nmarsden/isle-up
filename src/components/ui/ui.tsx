@@ -57,7 +57,11 @@ export default function Ui() {
           {(showSplashScreen || showInfo || showLevels) ? '' : (
             <>
               <div className="header">
-                <div className="heading">Isle Up</div>
+                <div className="logo">
+                  <div className="logo-icon"></div>
+                  <div className="logo-text">Isle Up</div>
+                </div>
+                
                 <div className="actions">
                   <div className="button-dark" onClick={onLevelsButtonClicked}>LEVEL&nbsp;{formattedLevel(level)}</div>
                   <div className="button-dark" onClick={onInfoButtonClicked}>ABOUT</div>
