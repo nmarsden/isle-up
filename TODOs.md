@@ -48,6 +48,8 @@
         [x] only completed levels and next uncompleted level (ie. unlocked level) can be selected
     [x] About
         [x] island logo?
+        [x] add instructions
+        [x] fix credits
     [x] Moves
         [x] track number of moves
     [x] Reset

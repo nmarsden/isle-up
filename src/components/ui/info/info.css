@@ -1,21 +1,32 @@
+.infoInstructions {
+  font-size: 16px;
+}
+
 .infoSubHeading {
-  font-size: 30px;
-  margin-top: 50px;
+  font-family: 'Shrikhand', sans-serif;
+  font-size: 24px;
+  margin-top: 20px;
 }
 
-.infoTagLine {
-  margin-top: 40px;
-  line-height: 44px;
-}
-
-.infoLinks {
-  margin-block: 20px;
-  font-size: 20px;
+.infoBuiltBy {
+  font-size: 16px;
   display: flex;
   gap: 10px;
 }
 
-.infoLinks a,
-.infoLinks a:visited {
-  color: #93bfe7;
+.infoCredits {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+
+.infoCredit {
+  font-size: 16px;
+  display: flex;
+  gap: 10px;
+}
+
+.infoCreditLabel {
+  min-width: 70px;
+  text-align: left;
 }
