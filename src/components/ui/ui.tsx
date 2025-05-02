@@ -63,13 +63,13 @@ export default function Ui() {
                 </div>
                 
                 <div className="actions">
-                  <div className="button-dark" onClick={onLevelsButtonClicked}>LEVEL&nbsp;{formattedLevel(level)}</div>
-                  <div className="button-dark" onClick={onInfoButtonClicked}>ABOUT</div>
+                  <div className="button-dark" onClick={onLevelsButtonClicked}>{formattedLevel(level)}</div>
+                  <div className="button-dark" onClick={onInfoButtonClicked}><span className="fa-solid fa-circle-info"></span></div>
                 </div>
               </div>
               <div className="footer">
                 <div className="moves">MOVES: {moves}</div>
-                <div className="button-dark" onClick={onResetButtonClicked}>RESET</div>
+                <div className="button-dark" onClick={onResetButtonClicked}><span className="fa-solid fa-arrows-rotate"></span></div>
               </div>
             </>
           )}

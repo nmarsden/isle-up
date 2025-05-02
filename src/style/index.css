@@ -2,7 +2,7 @@
 	--main-text-colour: #040337;
 	--link-colour: #a8ffed;
 	--background-colour: white;
-  --dark-color: 10, 10, 10;
+  --dark-color: 7, 4, 99;
   --light-color: 250, 250, 250;
 	--selected-colour: 255, 255, 0;
 }
@@ -10,6 +10,11 @@
 @font-face {
   font-family: 'Shrikhand';
   src: url('/fonts/Shrikhand-Regular.ttf');
+}
+
+@font-face {
+  font-family: 'Arimo';
+  src: url('/fonts/Arimo-Regular.ttf');
 }
 
 html,
@@ -41,8 +46,9 @@ body {
 }
 
 body {
-	font-family: 'Helvetica Neue', arial, sans-serif;
+	font-family: 'Arimo', arial, sans-serif;
 	font-size: 22px;
+  font-weight: 600;
 	line-height: 28px;
 	color: var(--main-text-colour);
 }
@@ -99,10 +105,17 @@ a:hover {
   font-size: 24px;
   line-height: 24px;
   padding: 10px;
+  color: rgba(var(--light-color), 1.0);
   border: 1px solid rgba(var(--light-color), 1.0);
+  border-radius: 4px;
+  min-width: 50px;
+  min-height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .button-light:hover {
-  color: rgba(var(--light-color), 0.6);
+  outline: 1px solid rgba(var(--light-color), 1.0);
   cursor: pointer;
 }
 
@@ -110,10 +123,17 @@ a:hover {
   font-size: 24px;
   line-height: 24px;
   padding: 10px;
+  color: rgba(var(--dark-color), 0.6);
   border: 1px solid rgba(var(--dark-color), 0.6);
+  border-radius: 4px;
+  min-width: 50px;
+  min-height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .button-dark:hover {
-  color: rgba(var(--dark-color), 0.6);
+  outline: 1px solid rgba(var(--dark-color), 1.0);
   cursor: pointer;
 }
 
@@ -125,7 +145,7 @@ a:hover {
 .logo-icon {
   width: 50px;
   height: 50px;
-  background-image: url('/isle-up/icons/icons8-island-on-water-50.png');
+  background-image: url('/isle-up/icons/icons8-island-on-water-50-dark.png');
 }
 .logo-icon.light {
 	background-image: url('/isle-up/icons/icons8-island-on-water-50-white.png');
