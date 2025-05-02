@@ -54,6 +54,7 @@ export type GlobalState = {
   moves: number;
   levelCompleted: boolean;
   bestMoves: number[];
+  volume: number;
 
   setPlaying: () => void;
   setUnderwaterColor: (underwaterColor: Color) => void;
@@ -65,6 +66,7 @@ export type GlobalState = {
   toggleUp: (id: number) => void;
   setHoveredColor: (hoveredColor: Color) => void;
   resetLevel: (level: number) => void;
+  toggleVolume: () => void;
 };
 
 const setHoveredState = (row: number, column: number, hovered: boolean) => {
@@ -131,6 +133,7 @@ export const useGlobalStore = create<GlobalState>()(
         moves: 0,
         levelCompleted: false,
         bestMoves: [],
+        volume: 0.5,
 
         setPlaying: () => set(() => ({ playing: true })),
         setUnderwaterColor: (underwaterColor: Color) => set(() => ({ underwaterColor })),
@@ -210,14 +213,16 @@ export const useGlobalStore = create<GlobalState>()(
             }
           })
           return { upIds: getUpIds(), toggledIds, level, moves: 0, levelCompleted: false };
-        })
+        }),
+        toggleVolume: () => set(({ volume }) => ({ volume: volume === 0 ? 0.5 : 0 }))
       }
     },
     {
       name: 'isle-up',
       partialize: (state) => ({ 
         level: state.level, 
-        bestMoves: state.bestMoves 
+        bestMoves: state.bestMoves,
+        volume: state.volume
       }),
     }
   )

@@ -13,6 +13,8 @@ export default function Ui() {
   const moves = useGlobalStore((state: GlobalState) => state.moves);
   const levelCompleted = useGlobalStore((state: GlobalState) => state.levelCompleted);
   const resetLevel = useGlobalStore((state: GlobalState) => state.resetLevel);
+  const volume = useGlobalStore((state: GlobalState) => state.volume);
+  const toggleVolume = useGlobalStore((state: GlobalState) => state.toggleVolume);
 
   const [showSplashScreen, setShowSplashScreen] = useState(true);
   const [showLevels, setShowLevels] = useState(false);
@@ -33,6 +35,9 @@ export default function Ui() {
 
   const onInfoButtonClicked = useCallback(() => setShowInfo(true), []);
   const onInfoClose = useCallback(() => setShowInfo(false), []);
+
+  const onVolumeButtonClicked = useCallback(() => toggleVolume(), []);
+
   const onResetButtonClicked = useCallback(() => resetLevel(level), [ level ]);
 
   const onRetrySelected = useCallback(() => {
@@ -65,6 +70,7 @@ export default function Ui() {
                 <div className="actions">
                   <div className="button-dark" onClick={onLevelsButtonClicked}>{formattedLevel(level)}</div>
                   <div className="button-dark" onClick={onInfoButtonClicked}><span className="fa-solid fa-circle-info"></span></div>
+                  <div className="button-dark" onClick={onVolumeButtonClicked}><span className={`fa-solid ${volume === 0 ? 'fa-volume-xmark' : 'fa-volume-high'}`}></span></div>
                 </div>
               </div>
               <div className="footer">

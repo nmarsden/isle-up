@@ -104,7 +104,7 @@ a:hover {
 .button-light {
   font-size: 24px;
   line-height: 24px;
-  padding: 10px;
+  padding: 5px;
   color: rgba(var(--light-color), 1.0);
   border: 1px solid rgba(var(--light-color), 1.0);
   border-radius: 4px;
@@ -122,7 +122,7 @@ a:hover {
 .button-dark {
   font-size: 24px;
   line-height: 24px;
-  padding: 10px;
+  padding: 5px;
   color: rgba(var(--dark-color), 0.6);
   border: 1px solid rgba(var(--dark-color), 0.6);
   border-radius: 4px;
