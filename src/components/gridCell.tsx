@@ -1,8 +1,14 @@
 import { useCallback, useEffect, useMemo, useRef } from "react";
-import { Mesh, MeshBasicMaterial, PlaneGeometry, Vector3 } from "three";
+import { Mesh, MeshBasicMaterial, PlaneGeometry, Vector2, Vector3 } from "three";
 import { CELL_WIDTH, GlobalState, toRowAndCol, useGlobalStore } from "../stores/useGlobalStore";
 import { Line } from "@react-three/drei";
 import { LineMaterial } from "three/examples/jsm/Addons.js";
+import { ThreeEvent } from "@react-three/fiber";
+
+type PointerData = {
+  pos: Vector2;
+  time: number;
+};
 
 export default function GridCell({ id }: { id: number }) {
   const setHovered = useGlobalStore((state: GlobalState) => state.setHovered);
@@ -11,8 +17,30 @@ export default function GridCell({ id }: { id: number }) {
 
   const meshRef = useRef<Mesh>(null!);
   const lineRef = useRef<typeof Line | null>(null!);
-  
-  const onClicked = useCallback((id: number) => toggleUp(id), []);
+  const pointerDownData = useRef<PointerData>({ pos: new Vector2(), time: 0 });
+  const pointerUpData = useRef<PointerData>({ pos: new Vector2(), time: 10000 });
+
+  const onPointerDown = useCallback((event: ThreeEvent<PointerEvent>) => {
+    pointerDownData.current.pos.setX(event.x);
+    pointerDownData.current.pos.setY(event.y);
+    pointerDownData.current.time = new Date().getTime();
+  }, []);
+  const onPointerUp = useCallback((id: number) => {
+    return (event: ThreeEvent<PointerEvent>) => {
+      pointerUpData.current.pos.setX(event.x);
+      pointerUpData.current.pos.setY(event.y);
+      pointerUpData.current.time = new Date().getTime();
+
+      const distance = pointerDownData.current.pos.distanceTo(pointerUpData.current.pos);
+      const time = pointerUpData.current.time - pointerDownData.current.time;
+
+      // Is this a click?
+      if (time < 300 && distance < 5) {
+        toggleUp(id);
+      }
+
+    }
+  }, []);
   const onPointerOver = useCallback((id: number) => setHovered(id, true), []);
   const onPointerOut = useCallback((id: number) => setHovered(id, false), []);
 
@@ -74,7 +102,8 @@ export default function GridCell({ id }: { id: number }) {
         key={`grid-${id}`}
         geometry={planeGeometry}
         material={planeMaterial}
-        onClick={() => onClicked(id)}
+        onPointerDown={onPointerDown}
+        onPointerUp={onPointerUp(id)}
         onPointerOver={() => onPointerOver(id)}
         onPointerOut={() => onPointerOut(id)}
       />
