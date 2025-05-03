@@ -19,13 +19,13 @@ export default function App() {
       <Canvas
         shadows={true}
       >
-        <Fog />
-        <Sky
-          sunPosition={[1, 0.5, -1]}
-          turbidity={0.25}
-        />
-        <Performance />
         <Suspense>
+          <Fog />
+          <Sky
+            sunPosition={[1, 0.5, -1]}
+            turbidity={0.25}
+          />
+          <Performance />
           <OrbitControls 
             enableZoom={true}
             enablePan={false}
@@ -43,7 +43,7 @@ export default function App() {
         </Suspense>
       </Canvas>
       <Ui />
-      <Loader containerStyles={{ background: '#ffffff' }}/>
+      <Loader containerStyles={{ background: '#07046380' }}/>
     </>
   );
 }

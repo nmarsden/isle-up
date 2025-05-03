@@ -1,1 +1,36 @@
+.splashScreen.background {
+  opacity: 1;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: white;
+  animation: fade-out 2s ease-out forwards;
+  animation-delay: 1s;
+}
+.splashScreen.background.show {
+  display: block;
+}
 
+.splashScreen.background.hide {
+  display: none;
+}
+
+.splashScreen .logo,
+.splashScreen .tagLine,
+.splashScreen .button-light {
+  opacity: 0;
+  animation: fade-in 1s forwards;
+  animation-delay: 1s;
+}
+
+@keyframes fade-in {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+@keyframes fade-out {
+  0% { opacity: 1; }
+  100% { opacity: 0; }
+}
