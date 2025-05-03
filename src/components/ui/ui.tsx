@@ -4,6 +4,7 @@ import Completed from './completed/completed';
 import Info from './info/info';
 import Levels from './levels/levels';
 import SplashScreen from './splashScreen/splashScreen';
+import Star from './star/star';
 import './ui.css';
 import {useCallback, useEffect, useState} from "react";
 
@@ -11,6 +12,7 @@ export default function Ui() {
   const setPlaying = useGlobalStore((state: GlobalState) => state.setPlaying);
   const level = useGlobalStore((state: GlobalState) => state.level);
   const moves = useGlobalStore((state: GlobalState) => state.moves);
+  const movesForStar = useGlobalStore((state: GlobalState) => state.movesForStar);
   const levelCompleted = useGlobalStore((state: GlobalState) => state.levelCompleted);
   const resetLevel = useGlobalStore((state: GlobalState) => state.resetLevel);
   const volume = useGlobalStore((state: GlobalState) => state.volume);
@@ -74,7 +76,10 @@ export default function Ui() {
                 </div>
               </div>
               <div className="footer">
-                <div className="moves">MOVES: {moves}</div>
+                <div className="movesContainer">
+                  <div>MOVES: {moves}</div>
+                  {movesForStar > 0 ? <div className="movesForStar">{movesForStar} moves = <Star /></div> : <></>}
+                </div>
                 <div className="button-dark" onClick={onResetButtonClicked}><span className="fa-solid fa-arrows-rotate"></span></div>
               </div>
             </>

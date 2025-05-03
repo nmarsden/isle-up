@@ -55,6 +55,9 @@ details:open::details-content {
   line-height: 24px;
   padding: 10px;
   border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 }
 .levelsButton.unlocked {
   color: rgba(var(--light-color), 1.0);

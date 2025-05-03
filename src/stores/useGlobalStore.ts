@@ -52,6 +52,7 @@ export type GlobalState = {
   hoveredColor: Color;
   level: number;
   moves: number;
+  movesForStar: number;
   levelCompleted: boolean;
   bestMoves: number[];
   volume: number;
@@ -131,6 +132,7 @@ export const useGlobalStore = create<GlobalState>()(
         hoveredColor: new Color('#ffffff'),
         level: 0,
         moves: 0,
+        movesForStar: 0,
         levelCompleted: false,
         bestMoves: [],
         volume: 0.5,
@@ -202,7 +204,7 @@ export const useGlobalStore = create<GlobalState>()(
         resetLevel: (level: number) => set(() => {
           // Perform toggles to change state to the desired level state
           const toggledIds: number[] = [];
-          LEVELS_DATA[level].forEach((up, index) => {
+          LEVELS_DATA[level].data.forEach((up, index) => {
             const { row, col } = toRowAndCol(index);
             const upCurrent = islandStates[index].up;
             const upTarget = up === 1;
@@ -212,7 +214,8 @@ export const useGlobalStore = create<GlobalState>()(
               toggledIds.push(toIndex(row, col));
             }
           })
-          return { upIds: getUpIds(), toggledIds, level, moves: 0, levelCompleted: false };
+          const movesForStar = LEVELS_DATA[level].movesForStar;
+          return { upIds: getUpIds(), toggledIds, level, moves: 0, movesForStar, levelCompleted: false };
         }),
         toggleVolume: () => set(({ volume }) => ({ volume: volume === 0 ? 0.5 : 0 }))
       }

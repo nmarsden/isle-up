@@ -32,7 +32,14 @@
   gap: 10px;
 }
 
-.moves {
-  color: rgba(var(--dark-color), 0.6);
+.movesContainer {
+  display: flex;
+  flex-direction: column;
   padding: 10px;
+  color: rgba(var(--dark-color), 0.6);
+}
+
+.movesForStar {
+  font-size: 16px;
+  text-align: center;
 }

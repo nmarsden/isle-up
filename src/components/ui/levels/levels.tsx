@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { formattedLevel, GlobalState, useGlobalStore } from '../../../stores/useGlobalStore';
 import './levels.css';
 import { LEVELS_DATA } from '../../../levelsData';
+import Star from '../star/star';
 
 type GroupedLevels = {
   id: number;
@@ -19,7 +20,7 @@ export default function Levels({ show, onLevelSelected }: { show: boolean, onLev
     for (let i=0; i<numGroups; i++) {
       groupedLevels.push({ id: i, levels: [] })
       for (let j=0; j<10; j++) {
-        groupedLevels[i].levels.push(LEVELS_DATA[(i * 10) + j]);
+        groupedLevels[i].levels.push(LEVELS_DATA[(i * 10) + j].data);
       }
     }
     return groupedLevels;
@@ -51,6 +52,18 @@ export default function Levels({ show, onLevelSelected }: { show: boolean, onLev
     const groupRange = { min: grplevels.id * 10, max: (grplevels.id * 10) + 9 };
     const groupHeading = `${formattedLevel(groupRange.min)} - ${formattedLevel(groupRange.max)}`;
     const selectedGroup = level >= groupRange.min && level <= groupRange.max;
+
+    let isGroupLevelStarEarned = true;
+    if (bestMoves.length <= groupRange.max) {
+      isGroupLevelStarEarned = false;
+    } else {
+      for (let i=groupRange.min; i<=groupRange.max; i++) {
+        const movesForStar = LEVELS_DATA[i].movesForStar;
+        if (bestMoves[i] > movesForStar) {
+          isGroupLevelStarEarned = false;
+        }
+      }
+    }
     return (
       <details 
         className={`${selectedGroup ? 'selected' : ''}`}
@@ -61,11 +74,13 @@ export default function Levels({ show, onLevelSelected }: { show: boolean, onLev
           onDetailsClicked(grplevels.id);
         }}
       >
-        <summary>{groupHeading}</summary>
+        <summary>{groupHeading} <Star earned={isGroupLevelStarEarned} /></summary>
         <div className="levelsGroup">
         {grplevels.levels.map((_, i) => {
           const index = (grplevels.id * 10) + i;
           const isUnlocked = index <= bestMoves.length;
+          const movesForStar = LEVELS_DATA[index].movesForStar;
+          const isLevelStarEarned = bestMoves[index] <= movesForStar;
           return (
             <div
               key={index}
@@ -76,7 +91,8 @@ export default function Levels({ show, onLevelSelected }: { show: boolean, onLev
                 } 
               }}
             >
-              {formattedLevel(index)}
+              <>{formattedLevel(index)}</>
+              <Star earned={isLevelStarEarned} />
             </div>
           );
         })}
