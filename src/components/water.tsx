@@ -206,10 +206,13 @@ export default function Water() {
           vec3 alpha = vec3(1.0);
 
           // Invert texture size
-          float textureSize = 100.0 - uTextureSize;
+          float textureSize = 150.0 - uTextureSize;
+
+          float speed = 0.6;
+          float amplitude = 0.4;
 
           // Generate noise for the base texture
-          float noiseBase = snoise(vUv * (textureSize * 2.8) + sin(uTime * -0.2));
+          float noiseBase = snoise(vUv * (textureSize * 2.8) - (amplitude * sin(uTime * speed)));
           noiseBase = noiseBase * 0.5 + 0.5;
           vec3 colorBase = vec3(noiseBase);
 
@@ -218,13 +221,13 @@ export default function Water() {
           foam = step(0.5, foam);  // binary step to create foam effect
 
           // Generate additional noise for waves
-          float noiseWaves = snoise(vUv * textureSize + sin(uTime * -0.2));
+          float noiseWaves = snoise(vUv * textureSize - (amplitude * 0.5 * sin(uTime * speed)));
           noiseWaves = noiseWaves * 0.5 + 0.5;
           vec3 colorWaves = vec3(noiseWaves);
 
           // Apply smoothstep for wave thresholding
-          // Threshold for waves oscillates between 0.6 and 0.61
-          float threshold = 0.6 + 0.1 * sin(uTime * 0.5);
+          // Threshold for waves oscillates between 0.5 and 0.51
+          float threshold = 0.5 + 0.1 * sin(uTime * 0.5);
           vec3 waveEffect = 1.0 - (smoothstep(threshold + 0.03, threshold + 0.032, colorWaves) +
                                    smoothstep(threshold, threshold - 0.01, colorWaves));
 
