@@ -17,8 +17,10 @@ Built with React, TypeScript, & Vite.
 ### Assets
 #### Models
 - Pirate Kit - Kenny - https://kenney.nl/assets/pirate-kit
-#### Audio
-- Waves SFX - jasinski - https://opengameart.org/content/beach-ocean-waves
+#### Music
+- Hex-a-hop Soundtrack - remaxim - https://opengameart.org/content/hex-hop-soundtrack
+#### SFX
+- Bloop 2 - floraphonic - https://pixabay.com/users/floraphonic-38928062
 #### Icons
 - Island On Water - icon8 - https://icons8.com/icon/NEQRj9jAWRbb/island-on-water
 #### Fonts

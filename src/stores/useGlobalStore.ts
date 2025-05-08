@@ -55,7 +55,8 @@ export type GlobalState = {
   movesForStar: number;
   levelCompleted: boolean;
   bestMoves: number[];
-  volume: number;
+  soundEffects: number;
+  music: number;
 
   setPlaying: () => void;
   setUnderwaterColor: (underwaterColor: Color) => void;
@@ -67,7 +68,8 @@ export type GlobalState = {
   toggleUp: (id: number) => void;
   setHoveredColor: (hoveredColor: Color) => void;
   resetLevel: (level: number) => void;
-  toggleVolume: () => void;
+  toggleSoundEffects: () => void;
+  toggleMusic: () => void;
 };
 
 const setHoveredState = (row: number, column: number, hovered: boolean) => {
@@ -135,7 +137,8 @@ export const useGlobalStore = create<GlobalState>()(
         movesForStar: 0,
         levelCompleted: false,
         bestMoves: [],
-        volume: 0.5,
+        soundEffects: 1,
+        music: 1,
 
         setPlaying: () => set(() => ({ playing: true })),
         setUnderwaterColor: (underwaterColor: Color) => set(() => ({ underwaterColor })),
@@ -217,7 +220,8 @@ export const useGlobalStore = create<GlobalState>()(
           const movesForStar = LEVELS_DATA[level].movesForStar;
           return { upIds: getUpIds(), toggledIds, level, moves: 0, movesForStar, levelCompleted: false };
         }),
-        toggleVolume: () => set(({ volume }) => ({ volume: volume === 0 ? 0.5 : 0 }))
+        toggleSoundEffects: () => set(({ soundEffects }) => ({ soundEffects: soundEffects === 0 ? 1 : 0 })),
+        toggleMusic: () => set(({ music }) => ({ music: music === 0 ? 1 : 0 }))
       }
     },
     {
@@ -225,7 +229,8 @@ export const useGlobalStore = create<GlobalState>()(
       partialize: (state) => ({ 
         level: state.level, 
         bestMoves: state.bestMoves,
-        volume: state.volume
+        soundEffects: state.soundEffects,
+        music: state.music
       }),
     }
   )

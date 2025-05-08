@@ -22,8 +22,12 @@ export default function Info({ show, onClose }: { show: boolean, onClose: () => 
             <a href="https://kenney.nl/assets/pirate-kit" target="_blank">Pirate Kit - Kenny</a>
           </div>
           <div className="infoCredit">
-            <div className="infoCreditLabel">Audio:</div>
-            <a href="https://opengameart.org/content/beach-ocean-waves" target="_blank">Waves SFX - jasinski</a>
+            <div className="infoCreditLabel">Music:</div>
+            <a href="https://opengameart.org/content/hex-hop-soundtrack" target="_blank">Hex-a-hop - remaxim</a>
+          </div>
+          <div className="infoCredit">
+            <div className="infoCreditLabel">SFX:</div>
+            <a href="https://pixabay.com/users/floraphonic-38928062" target="_blank">Bloop 2 - floraphonic</a>
           </div>
           <div className="infoCredit">
             <div className="infoCreditLabel">Icon:</div>

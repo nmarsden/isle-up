@@ -164,3 +164,12 @@ a:hover {
   letter-spacing: 1px;
   font-family: 'Shrikhand', sans-serif;  
 }
+
+.stacked-icons {
+  display: flex;
+  align-items: center;
+  justify-content: center;  
+}
+.stacked-icons .fa-solid {
+  position: absolute;
+}

@@ -2,33 +2,34 @@ import { Howl, Howler } from "howler";
 import { useEffect } from "react";
 import { GlobalState, useGlobalStore } from "../stores/useGlobalStore";
 
-const SOUND_WAVES = [
-  new Howl({ src: ['audio/wave.webm', 'audio/wave.mp3'], format: ['webm', 'mp3']}),
-  new Howl({ src: ['audio/wave2.webm', 'audio/wave2.mp3'], format: ['webm', 'mp3']})
-];
+const BLOOP = new Howl({ 
+  src: ['audio/bloop-2-186531.mp3', 'audio/bloop-2-186531.webm'],
+  format: ['mp3', 'webm'],
+});
+const MUSIC = new Howl({ 
+  src: ['audio/hexahop-1.mp3', 'audio/hexahop-1.webm'], 
+  format: ['mp3', 'webm'],
+  autoplay: true,
+  loop: true  
+});
 
 export default function Sound() {
   const playing = useGlobalStore((state: GlobalState) => state.playing);
   const moves = useGlobalStore((state: GlobalState) => state.moves);
-  const volume = useGlobalStore((state: GlobalState) => state.volume);
+  const soundEffects = useGlobalStore((state: GlobalState) => state.soundEffects);
+  const music = useGlobalStore((state: GlobalState) => state.music);
 
-  useEffect(() => {
-    Howler.volume(volume);
-  }, [ volume ]);
+  useEffect(() => { 
+    Howler.volume(1); 
+    MUSIC.play(); 
+  }, []);
+  useEffect(() => { MUSIC.volume(music); }, [ music ]);
+  useEffect(() => { BLOOP.volume(soundEffects); }, [ soundEffects ]);
 
   useEffect(() => {
     if (!playing) return;
 
-    const soundIndex = Math.floor(Math.random() * 2);
-    const rate = 0.3 + Math.random() * 0.3;
-    const volume = 0.3 + (soundIndex * 0.2) + Math.random() * 0.2;
-    const duration = (300 + Math.random() * 200);
-    const soundWave = SOUND_WAVES[soundIndex];
-
-    const id = soundWave.play();
-    soundWave.rate(rate, id);
-    soundWave.fade(volume, 0, duration, id);
-
+    BLOOP.play();
   }, [ playing, moves ])
 
   return <></>

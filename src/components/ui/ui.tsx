@@ -15,8 +15,10 @@ export default function Ui() {
   const movesForStar = useGlobalStore((state: GlobalState) => state.movesForStar);
   const levelCompleted = useGlobalStore((state: GlobalState) => state.levelCompleted);
   const resetLevel = useGlobalStore((state: GlobalState) => state.resetLevel);
-  const volume = useGlobalStore((state: GlobalState) => state.volume);
-  const toggleVolume = useGlobalStore((state: GlobalState) => state.toggleVolume);
+  const soundEffects = useGlobalStore((state: GlobalState) => state.soundEffects);
+  const toggleSoundEffects = useGlobalStore((state: GlobalState) => state.toggleSoundEffects);
+  const music = useGlobalStore((state: GlobalState) => state.music);
+  const toggleMusic = useGlobalStore((state: GlobalState) => state.toggleMusic);
 
   const [showSplashScreen, setShowSplashScreen] = useState(true);
   const [showLevels, setShowLevels] = useState(false);
@@ -38,7 +40,8 @@ export default function Ui() {
   const onInfoButtonClicked = useCallback(() => setShowInfo(true), []);
   const onInfoClose = useCallback(() => setShowInfo(false), []);
 
-  const onVolumeButtonClicked = useCallback(() => toggleVolume(), []);
+  const onSoundEffectsClicked = useCallback(() => toggleSoundEffects(), []);
+  const onMusicClicked = useCallback(() => toggleMusic(), []);
 
   const onResetButtonClicked = useCallback(() => resetLevel(level), [ level ]);
 
@@ -71,8 +74,14 @@ export default function Ui() {
                 
                 <div className="actions">
                   <div className="button-dark" onClick={onLevelsButtonClicked}>{formattedLevel(level)}</div>
+                  <div className="button-dark" onClick={onSoundEffectsClicked}><span className={`fa-solid ${soundEffects === 0 ? 'fa-volume-xmark' : 'fa-volume-high'}`}></span></div>
+                  <div className="button-dark" onClick={onMusicClicked}>
+                    <span className="stacked-icons">
+                      <i className="fa-solid fa-music"></i>
+                      {music === 0 ? <i className="fa-solid fa-slash"></i> : <></>}
+                    </span>                    
+                  </div>
                   <div className="button-dark" onClick={onInfoButtonClicked}><span className="fa-solid fa-circle-info"></span></div>
-                  <div className="button-dark" onClick={onVolumeButtonClicked}><span className={`fa-solid ${volume === 0 ? 'fa-volume-xmark' : 'fa-volume-high'}`}></span></div>
                 </div>
               </div>
               <div className="footer">
