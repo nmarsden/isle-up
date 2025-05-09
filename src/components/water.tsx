@@ -253,6 +253,7 @@ export default function Water() {
 
           // Managing the alpha based on the distance
           alpha = mix(vec3(0.2), vec3(1.0), foamEffect);
+          alpha = mix(alpha, vec3(0.5), waveEffect);
           alpha = mix(alpha, vec3(1.0), vignette + 0.5);
 
           // Ripples for island's raise & sink
@@ -280,8 +281,8 @@ export default function Water() {
 
               float rippleAlpha = step(distance * (36.0 - rippleRadius), 0.5);
               rippleAlpha *= (1.0 + rippleSine) * 0.5 * rippleStrength;
-  
-              finalColor = mix(finalColor, rippleColor, rippleAlpha);
+
+              alpha = mix(alpha, vec3(0.7), rippleAlpha);
             }
 
           }
