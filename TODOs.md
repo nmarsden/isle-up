@@ -116,4 +116,4 @@
     [x] shorter wave sound effects - use Bloop SFX
     [x] add music - can be turned off & setting saved to local storage
 
-[ ] Fix bug - selecting a new level does not play the bloop sound
+[x] Fix bug - bloop sound does not play when selecting a new level

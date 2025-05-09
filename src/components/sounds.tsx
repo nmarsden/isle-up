@@ -15,7 +15,7 @@ const MUSIC = new Howl({
 
 export default function Sound() {
   const playing = useGlobalStore((state: GlobalState) => state.playing);
-  const moves = useGlobalStore((state: GlobalState) => state.moves);
+  const upIds = useGlobalStore((state: GlobalState) => state.upIds);
   const soundEffects = useGlobalStore((state: GlobalState) => state.soundEffects);
   const music = useGlobalStore((state: GlobalState) => state.music);
 
@@ -30,7 +30,7 @@ export default function Sound() {
     if (!playing) return;
 
     BLOOP.play();
-  }, [ playing, moves ])
+  }, [ playing, upIds ])
 
   return <></>
 }
