@@ -10,6 +10,7 @@ import {useCallback, useState} from "react";
 export default function Ui() {
   const setPlaying = useGlobalStore((state: GlobalState) => state.setPlaying);
   const level = useGlobalStore((state: GlobalState) => state.level);
+  const star = useGlobalStore((state: GlobalState) => state.star);
   const moves = useGlobalStore((state: GlobalState) => state.moves);
   const movesForStar = useGlobalStore((state: GlobalState) => state.movesForStar);
   const levelCompleted = useGlobalStore((state: GlobalState) => state.levelCompleted);
@@ -86,9 +87,12 @@ export default function Ui() {
                   {movesForStar > 0 ? <div className="movesForStar">{movesForStar} moves = <Star /></div> : <></>}
                 </div>
                 <div className="footerActions">
-                  <div className="button-dark" onClick={onLevelsButtonClicked}>{formattedLevel(level)}</div>
-                  <div className={`button-dark ${levelCompleted ? 'button-pulse' : ''} ${nextEnabled ? '' : 'button-disabled'}`} onClick={onNextButtonClicked}>Next</div>
-                  <div className="button-dark" onClick={onResetButtonClicked}><span className="fa-solid fa-arrows-rotate"></span></div>
+                  <div className="button-dark button-wide" onClick={onLevelsButtonClicked}>
+                    <span>{formattedLevel(level)}</span>
+                    <span className="button-badge"><Star earned={star}/></span>
+                  </div>
+                  <div className={`button-dark button-wide ${levelCompleted ? 'button-pulse' : ''} ${nextEnabled ? '' : 'button-disabled'}`} onClick={onNextButtonClicked}>Next</div>
+                  <div className="button-dark button-wide" onClick={onResetButtonClicked}><span className="fa-solid fa-arrows-rotate"></span></div>
                 </div>
               </div>
             </>

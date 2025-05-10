@@ -51,6 +51,7 @@ export type GlobalState = {
   toggledIds: number[];
   hoveredColor: Color;
   level: number;
+  star: boolean;
   moves: number;
   movesForStar: number;
   levelCompleted: boolean;
@@ -139,6 +140,7 @@ export const useGlobalStore = create<GlobalState>()(
         toggledIds: [],
         hoveredColor: new Color('#ffffff'),
         level: 0,
+        star: false,
         moves: 0,
         movesForStar: 0,
         levelCompleted: false,
@@ -210,12 +212,13 @@ export const useGlobalStore = create<GlobalState>()(
               }
             }
           }
+          const star = (bestMoves.length >= level && bestMoves[level] <= movesForStar);
           const nextEnabled = isNextEnabled(level, bestMoves);
 
           // Output level data (Note: uncomment when creating levels)
           // logLevel(level, upIds, updatedMoves);
 
-          return { upIds, toggledIds, moves: updatedMoves, levelCompleted, starEarned, nextEnabled, bestMoves };
+          return { upIds, toggledIds, star, moves: updatedMoves, levelCompleted, starEarned, nextEnabled, bestMoves };
         }),
         setHoveredColor: (hoveredColor: Color) => set(() => ({ hoveredColor })),
         resetLevel: (level: number) => set(({ bestMoves }) => {
@@ -232,9 +235,10 @@ export const useGlobalStore = create<GlobalState>()(
             }
           })
           const movesForStar = LEVELS_DATA[level].movesForStar;
+          const star = (bestMoves.length >= level && bestMoves[level] <= movesForStar);
           const nextEnabled = isNextEnabled(level, bestMoves);
 
-          return { upIds: getUpIds(), toggledIds, level, moves: 0, movesForStar, levelCompleted: false, starEarned: false, nextEnabled };
+          return { upIds: getUpIds(), toggledIds, level, star, moves: 0, movesForStar, levelCompleted: false, starEarned: false, nextEnabled };
         }),
         toggleSoundEffects: () => set(({ soundEffects }) => ({ soundEffects: soundEffects === 0 ? 1 : 0 })),
         toggleMusic: () => set(({ music }) => ({ music: music === 0 ? 1 : 0 }))

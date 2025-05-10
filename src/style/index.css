@@ -132,7 +132,12 @@ a:hover {
   display: flex;
   justify-content: center;
   align-items: center;
+  gap: 5px;
   pointer-events: all;
+}
+
+.button-wide {
+  min-width: 70px;
 }
 
 .button-disabled {
@@ -147,6 +152,10 @@ a:hover {
 .pulse,
 .button-pulse:not(.button-disabled) {
   animation: pulse 1s ease-in-out infinite reverse;
+}
+
+.button-badge {
+  font-size: 18px;
 }
 
 @keyframes pulse {

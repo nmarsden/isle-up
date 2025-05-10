@@ -44,6 +44,7 @@
     [x] Heading 
         [x] island logo?
     [x] Level
+        [x] level button shows star when earned
         [x] level selector overlay
         [x] only completed levels and next uncompleted level (ie. unlocked level) can be selected
     [x] About
