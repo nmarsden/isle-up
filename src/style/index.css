@@ -113,6 +113,7 @@ a:hover {
   display: flex;
   justify-content: center;
   align-items: center;
+  pointer-events: all;
 }
 .button-light:hover {
   outline: 1px solid rgba(var(--light-color), 1.0);
@@ -131,6 +132,7 @@ a:hover {
   display: flex;
   justify-content: center;
   align-items: center;
+  pointer-events: all;
 }
 .button-dark:hover {
   outline: 1px solid rgba(var(--dark-color), 1.0);
