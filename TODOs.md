@@ -89,19 +89,29 @@
     [x] highlight group for selected level 
 [ ] Acheivements
     [ ] completed a level
-    [ ] completed 3 levels in minimum moves
-    [ ] completed 00 - 04
-    [ ] completed 00 - 09
-    [ ] completed 00 - 14
-    [ ] completed 00 - 19
-    [ ] completed 00 - 24
-    [ ] completed 00 - 29
+    [ ] completed 5 levels
+    [ ] completed 10 levels
+    [ ] completed 15 levels
+    [ ] completed 20 levels
+    [ ] completed 25 levels
+    [ ] completed 30 levels
     [ ] repeated a move 3 times
     [ ] repeated a move 5 times
     [ ] repeated a move 9 times
-    [ ] completed 00 - 09 in minimum moves
-    [ ] completed 10 - 19 in minimum moves
-    [ ] completed 20 - 29 in minimum moves
+    [ ] earned a star
+    [ ] earned 5 stars
+    [ ] earned 10 stars
+    [ ] earned 20 stars
+    [ ] earned 30 stars
+    [ ] earned all stars 00 - 09
+    [ ] earned all stars 10 - 19
+    [ ] earned all stars 20 - 29
+    [ ] reset level
+    [ ] turn off sound
+    [ ] turn on sound
+    [ ] view info
+    [ ] view level selector
+
 [x] favicon
 [x] Fix bug - sometimes hovering and clicking islands is not working
             - SOLUTION: call computeBoundingSphere() on the instancedMesh after updating positions

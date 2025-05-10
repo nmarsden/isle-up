@@ -134,9 +134,35 @@ a:hover {
   align-items: center;
   pointer-events: all;
 }
-.button-dark:hover {
+
+.button-disabled {
+  opacity: 0.3;
+}
+
+.button-dark:hover:not(.button-disabled) {
   outline: 1px solid rgba(var(--dark-color), 1.0);
   cursor: pointer;
+}
+
+.pulse,
+.button-pulse:not(.button-disabled) {
+  animation: pulse 1s ease-in-out infinite reverse;
+}
+
+@keyframes pulse {
+  0%   { scale: 1; }
+  50%  { scale: 1.2; }
+  100% { scale: 1; }
+}
+
+@keyframes fade-in {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+@keyframes fade-out {
+  0% { opacity: 1; }
+  100% { opacity: 0; }
 }
 
 .logo {

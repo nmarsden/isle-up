@@ -1,7 +1,7 @@
 import { Color } from 'three';
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware';
-import { LEVELS_DATA } from '../levelsData';
+import { LEVELS_DATA, MAX_LEVEL } from '../levelsData';
 
 export const NUM_CELLS = 25;
 export const CELL_WIDTH = 12.25;
@@ -54,6 +54,8 @@ export type GlobalState = {
   moves: number;
   movesForStar: number;
   levelCompleted: boolean;
+  starEarned: boolean;
+  nextEnabled: boolean;
   bestMoves: number[];
   soundEffects: number;
   music: number;
@@ -88,6 +90,10 @@ const toggleUp = (row: number, column: number) => {
 
 const getUpIds = (): number[] => {
     return islandStates.map((state, index) => state.up ? index: -1).filter(i => i >= 0);
+}
+
+const isNextEnabled = (level: number, bestMoves: number[]): boolean => {
+  return level < MAX_LEVEL && level < bestMoves.length;
 }
 
 // Note: uncomment when creating levels
@@ -136,6 +142,8 @@ export const useGlobalStore = create<GlobalState>()(
         moves: 0,
         movesForStar: 0,
         levelCompleted: false,
+        starEarned: false,
+        nextEnabled: false,
         bestMoves: [],
         soundEffects: 1,
         music: 1,
@@ -156,7 +164,7 @@ export const useGlobalStore = create<GlobalState>()(
             if (column < 4) setHoveredState(row, column + 1, hovered);
             return { hoveredIds: getHoveredIds() };
         }),
-        toggleUp: (id: number) => set(({ level, moves, bestMoves }) => {
+        toggleUp: (id: number) => set(({ level, moves, bestMoves, movesForStar }) => {
           const { row, col } = toRowAndCol(id);
           const toggledIds = [];
 
@@ -183,28 +191,34 @@ export const useGlobalStore = create<GlobalState>()(
           const levelCompleted = upIds.length === NUM_CELLS;
           const updatedMoves = moves + 1;
 
+          let possibleStarEarned = (updatedMoves <= movesForStar);
+          let starEarned = false;
+
           if (levelCompleted) {
             // Update best moves
             const isNoBestMoveYet = bestMoves.length === level;
             if (isNoBestMoveYet) {
               // new best move
               bestMoves.push(updatedMoves);
+              starEarned = possibleStarEarned;
             } else {
               // update best move
               const bestMove = bestMoves[level];
               if (updatedMoves < bestMove) {
                 bestMoves[level] = updatedMoves;
+                starEarned = possibleStarEarned;
               }
             }
           }
+          const nextEnabled = isNextEnabled(level, bestMoves);
 
           // Output level data (Note: uncomment when creating levels)
           // logLevel(level, upIds, updatedMoves);
 
-          return { upIds, toggledIds, moves: updatedMoves, levelCompleted, bestMoves };
+          return { upIds, toggledIds, moves: updatedMoves, levelCompleted, starEarned, nextEnabled, bestMoves };
         }),
         setHoveredColor: (hoveredColor: Color) => set(() => ({ hoveredColor })),
-        resetLevel: (level: number) => set(() => {
+        resetLevel: (level: number) => set(({ bestMoves }) => {
           // Perform toggles to change state to the desired level state
           const toggledIds: number[] = [];
           LEVELS_DATA[level].data.forEach((up, index) => {
@@ -218,7 +232,9 @@ export const useGlobalStore = create<GlobalState>()(
             }
           })
           const movesForStar = LEVELS_DATA[level].movesForStar;
-          return { upIds: getUpIds(), toggledIds, level, moves: 0, movesForStar, levelCompleted: false };
+          const nextEnabled = isNextEnabled(level, bestMoves);
+
+          return { upIds: getUpIds(), toggledIds, level, moves: 0, movesForStar, levelCompleted: false, starEarned: false, nextEnabled };
         }),
         toggleSoundEffects: () => set(({ soundEffects }) => ({ soundEffects: soundEffects === 0 ? 1 : 0 })),
         toggleMusic: () => set(({ music }) => ({ music: music === 0 ? 1 : 0 }))

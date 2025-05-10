@@ -14,6 +14,7 @@ export default function GridCell({ id }: { id: number }) {
   const setHovered = useGlobalStore((state: GlobalState) => state.setHovered);
   const toggleUp = useGlobalStore((state: GlobalState) => state.toggleUp);
   const hoveredIds = useGlobalStore((state: GlobalState) => state.hoveredIds);
+  const levelCompleted = useGlobalStore((state: GlobalState) => state.levelCompleted);
 
   const meshRef = useRef<Mesh>(null!);
   const lineRef = useRef<typeof Line | null>(null!);
@@ -21,12 +22,16 @@ export default function GridCell({ id }: { id: number }) {
   const pointerUpData = useRef<PointerData>({ pos: new Vector2(), time: 10000 });
 
   const onPointerDown = useCallback((event: ThreeEvent<PointerEvent>) => {
+    if (levelCompleted) return;
+
     pointerDownData.current.pos.setX(event.x);
     pointerDownData.current.pos.setY(event.y);
     pointerDownData.current.time = new Date().getTime();
-  }, []);
+  }, [ levelCompleted ]);
   const onPointerUp = useCallback((id: number) => {
     return (event: ThreeEvent<PointerEvent>) => {
+      if (levelCompleted) return;
+
       pointerUpData.current.pos.setX(event.x);
       pointerUpData.current.pos.setY(event.y);
       pointerUpData.current.time = new Date().getTime();
@@ -40,8 +45,8 @@ export default function GridCell({ id }: { id: number }) {
       }
 
     }
-  }, []);
-  const onPointerOver = useCallback((id: number) => setHovered(id, true), []);
+  }, [ levelCompleted ]);
+  const onPointerOver = useCallback((id: number) => setHovered(id, !levelCompleted), [ levelCompleted ]);
   const onPointerOut = useCallback((id: number) => setHovered(id, false), []);
 
   const { planeGeometry, planeMaterial, linePoints, lineMaterial } = useMemo(() => {
@@ -86,13 +91,25 @@ export default function GridCell({ id }: { id: number }) {
   }, []);
 
   useEffect(() => { 
-    if (!lineRef.current) return;
+    if (!lineRef.current || levelCompleted) return;
 
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-expect-error
     lineRef.current.visible = hoveredIds.includes(id);
 
   }, [ hoveredIds ]);  
+
+  useEffect(() => {
+    if (!lineRef.current) return;
+
+    meshRef.current.visible = !levelCompleted;
+    if (levelCompleted) {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-expect-error
+      lineRef.current.visible = false;
+    }
+
+  }, [ levelCompleted ]);
 
   return (
     <>

@@ -1,12 +1,11 @@
 import { LEVELS_DATA } from '../../levelsData';
 import { formattedLevel, GlobalState, useGlobalStore } from '../../stores/useGlobalStore';
-import Completed from './completed/completed';
 import Info from './info/info';
 import Levels from './levels/levels';
 import SplashScreen from './splashScreen/splashScreen';
 import Star from './star/star';
 import './ui.css';
-import {useCallback, useEffect, useState} from "react";
+import {useCallback, useState} from "react";
 
 export default function Ui() {
   const setPlaying = useGlobalStore((state: GlobalState) => state.setPlaying);
@@ -14,6 +13,8 @@ export default function Ui() {
   const moves = useGlobalStore((state: GlobalState) => state.moves);
   const movesForStar = useGlobalStore((state: GlobalState) => state.movesForStar);
   const levelCompleted = useGlobalStore((state: GlobalState) => state.levelCompleted);
+  const starEarned = useGlobalStore((state: GlobalState) => state.starEarned);
+  const nextEnabled = useGlobalStore((state: GlobalState) => state.nextEnabled);
   const resetLevel = useGlobalStore((state: GlobalState) => state.resetLevel);
   const soundEffects = useGlobalStore((state: GlobalState) => state.soundEffects);
   const toggleSoundEffects = useGlobalStore((state: GlobalState) => state.toggleSoundEffects);
@@ -23,7 +24,6 @@ export default function Ui() {
   const [showSplashScreen, setShowSplashScreen] = useState(true);
   const [showLevels, setShowLevels] = useState(false);
   const [showInfo, setShowInfo] = useState(false);
-  const [showCompleted, setShowCompleted] = useState(false);
 
   const onPlaySelected = useCallback(() => {
     setShowSplashScreen(false);
@@ -43,25 +43,17 @@ export default function Ui() {
   const onSoundEffectsClicked = useCallback(() => toggleSoundEffects(), []);
   const onMusicClicked = useCallback(() => toggleMusic(), []);
 
-  const onResetButtonClicked = useCallback(() => resetLevel(level), [ level ]);
-
-  const onRetrySelected = useCallback(() => {
-    setShowCompleted(false);
-    resetLevel(level);
+  const onResetButtonClicked = useCallback(() => {
+    resetLevel(level)
   }, [ level ]);
 
-  const onNextLevelSelected = useCallback(() => {
-    setShowCompleted(false);
+  const onNextButtonClicked = useCallback(() => {
+    if (!nextEnabled) return;
+
     const nextLevel = (level + 1) % LEVELS_DATA.length;
     resetLevel(nextLevel);
-  }, [ level ]);
+  }, [ level, nextEnabled ]);
 
-  useEffect(() => {
-    if (levelCompleted) {
-      setShowCompleted(true);
-    }
-  }, [ levelCompleted ]);
-  
   return (
       <>
           {(showSplashScreen || showInfo || showLevels) ? '' : (
@@ -71,9 +63,7 @@ export default function Ui() {
                   <div className="logo-icon"></div>
                   <div className="logo-text">Isle Up</div>
                 </div>
-                
                 <div className="actions">
-                  <div className="button-dark" onClick={onLevelsButtonClicked}>{formattedLevel(level)}</div>
                   <div className="button-dark" onClick={onSoundEffectsClicked}><span className={`fa-solid ${soundEffects === 0 ? 'fa-volume-xmark' : 'fa-volume-high'}`}></span></div>
                   <div className="button-dark" onClick={onMusicClicked}>
                     <span className="stacked-icons">
@@ -83,20 +73,29 @@ export default function Ui() {
                   </div>
                   <div className="button-dark" onClick={onInfoButtonClicked}><span className="fa-solid fa-circle-info"></span></div>
                 </div>
+                {levelCompleted ? (
+                  <div className="toastMessage">
+                    <div className="levelCompleted">Level {formattedLevel(level)} Completed</div>
+                    {starEarned ? <div className="levelCompleted"><Star /> Earned!</div> : <></>}
+                  </div>
+                ) : <></>}
               </div>
               <div className="footer">
                 <div className="movesContainer">
                   <div>MOVES: {moves}</div>
                   {movesForStar > 0 ? <div className="movesForStar">{movesForStar} moves = <Star /></div> : <></>}
                 </div>
-                <div className="button-dark" onClick={onResetButtonClicked}><span className="fa-solid fa-arrows-rotate"></span></div>
+                <div className="footerActions">
+                  <div className="button-dark" onClick={onLevelsButtonClicked}>{formattedLevel(level)}</div>
+                  <div className={`button-dark ${levelCompleted ? 'button-pulse' : ''} ${nextEnabled ? '' : 'button-disabled'}`} onClick={onNextButtonClicked}>Next</div>
+                  <div className="button-dark" onClick={onResetButtonClicked}><span className="fa-solid fa-arrows-rotate"></span></div>
+                </div>
               </div>
             </>
           )}
           <SplashScreen show={showSplashScreen} onPlaySelected={onPlaySelected} />
           <Info show={showInfo} onClose={onInfoClose} />
           <Levels show={showLevels} onLevelSelected={onLevelSelected} />
-          <Completed show={showCompleted} onRetrySelected={onRetrySelected} onNextLevelSelected={onNextLevelSelected} />
       </>
   )
 }

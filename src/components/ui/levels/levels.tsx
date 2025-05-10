@@ -41,11 +41,14 @@ export default function Levels({ show, onLevelSelected }: { show: boolean, onLev
   useEffect(() => {
     if (!detailsRefs.current) return;
 
-    // open initial details according to level
-    const index = Math.floor(level / 10);
-    if (detailsRefs.current[index]) {
-      detailsRefs.current[index].open = true;
-    }
+    // open/close details according to level
+    const selectedGroupId = Math.floor(level / 10);
+    groupedLevels.forEach((groupedLevel) => {
+      const groupId = groupedLevel.id;
+      if (detailsRefs.current[groupId]) {
+        detailsRefs.current[groupId].open = (selectedGroupId === groupId);
+      }
+    })
   }, [ level ]);
   
   const renderLevelsGroup = (grplevels: GroupedLevels) => {

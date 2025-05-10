@@ -53,6 +53,11 @@ The goal is to **raise all the islands** above water.
 - **Visual Rewards:**
   - Sparkling water when all islands are raised.  
   - Dolphins jump, or a rescue boat docks.
+  - Marine Iguanas - move to bask on the raised rocks.
+  - Coconut Crabs - slow-moving onto the new land.
+  - Ghost Crabs - fast-moving scuttle onto the new land.   
+  - Sea Snakes - medium-moving on the the new land.
+  - Large Marine Snails/Gastropods - slowest-moving onto the new land.
 
 ---
 

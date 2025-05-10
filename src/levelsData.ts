@@ -343,6 +343,9 @@ export const LEVELS_DATA: LevelData[] = [
   //   1, 1, 1, 1, 1
   // ],  
 ];
+
+export const MAX_LEVEL = LEVELS_DATA.length - 1;
+
 // Temp. fill remaing 100 levels (Note: uncomment when creating levels)
 // const startIndex = LEVELS_DATA.length;
 // for (let i=startIndex; i<100; i++) {
