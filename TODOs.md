@@ -75,6 +75,7 @@
     [ ] Ambient sound - waves, seagulls?
     [ ] Sound FX
         [x] Island Raise/Sink - wave
+        [x] completing level
 [x] Local Storage (using persist from zustand/middleware)
     [x] Save
     [x] Load
@@ -117,3 +118,4 @@
     [x] add music - can be turned off & setting saved to local storage
 
 [x] Fix bug - bloop sound does not play when selecting a new level
+[ ] Fix bug - cannot click islands inside header & footer overlays

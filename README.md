@@ -21,6 +21,8 @@ Built with React, TypeScript, & Vite.
 - Hex-a-hop Soundtrack - remaxim - https://opengameart.org/content/hex-hop-soundtrack
 #### SFX
 - Bloop 2 - floraphonic - https://pixabay.com/users/floraphonic-38928062
+- Level Up - Universfield - https://pixabay.com/users/universfield-28281460
+
 #### Icons
 - Island On Water - icon8 - https://icons8.com/icon/NEQRj9jAWRbb/island-on-water
 #### Fonts
