@@ -9,7 +9,7 @@ type GroupedLevels = {
   levels: number[][];
 }
 
-export default function Levels({ show, onLevelSelected }: { show: boolean, onLevelSelected: (level: number) => void }) {
+export default function Levels({ show, onLevelSelected, onClose }: { show: boolean; onLevelSelected: (level: number) => void; onClose: () => void; }) {
   const level = useGlobalStore((state: GlobalState) => state.level);
   const bestMoves = useGlobalStore((state: GlobalState) => state.bestMoves);
   const detailsRefs = useRef<(HTMLDetailsElement | null)[]>(new Array(10).fill(null));
@@ -107,6 +107,11 @@ export default function Levels({ show, onLevelSelected }: { show: boolean, onLev
 
   return (
     <div className={`overlay ${show ? 'show' : 'hide'}`}>
+        <div className="levelsHeader">
+          <div className="button-light" onClick={onClose}>
+            <i className="fa-solid fa-close"></i>
+          </div>
+        </div>
       <div className="overlayHeading">Select a Level</div>
       <div className="levelsContainer">
         {groupedLevels.map((grplevels) => renderLevelsGroup(grplevels))}

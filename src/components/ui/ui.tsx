@@ -38,6 +38,7 @@ export default function Ui() {
     setShowLevels(false);
     resetLevel(level);
   }, []);
+  const onLevelsClose = useCallback(() => setShowLevels(false), []);
 
   const onInfoButtonClicked = useCallback(() => setShowInfo(true), []);
   const onInfoClose = useCallback(() => setShowInfo(false), []);
@@ -105,7 +106,7 @@ export default function Ui() {
           )}
           <SplashScreen show={showSplashScreen} onPlaySelected={onPlaySelected} />
           <Info show={showInfo} onClose={onInfoClose} />
-          <Levels show={showLevels} onLevelSelected={onLevelSelected} />
+          <Levels show={showLevels} onLevelSelected={onLevelSelected} onClose={onLevelsClose} />
       </>
   )
 }

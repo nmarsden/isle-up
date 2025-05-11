@@ -2,6 +2,12 @@
   interpolate-size: allow-keywords;
 }
 
+.levelsHeader {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+}
+
 .levelsContainer {
   margin-top: 20px;
   display: flex;
