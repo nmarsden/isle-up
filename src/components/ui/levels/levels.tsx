@@ -69,7 +69,6 @@ export default function Levels({ show, onLevelSelected }: { show: boolean, onLev
     }
     return (
       <details 
-        className={`${selectedGroup ? 'selected' : ''}`}
         ref={(element) => { detailsRefs.current[grplevels.id] = element; }} 
         key={grplevels.id} 
         onClick={(event) => {
@@ -77,7 +76,9 @@ export default function Levels({ show, onLevelSelected }: { show: boolean, onLev
           onDetailsClicked(grplevels.id);
         }}
       >
-        <summary>{groupHeading} <Star earned={isGroupLevelStarEarned} /></summary>
+        <summary className={`${selectedGroup ? 'selected' : ''}`}>
+          {groupHeading} <Star earned={isGroupLevelStarEarned} />
+        </summary>
         <div className="levelsGroup">
         {grplevels.levels.map((_, i) => {
           const index = (grplevels.id * 10) + i;
@@ -87,7 +88,7 @@ export default function Levels({ show, onLevelSelected }: { show: boolean, onLev
           return (
             <div
               key={index}
-              className={`levelsButton ${isUnlocked ? 'unlocked' : 'locked'} ${level === index ? 'selected' : ''}`}
+              className={`levelsButton ${isUnlocked ? 'unlocked' : 'locked'} ${level === index ? 'pulse' : ''}`}
               onClick={() => {
                 if (isUnlocked) {
                   onLevelSelected(index);
@@ -95,7 +96,7 @@ export default function Levels({ show, onLevelSelected }: { show: boolean, onLev
               }}
             >
               <>{formattedLevel(index)}</>
-              <Star earned={isLevelStarEarned} />
+              <Star earned={isLevelStarEarned} locked={!isUnlocked} />
             </div>
           );
         })}

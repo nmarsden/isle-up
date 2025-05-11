@@ -29,15 +29,16 @@ summary::marker {
   color: rgba(var(--light-color), 0.9);
 }
 
+summary.selected {
+  text-decoration: underline;
+}
+
 details * {
   margin: 0;
 }
 
 details {
   overflow: hidden;
-}
-details.selected {
-  color: rgba(var(--selected-colour), 0.9);
 }
 
 details::details-content {
@@ -71,12 +72,4 @@ details:open::details-content {
 .levelsButton.locked {
   color: rgba(var(--light-color), 0.5);
   border: 1px solid rgba(var(--light-color), 0.5);
-}
-.levelsButton.selected {
-  color: rgba(var(--selected-colour), 0.9);
-  border: 1px solid rgba(var(--selected-colour), 0.9);
-}
-.levelsButton.selected:hover {
-  color: rgba(var(--selected-colour), 0.9);
-  outline: 1px solid rgba(var(--selected-colour), 0.9);
 }

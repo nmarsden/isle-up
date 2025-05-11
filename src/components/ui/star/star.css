@@ -1,3 +1,7 @@
 .star {
   color: #ffff00;
 }
+
+.star.locked {
+  color: rgba(var(--light-color), 0.5);
+}
