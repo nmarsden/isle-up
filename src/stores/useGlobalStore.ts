@@ -60,6 +60,7 @@ export type GlobalState = {
   bestMoves: number[];
   soundEffects: number;
   music: number;
+  showHint: boolean;
 
   setPlaying: () => void;
   setUnderwaterColor: (underwaterColor: Color) => void;
@@ -149,6 +150,7 @@ export const useGlobalStore = create<GlobalState>()(
         bestMoves: [],
         soundEffects: 1,
         music: 1,
+        showHint: false,
 
         setPlaying: () => set(() => ({ playing: true })),
         setUnderwaterColor: (underwaterColor: Color) => set(() => ({ underwaterColor })),
@@ -214,11 +216,12 @@ export const useGlobalStore = create<GlobalState>()(
           }
           const star = (bestMoves.length >= level && bestMoves[level] <= movesForStar);
           const nextEnabled = isNextEnabled(level, bestMoves);
+          const showHint = (level === 0 && !levelCompleted && !star);
 
           // Output level data (Note: uncomment when creating levels)
           // logLevel(level, upIds, updatedMoves);
 
-          return { upIds, toggledIds, star, moves: updatedMoves, levelCompleted, starEarned, nextEnabled, bestMoves };
+          return { upIds, toggledIds, star, moves: updatedMoves, levelCompleted, starEarned, nextEnabled, showHint, bestMoves };
         }),
         setHoveredColor: (hoveredColor: Color) => set(() => ({ hoveredColor })),
         resetLevel: (level: number) => set(({ bestMoves }) => {
@@ -237,8 +240,9 @@ export const useGlobalStore = create<GlobalState>()(
           const movesForStar = LEVELS_DATA[level].movesForStar;
           const star = (bestMoves.length >= level && bestMoves[level] <= movesForStar);
           const nextEnabled = isNextEnabled(level, bestMoves);
+          const showHint = (level === 0 && !star);
 
-          return { upIds: getUpIds(), toggledIds, level, star, moves: 0, movesForStar, levelCompleted: false, starEarned: false, nextEnabled };
+          return { upIds: getUpIds(), toggledIds, level, star, moves: 0, movesForStar, levelCompleted: false, starEarned: false, nextEnabled, showHint };
         }),
         toggleSoundEffects: () => set(({ soundEffects }) => ({ soundEffects: soundEffects === 0 ? 1 : 0 })),
         toggleMusic: () => set(({ music }) => ({ music: music === 0 ? 1 : 0 }))

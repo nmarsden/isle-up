@@ -121,9 +121,9 @@
 [x] Fix bug - shadows do not render properly sometimes
 [x] Fix bug - render issue when water reaches the lowest level (z-fighting?)
 
-[ ] Feedback from Challenge 17 review 
+[x] Feedback from Challenge 17 review 
     [x] whiter water waves and ripples
-    [ ] for level 00, have a "click here" indicator
+    [x] for level 00, have a "click here" indicator
     [x] increase sound volume
     [x] shorter wave sound effects - use Bloop SFX
     [x] add music - can be turned off & setting saved to local storage

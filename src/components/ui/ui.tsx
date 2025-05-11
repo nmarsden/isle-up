@@ -21,6 +21,7 @@ export default function Ui() {
   const toggleSoundEffects = useGlobalStore((state: GlobalState) => state.toggleSoundEffects);
   const music = useGlobalStore((state: GlobalState) => state.music);
   const toggleMusic = useGlobalStore((state: GlobalState) => state.toggleMusic);
+  const showHint = useGlobalStore((state: GlobalState) => state.showHint);
 
   const [showSplashScreen, setShowSplashScreen] = useState(true);
   const [showLevels, setShowLevels] = useState(false);
@@ -74,10 +75,15 @@ export default function Ui() {
                   </div>
                   <div className="button-dark" onClick={onInfoButtonClicked}><span className="fa-solid fa-circle-info"></span></div>
                 </div>
+                {showHint ? (
+                  <div className="toastMessage">
+                    <div>Click the <i className="fa-regular fa-square fa-beat"></i> below</div>
+                  </div>
+                ) : <></>}
                 {levelCompleted ? (
                   <div className="toastMessage">
-                    <div className="levelCompleted">Level {formattedLevel(level)} Completed</div>
-                    {starEarned ? <div className="levelCompleted"><Star /> Earned!</div> : <></>}
+                    <div>Level {formattedLevel(level)} Completed</div>
+                    {starEarned ? <div><Star /> Earned!</div> : <></>}
                   </div>
                 ) : <></>}
               </div>

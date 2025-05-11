@@ -29,17 +29,13 @@
   align-items: center;
   background-color: rgba(var(--dark-color), 0.5);
   color: rgba(var(--light-color), 1.0);
-  padding: 10px;
-  border-radius: 4px;
-  border: 1px solid rgba(var(--dark-color), 1.0);
+  padding: 20px;
   opacity: 0;
   animation: fade-in 1s forwards;
-}
-
-.levelCompleted {
-  font-size: 18px;
-  line-height: 18px;
-  font-family: 'Shrikhand', sans-serif;  
+  font-size: 26px;
+  line-height: 28px;
+  font-family: 'Shrikhand', sans-serif;
+  text-align: center;
 }
 
 .footer {
