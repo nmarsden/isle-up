@@ -1,3 +1,9 @@
+.infoHeader {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+}
+
 .infoInstructions {
   font-size: 16px;
 }
@@ -17,7 +23,6 @@
 .infoCredits {
   display: flex;
   flex-direction: column;
-  margin-bottom: 20px;
 }
 
 .infoCredit {

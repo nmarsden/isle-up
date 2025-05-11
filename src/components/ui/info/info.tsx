@@ -3,6 +3,11 @@ import './info.css';
 export default function Info({ show, onClose }: { show: boolean, onClose: () => void }) {
     return (
       <div className={`overlay ${show ? 'show' : 'hide'}`}>
+        <div className="infoHeader">
+          <div className="button-light" onClick={onClose}>
+            <i className="fa-solid fa-close"></i>
+          </div>
+        </div>
         <div className="logo">
           <div className="logo-icon light"></div>
           <div className="logo-text">Isle Up</div>
@@ -30,15 +35,22 @@ export default function Info({ show, onClose }: { show: boolean, onClose: () => 
             <a href="https://pixabay.com/users/floraphonic-38928062" target="_blank">Bloop 2 - floraphonic</a>
           </div>
           <div className="infoCredit">
-            <div className="infoCreditLabel">Icon:</div>
+            <div className="infoCreditLabel"></div>
+            <a href="https://pixabay.com/users/universfield-28281460" target="_blank">Level Up - Universfield</a>
+          </div>
+          <div className="infoCredit">
+            <div className="infoCreditLabel">Icons:</div>
             <a href="https://icons8.com/icon/NEQRj9jAWRbb/island-on-water" target="_blank">Island On Water - icon8</a>
+          </div>
+          <div className="infoCredit">
+            <div className="infoCreditLabel"></div>
+            <a href="https://fontawesome.com/" target="_blank">Font Awesome</a>
           </div>
           <div className="infoCredit">
             <div className="infoCreditLabel">Font:</div>
             <a href="https://fonts.google.com/specimen/Shrikhand" target="_blank">Shrikhand - Google Fonts</a>
           </div>
         </div>
-        <div className="button-light" onClick={onClose}>CLOSE</div>
       </div>
     )
 }
