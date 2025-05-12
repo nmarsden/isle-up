@@ -1,6 +1,6 @@
 import {Suspense} from 'react';
 import {Canvas} from "@react-three/fiber";
-import {Loader, OrbitControls, Sky} from "@react-three/drei";
+import {Loader, Sky} from "@react-three/drei";
 import Debug from "./debug.tsx";
 import Performance from "./performance.tsx";
 import Lights from "./lights.tsx";
@@ -26,14 +26,6 @@ export default function App() {
             turbidity={0.25}
           />
           <Performance />
-          <OrbitControls 
-            enableZoom={true}
-            enablePan={false}
-            minPolarAngle={0}
-            maxPolarAngle={Math.PI * 0.45}
-            minDistance={5.0}
-            maxDistance={71.0}
-          />
           <Lights />
           <Camera />
           <Grid />
