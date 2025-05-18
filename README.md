@@ -13,11 +13,15 @@ Built with React, TypeScript, & Vite.
 - Modifying MeshBasicMaterial - https://jsfiddle.net/prisoner849/k542eo19/
 - React Three Fiber - How do I create a helper for a shadow camera - https://stackoverflow.com/questions/69096623/react-three-fiber-how-do-i-create-a-helper-for-a-shadow-camera
 - Clone a ShaderMaterial and Have Different Uniforms for Different Copies of the Material - https://discourse.threejs.org/t/clone-a-shadermaterial-and-have-different-uniforms-for-different-copies-of-the-material/49713
+- The Study of Shaders with React Three Fiber - https://blog.maximeheckel.com/posts/the-study-of-shaders-with-react-three-fiber/
+- The magical world of Particles with React Three Fiber and Shaders - https://blog.maximeheckel.com/posts/the-magical-world-of-particles-with-react-three-fiber-and-shaders/
 
 ### Assets
 #### Models
 - Pirate Kit - Kenny - https://kenney.nl/assets/pirate-kit
 - Star - Poly by Google - https://poly.pizza/m/0ddNZ3EsIhw
+#### Textures
+- Gradient Texture Pack - Screaming Brain Studios - https://screamingbrainstudios.itch.io/gradient-texture-pack
 #### Music
 - Hex-a-hop Soundtrack - remaxim - https://opengameart.org/content/hex-hop-soundtrack
 #### SFX

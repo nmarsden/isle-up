@@ -9,8 +9,9 @@ import Grid from './grid.tsx';
 import Islands from "./islands.tsx";
 import Water from "./water.tsx";
 import Fog from './fog.tsx';
-import Ui from './ui/ui.tsx';
+import Particles from './particles.tsx';
 import Sounds from './sounds.tsx';
+import Ui from './ui/ui.tsx';
 
 export default function App() {
   return (
@@ -31,6 +32,7 @@ export default function App() {
           <Grid />
           <Islands />
           <Water />
+          <Particles />
           <Sounds />
         </Suspense>
       </Canvas>
